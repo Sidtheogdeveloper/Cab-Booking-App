@@ -1,0 +1,351 @@
+Windows:
+    MainScreen:
+    DriverScreen:
+    PassengerScreen:
+    Driversignup:
+    DriverLog:
+    PassengerSP:
+    PassengerLog:
+
+
+#<DriverHome>:
+#   name: 'DHome'
+
+<MainScreen>:
+    name: "main"
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    AnchorLayout:
+        anchor_x: 'right'
+        anchor_y: 'center'
+        
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 20
+            Label:
+                text: "Welcome to Cab Booking App\n    Select your Profile Type"
+                font_size: 35
+                size_hint: (1, 0.4)
+        
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: 0.4
+                spacing: 10
+                Button:
+                    text: "Passenger"
+                    size_hint: (0.5, 0.2)
+                    pos_hint: {'center_x': 0.5}
+                    halign: 'center'
+                    valign: 'center'
+                    on_release: app.root.current = "Passenger"
+                Button:
+                    text: "Driver"
+                    size_hint: (0.5, 0.2)
+                    pos_hint: {'center_x': 0.5}
+                    halign: 'center'
+                    valign: 'center'
+                    on_release: app.root.current = "Driver"
+                Label:
+                    text: ""
+
+
+
+<DriverScreen>:
+    name: "Driver"
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [30]
+        spacing: 20
+        Label:
+            text: "Welcome Partner, Have a nice day!"
+            font_size: 28
+        Button:
+            text: "Sign Up"
+            on_release: app.root.current = "Dsign"
+        
+        Button:
+            text: "Login"
+            on_release: app.root.current = "Dlogin"
+        
+        GridLayout:
+            cols: 2
+            spacing: 10
+            
+            Button:
+                text: "Go Back"
+                size_hint: 0.5, 0.5
+                on_release: app.root.current= "main"
+
+<PassengerScreen>:
+    name: "Passenger"
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    GridLayout:
+        cols: 1
+        Label:
+            text: "Welcome, Have a wonderful day!"
+            size_hint: 1, 0.4
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [30]
+            spacing: 20
+            size_hint: 1, 0.6
+            Button:
+                text: "SignUp"
+                on_release: app.root.current = "Psignup"
+            Button:
+                text: "Login"
+                on_release: app.root.current = "Plogin"
+            Button:
+                text: "Go Back"
+                on_release: app.root.current= "main"
+
+<Driversignup>:
+    name: "Dsign"
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'vertical'
+        GridLayout:
+            size_hint: 1, 0.6
+            cols: 2
+            spacing: 20
+            Label:
+                text: "Name"
+            TextInput:
+                id: name
+                text: "your name"
+            Label:
+                text: "Email ID"
+            TextInput:
+                id: email
+                multiline: False
+                text: "example@email.com"
+            Label:
+                text: "username"
+            TextInput:
+                id: usrname
+                multilline: False
+                text: "example123"
+            Label:
+                text: "Vehicle Type"
+            TextInput:
+                id: vehicle
+                multilline: False
+                text: "auto/car/bike.."
+            Label:
+                text: "Password"
+            TextInput:
+                id: pwd
+                password: True
+                multiline: False
+            Label:
+                text: "Confirm password"
+            TextInput:
+                id: cpwd
+                password: True
+                multiline: False
+            Label:
+                text: 'OTP'
+            TextInput:
+                id: otp
+                multiline: False
+                password: True
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.2
+            Button:
+                text: "Send OTP"
+                size_hint: 1, 0.2
+                on_release: root.__enter_data__(name.text, usrname.text, email.text, vehicle.text,pwd.text, cpwd.text, errormsg)
+            Label:
+                id: errormsg
+                text: ''
+            Button:
+                text: 'Verify OTP'
+                on_release: root.verify_otp(otp.text, errormsg)
+            Button:
+                text: "Submit"
+                on_release: app.root.current= 'Dlogin'
+            Button:
+                text: "Go Back"
+                size_hint: 0.5, 0.2
+                on_release: app.root.current = "Driver"
+
+<DriverLog>:
+    name: "Dlogin"
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    AnchorLayout:
+        anchor_x: 'center'
+        spacing: 40
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 50,50
+            spacing: 40
+            Label:
+                text: "Welcome Back Partner"
+                font_size: 36
+            GridLayout:
+                cols: 2
+                Label:
+                    text: 'Email ID'
+                TextInput:
+                    id: email
+                    multiline: False
+                Label:
+                    text: "Password"
+                TextInput:
+                    id: pwd
+                    password: True
+                    multiline:  False
+                Label:
+                    text: 'OTP'
+                TextInput:
+                    id: otp
+                    multiline: False
+                    password: True
+            BoxLayout:
+                orientation: 'horizontal'
+                Button:
+                    text: "Submit"
+                    on_release: root.__verify__(otp.text, errormsg)
+                Button:
+                    text: 'Send OTP'
+                    on_release: root.__submit__(email.text, pwd.text, errormsg)
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: "Go back"
+                    on_release: app.root.current = 'Driver'
+
+<PassengerLog>:
+    name: 'Plogin'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    AnchorLayout:
+        anchor_x: 'center'
+        spacing: 40
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 50,50
+            spacing: 40
+            Label:
+                text: "Welcome Back"
+                font_size: 36
+            GridLayout:
+                cols: 2
+                Label:
+                    text: 'Username'
+                TextInput:
+                    id: usrname
+                    multiline: False
+                Label:
+                    text: "Password"
+                TextInput:
+                    id: pwd
+                    password: True
+            Button:
+                text: "Submit"
+            Button:
+                text: "Go back"
+                on_release: app.root.current = 'Passenger'
+
+
+<PassengerSP>:
+    name: 'Psignup'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 20
+        padding: [40]
+        GridLayout:
+            size_hint: 1, 0.8
+            cols: 2
+            spacing: 20
+            Label:
+                text: "Name"
+            TextInput:
+                id: name
+                text: "your name"
+            Label:
+                text: "Email ID"
+            TextInput:
+                id: email
+                multiline: False
+                text: "example@gmail.com"
+            Label:
+                text: "username"
+            TextInput:
+                id: usrname
+                multilline: False
+                text: "example123"
+            Label:
+                text: "Password"
+            TextInput:
+                id: pwd
+                password: True
+                multiline: False
+            Label:
+                text: "Confirm password"
+            TextInput:
+                id: cpwd
+                password: True
+                multiline: False
+            Label:
+                text: "OTP"
+            TextInput:
+                id: otp
+                multiline: False
+                password: True
+        GridLayout:
+            cols: 2
+            spacing: 20
+            size_hint: 1, 0.2
+            Button:
+                text: 'Send OTP'
+                size_hint: 0.5, 0.2
+
+            Label:
+                id: errormsg
+                text: 'Please fill all fields correctly.'
+                
+            Button:
+                text: "Submit"
+                size_hint: 1, 0.2
+            Button:
+                text: "Go Back"
+                size_hint: 1, 0.2
+                on_release: app.root.current = "Passenger"
