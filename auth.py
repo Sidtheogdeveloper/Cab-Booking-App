@@ -18,8 +18,8 @@ def mail(email_id, nm,otp):
     PORT = 587
     EMAIL_SERVER= "smtp-mail.outlook.com"
 
-    sender_email= "siddharthmadhu2005@outlook.com"
-    passwd_email= "Siddharth1795#"
+    sender_email= "yourmail@outlook.com"
+    passwd_email= "yourpassword"
 
 
     def send_mail(subject, receiver_mail, name, otp):
