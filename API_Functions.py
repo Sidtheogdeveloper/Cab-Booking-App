@@ -1,7 +1,5 @@
-import json
 import requests, requests.exceptions
 import map
-
 
 baseURL = "http://127.0.0.1:8000/"
 
@@ -48,14 +46,14 @@ def getDriver(driverID: int):
         return response.json()
     return requests.exceptions.HTTPError
 
-def postDriver(name: str, email: str, phone: str, latitude: float, longitude:float, distance: float, vehicle_type: str, rating: float, available: bool):
+def postDriver(name: str, email: str, phone: str, password:str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool):
     data = {
         "name" : name,
         "email" : email,
         "phone" : phone,
+        "password" : password,
         "latitude" : latitude,
         "longitude" : longitude,
-        "distance" : distance,
         "vehicle_type" : vehicle_type,
         "rating" : rating,
         "available" : available
@@ -80,20 +78,21 @@ def getRide(rideID: int):
     data = {
         "rideID": rideID
     }
-    path = "rides/"
+    path = "ride/"
     response = requests.get(url=baseURL+path, params=data)
     if response.status_code==200:
         return response.json()
     return requests.exceptions.HTTPError
 
-def postRide(user: int, driver: int, start_lat:float, start_long: float, end_lat: float, end_long:float, price: float):
+def postRide(userID: int, driverID: int, start_lat:float, start_long: float, end_lat: float, end_long:float, advanced_booking:bool, price: float):
     data = {
-        "user": user,
-        "driver": driver,
+        "userID": userID,
+        "driverID": driverID,
         "start_lat": start_lat,
         "start_long": start_long,
         "end_lat": end_lat,
         "end_long": end_long,
+        "advanced_booking": advanced_booking,
         "price": price
     }
     path = "ride/"
@@ -106,7 +105,7 @@ def deleteRide(rideID):
     data = {
         "rideID": rideID
     }
-    path = "rides/"
+    path = "ride/"
     response = requests.delete(url=baseURL+path, params=data)
     if response.status_code==200:
         return response.json()
@@ -136,8 +135,11 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
     calculated = sorted(calculated.items(), key=lambda item: item[1])
     return calculated
 
-# deleteDriver
-# bestDrivers = getTop5NearestDrivers(13.22, 80.34, 'car')
-# print(getDriver(bestDrivers[0][0]))
+
+# print(postDriver("Subash", "abc@gmail.com", "12345", "123", 13.22, 80.24, "car", 4.8, True))
 # print()
-# print(bestDrivers)
+# print(postUser("Raj", "xyz@gmail.com", "4567", "345"))
+# print()
+# print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
+
+

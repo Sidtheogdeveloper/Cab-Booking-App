@@ -1,4 +1,4 @@
-from .models import Driver, User, Rides
+from .models import Driver, User, Ride
 from rest_framework.response import Response
 from rest_framework import status
 from .serializer import driverSerializer, userSerializer, rideSerializer
@@ -17,11 +17,13 @@ class crudDriver(APIView):
             raise Http404("Driver does not exist")
     
     def post(self, request):
-        serializer = driverSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return(Response(serializer.data, status=status.HTTP_201_CREATED))
-        return(Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST))
+        try:
+            serializer = driverSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return(Response(serializer.data, status=status.HTTP_201_CREATED))
+        except:
+            return(Response("Driver already exists", status=status.HTTP_400_BAD_REQUEST))
     
     def delete(self, request):
         driver_id = request.query_params.get("driverID")
@@ -33,18 +35,18 @@ class crudDriver(APIView):
     def put(self, request):
         driver_id = request.data.get("driverID")
         try:
-            driver = Driver.objects.get(driverID = driver_id)
-        except:
-            return(Response(status=status.HTTP_404_NOT_FOUND))
-        if "latitude" in request.data:
-            driver.latitude = request.data["latitude"]
-        if "longitude" in request.data:
-            driver.longitude = request.data["longitude"]
-        if "rating" in request.data:
-            driver.rating = request.data["rating"]
+            driver = Driver.objects.get(driverID=driver_id)
+        except Driver.DoesNotExist:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+        
+        fields_to_update = ["password", "latitude", "longitude", "available"]
+        for field in fields_to_update:
+            if field in request.data:
+                setattr(driver, field, request.data[field])
         driver.save()
-        return(Response(status=status.HTTP_200_OK))
-    
+        serializer = driverSerializer(driver)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     
 class crudUser(APIView):
     def get(self, request):
@@ -69,12 +71,24 @@ class crudUser(APIView):
         serializer = userSerializer(user)
         user.delete()
         return(Response(serializer.data, status=status.HTTP_200_OK))
+    
+    def put(self, request):
+        user_id = request.data.get("userID")
+        try:
+            user = User.objects.get(userID=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if "password" in request.data:
+            setattr(user, "password", request.data["password"])
+        user.save()
+        serializer = userSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class crudRides(APIView):
     def get(self, request):
         ride_id = request.query_params.get("rideID")
         try:
-            ride = Rides.objects.get(rideID = ride_id)
+            ride = Ride.objects.get(rideID = ride_id)
             serializer = rideSerializer(ride)
             return(Response(serializer.data, status=status.HTTP_200_OK))
         except:
@@ -89,7 +103,7 @@ class crudRides(APIView):
     
     def delete(self, request):
         ride_id = request.query_params.get("rideID")
-        ride = Rides.objects.get(rideID = ride_id)
+        ride = Ride.objects.get(rideID = ride_id)
         serializer = rideSerializer(ride)
         ride.delete()
         return(Response(serializer.data, status=status.HTTP_200_OK))

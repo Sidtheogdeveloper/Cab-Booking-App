@@ -17,6 +17,6 @@ register_converter(FloatConverter, 'float')
 urlpatterns = [
     path('driver/', views.crudDriver.as_view(), name='drivers'),
     path('user/', views.crudUser.as_view(), name='user'),
-    path('rides/', views.crudRides.as_view(), name='rides'),
+    path('ride/', views.crudRides.as_view(), name='rides'),
     path('ride_request/', views.crudAssigner.as_view(), name='ride_request')
 ]
