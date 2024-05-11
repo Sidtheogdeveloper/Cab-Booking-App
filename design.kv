@@ -1,3 +1,5 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+
 Windows:
     MainScreen:
     DriverScreen:
@@ -6,10 +8,13 @@ Windows:
     DriverLog:
     PassengerSP:
     PassengerLog:
+    DriverHome:
+    PassengerHome:
+    ForgotpwdPas:
+    ForgotpwdDri:
+    ChpwdDriv:
+    ChpwdPass:
 
-
-#<DriverHome>:
-#   name: 'DHome'
 
 <MainScreen>:
     name: "main"
@@ -31,27 +36,30 @@ Windows:
                 font_size: 35
                 size_hint: (1, 0.4)
         
-            BoxLayout:
-                orientation: 'vertical'
+            AnchorLayout:
+                anchor_y: 'bottom'
                 size_hint_y: 0.4
                 spacing: 10
-                Button:
-                    text: "Passenger"
-                    size_hint: (0.5, 0.2)
-                    pos_hint: {'center_x': 0.5}
-                    halign: 'center'
-                    valign: 'center'
-                    on_release: app.root.current = "Passenger"
-                Button:
-                    text: "Driver"
-                    size_hint: (0.5, 0.2)
-                    pos_hint: {'center_x': 0.5}
-                    halign: 'center'
-                    valign: 'center'
-                    on_release: app.root.current = "Driver"
-                Label:
-                    text: ""
-
+                BoxLayout:
+                    orientation:  'horizontal'
+                    Button:
+                        text: "Passenger"
+                        size_hint: (0.5, 0.2)
+                        pos_hint: {'center_x': 0.5}
+                        halign: 'center'
+                        valign: 'center'
+                        on_release:
+                            root.manager.transition = FadeTransition()  
+                            app.root.current = "Passenger"
+                    Button:
+                        text: "Driver"
+                        size_hint: (0.5, 0.2)
+                        pos_hint: {'center_x': 0.5}
+                        halign: 'center'
+                        valign: 'center'
+                        on_release: 
+                            root.manager.transition = FadeTransition()
+                            app.root.current = "Driver"
 
 
 <DriverScreen>:
@@ -69,22 +77,20 @@ Windows:
         Label:
             text: "Welcome Partner, Have a nice day!"
             font_size: 28
-        Button:
+        RoundedButton:
             text: "Sign Up"
+            size_hint: 0.2, 0.2
             on_release: app.root.current = "Dsign"
-        
-        Button:
+
+        RoundedButton:
             text: "Login"
+            size_hint: 0.2, 0.2
             on_release: app.root.current = "Dlogin"
         
-        GridLayout:
-            cols: 2
-            spacing: 10
-            
-            Button:
-                text: "Go Back"
-                size_hint: 0.5, 0.5
-                on_release: app.root.current= "main"
+        RoundedButton:
+            text: "Go Back"
+            size_hint: 0.2, 0.2
+            on_release: app.root.current= "main"
 
 <PassengerScreen>:
     name: "Passenger"
@@ -98,20 +104,24 @@ Windows:
         cols: 1
         Label:
             text: "Welcome, Have a wonderful day!"
+            font_size: 36
             size_hint: 1, 0.4
         BoxLayout:
             orientation: 'vertical'
             padding: [30]
             spacing: 20
-            size_hint: 1, 0.6
-            Button:
+            size_hint: 1, 0.4
+            RoundedButton:
                 text: "SignUp"
+                size_hint: 0.2, 0.1
                 on_release: app.root.current = "Psignup"
-            Button:
+            RoundedButton:
                 text: "Login"
+                size_hint: 0.2, 0.1
                 on_release: app.root.current = "Plogin"
-            Button:
+            RoundedButton:
                 text: "Go Back"
+                size_hint: 0.2, 0.1
                 on_release: app.root.current= "main"
 
 <Driversignup>:
@@ -124,6 +134,9 @@ Windows:
     orientation: 'vertical'
     BoxLayout:
         orientation: 'vertical'
+        Label:
+            text: 'Please fill in all the details correctly'
+            size_hint: 1, 0.2
         GridLayout:
             size_hint: 1, 0.6
             cols: 2
@@ -151,6 +164,7 @@ Windows:
                 id: vehicle
                 multilline: False
                 text: "auto/car/bike.."
+            
             Label:
                 text: "Password"
             TextInput:
@@ -165,6 +179,7 @@ Windows:
                 multiline: False
             Label:
                 text: 'OTP'
+                color: 1,0,0
             TextInput:
                 id: otp
                 multiline: False
@@ -172,22 +187,23 @@ Windows:
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, 0.2
+            spacing: 10
+            padding: [30]
             Button:
                 text: "Send OTP"
-                size_hint: 1, 0.2
+                size_hint: 1, 0.3
                 on_release: root.__enter_data__(name.text, usrname.text, email.text, vehicle.text,pwd.text, cpwd.text, errormsg)
             Label:
                 id: errormsg
                 text: ''
             Button:
-                text: 'Verify OTP'
-                on_release: root.verify_otp(otp.text, errormsg)
-            Button:
                 text: "Submit"
-                on_release: app.root.current= 'Dlogin'
+                size_hint: 0.5, 0.3
+                on_release: 
+                    root.verify_otp(otp.text, errormsg)
             Button:
                 text: "Go Back"
-                size_hint: 0.5, 0.2
+                size_hint: 0.5, 0.3
                 on_release: app.root.current = "Driver"
 
 <DriverLog>:
@@ -215,6 +231,7 @@ Windows:
                 TextInput:
                     id: email
                     multiline: False
+                    on_double_tap: root.__recent__(email, pwd)
                 Label:
                     text: "Password"
                 TextInput:
@@ -229,17 +246,29 @@ Windows:
                     password: True
             BoxLayout:
                 orientation: 'horizontal'
+                spacing: 20
                 Button:
                     text: "Submit"
-                    on_release: root.__verify__(otp.text, errormsg)
+                    size_hint: 0.5, 0.2
+                    on_release: 
+                        root.__verify__(otp.text, errormsg)
+                        root.manager.transition = FadeTransition()
+                        app.root.current= 'Dhome'
+                Button:
+                    text: 'Forgot Password'
+                    size_hint: 0.8, 0.2
+                    on_release: app.root.current= 'FPdriv'
                 Button:
                     text: 'Send OTP'
-                    on_release: root.__submit__(email.text, pwd.text, errormsg)
+                    size_hint: 0.5, 0.2
+                    on_press: root.__submit__(email.text, pwd.text, errormsg)
+                    #on_release: app.root.current = ''
                 Label:
                     id: errormsg
                     text: ''
                 Button:
                     text: "Go back"
+                    size_hint: 0.5, 0.2
                     on_release: app.root.current = 'Driver'
 
 <PassengerLog>:
@@ -263,21 +292,49 @@ Windows:
             GridLayout:
                 cols: 2
                 Label:
-                    text: 'Username'
+                    text: 'Email'
                 TextInput:
-                    id: usrname
+                    id: email
                     multiline: False
+                    on_double_tap: root.__recent__(email, pwd)
                 Label:
                     text: "Password"
                 TextInput:
                     id: pwd
                     password: True
-            Button:
-                text: "Submit"
-            Button:
-                text: "Go back"
-                on_release: app.root.current = 'Passenger'
-
+                    allow_copy: False
+                Label:
+                    text: "OTP"
+                    color: 0,0,0
+                TextInput:
+                    id: otp
+                    multiline: False
+                    password: True
+                    #background_color: 0,0,0,0
+                    #foreground_color: 1,1,1,1
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 20
+                padding: [30]
+                Button:
+                    text: "Go back"
+                    size_hint: 0.5, 0.3
+                    on_release: app.root.current = 'Passenger'
+                Button:
+                    text: "Send OTP"
+                    size_hint: 0.5, 0.3
+                    on_press: root.__submit__(email.text, pwd.text, errormsg)
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: 'Forgot Password'
+                    size_hint: 0.8, 0.3
+                    on_release: app.root.current= 'FPpass'
+                Button:
+                    text: 'Submit'
+                    size_hint: 0.5, 0.3
+                    on_press: root.__verify__(otp.text, errormsg)
 
 <PassengerSP>:
     name: 'Psignup'
@@ -291,6 +348,9 @@ Windows:
         orientation: 'vertical'
         spacing: 20
         padding: [40]
+        Label:
+            text: 'Please fill in all the details correctly\n  to make your rides even more comfy'
+            size_hint: 1, 0.2
         GridLayout:
             size_hint: 1, 0.8
             cols: 2
@@ -330,22 +390,351 @@ Windows:
                 id: otp
                 multiline: False
                 password: True
-        GridLayout:
-            cols: 2
+        BoxLayout:
+            orientation: 'horizontal'
             spacing: 20
             size_hint: 1, 0.2
             Button:
                 text: 'Send OTP'
-                size_hint: 0.5, 0.2
-
+                size_hint: 0.5, 0.3
+                on_release: 
+                    root.__enter_data__(name.text, usrname.text,email.text, pwd.text, cpwd.text, errormsg)
             Label:
                 id: errormsg
-                text: 'Please fill all fields correctly.'
+                size_hint: 0.5, 0.3
+                text: 'Please fill all fields\n      correctly.'
                 
             Button:
                 text: "Submit"
-                size_hint: 1, 0.2
+                size_hint: 0.5, 0.3
+                on_press: 
+                    root.verify_otp(otp.text, errormsg)
+                    app.root.current = "Plogin"
             Button:
                 text: "Go Back"
+                size_hint: 0.5, 0.3
+                on_release:
+                    app.root.current = "Passenger"
+
+<ForgotpwdPas>:
+    name: 'FPpass'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        spacing: 30
+        padding: [30]
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.8, 0.8
+            pos_hint_x: {'center_x'}
+            Label:
+                text: 'Enter Your details'
+            GridLayout:
+                cols: 2
+                spacing: 20
+                size_hint: 0.8, 0.7
+                Label:
+                    text: 'Email ID'
+                TextInput:
+                    id: email
+                    size_hint: 1, 0.5
+                Label:
+                    text: 'OTP'
+                TextInput:
+                    id: otp
+                    size_hint: 1, 0.5
+                    password: True
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 10
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.5, 0.3
+                    on_release: app.root.current= 'Plogin'
+                Button:
+                    text: 'Send OTP'
+                    size_hint: 0.5, 0.3
+                    on_press: root.__verify__(email.text, errormsg)
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: 'Submit'
+                    size_hint: 0.5, 0.3
+                    on_press: root.change_pwd(otp.text, errormsg)
+
+<ForgotpwdDri>:
+    name: 'FPdriv'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        spacing: 30
+        padding: [30]
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 0.8
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            Label:
+                text: 'Enter Your details'
+            GridLayout:
+                cols: 2
+                spacing: 20
+                Label:
+                    text: 'Email ID'
+                TextInput:
+                    id: email
+                    multiline: False
+                Label:
+                    text: 'OTP'
+                TextInput:
+                    id: otp
+                    password: True
+                    multiline: False
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 10
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.5, 0.3
+                    on_release: app.root.current= 'Dlogin'
+                Button:
+                    text: 'Send OTP'
+                    size_hint: 0.5, 0.3
+                    on_release: root._verify_(email.text, errormsg)
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: 'Submit'
+                    size_hint: 0.5, 0.3
+                    on_release: root.change_pwd(otp.text, errormsg)
+
+<ChpwdDriv>:
+    name: 'chpwddr'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        size_hint: 0.8, 0.8
+        spacing: 10
+        BoxLayout:
+            orientation: 'vertical'
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            spacing: 10
+            Label:
+                text: 'Password Reset'
+            GridLayout:
+                cols: 2
+                spacing: 10
+                Label:
+                    text: 'New Password'
+                TextInput:
+                    id: newpwd
+                    multiline: False
+                    password: True
+                Label:
+                    text: 'Confirm New Password'
+                TextInput:
+                    id: conpwd
+                    multiline: False
+                    password: True
+                    on_text_validate: root._check_pwd_(newpwd.text, conpwd.text, errormsg)
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 10
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.8, 0.4
+                    on_release: app.root.current= 'FPdriv'
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: 'Submit'
+                    size_hint: 0.8, 0.4
+                    on_release: root._submit_(newpwd.text, conpwd.text, errormsg)
+
+
+<ChpwdPass>:
+    name: 'chpwdps'
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: 'background.jpg'
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        size_hint: 0.8, 0.8
+        spacing: 10
+        BoxLayout:
+            orientation: 'vertical'
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            Label:
+                text: 'Password Reset'
+            GridLayout:
+                cols: 2
+                spacing: 10
+                Label:
+                    text: 'New Password'
+                TextInput:
+                    id: newpwd
+                    multiline: False
+                    password: True
+                Label:
+                    text: 'Confirm New Password'
+                TextInput:
+                    id: conpwd
+                    multiline: False
+                    password: True
+                    on_text_validate: root._check_pwd_(newpwd.text, conpwd.text, errormsg)
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: 10
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.8, 0.4
+                    on_release: app.root.current= 'FPpass'
+                Label:
+                    id: errormsg
+                    text: ''
+                Button:
+                    text: 'Submit'
+                    size_hint: 0.8, 0.4
+                    on_release: root._submit_(newpwd.text, conpwd.text, errormsg)
+
+
+<DriverHome>:
+    name: 'Dhome'
+    BoxLayout:
+        orientation: 'horizontal'
+        BoxLayout:
+            size_hint: 0.2, 1
+            spacing: 10
+            orientation: 'vertical'
+            Button:
+                text: 'Profile'
+            Button:
+                text: 'Rides'
+            Button:
+                text: 'Account'
+        MapView:
+            zoom: 13
+            lat: 13.0827
+            lon: 80.2707
+            size_hint: 0.6, 1
+            Button:
+                text: 'Menu'
+                background_normal: ''
+                pos_hint_x: {'left'}
+                pos_hint_y: {'top'} 
+        BoxLayout:
+            size_hint: 0.2, 1
+            spacing: 20
+            Button:
                 size_hint: 1, 0.2
-                on_release: app.root.current = "Passenger"
+                text: 'click here'
+            Button:
+                size_hint: 1, 0.2
+                text: 'nothing'
+            Label:
+                text: ''
+
+<PassengerHome>:
+    name: 'Phome'
+    BoxLayout:
+        orientation: 'horizontal'
+        MapView:
+            size_hint: 0.7, 1
+            zoom: 12
+            lat: 13.0827
+            lon: 80.2707
+            RelativeLayout:
+                spacing: 10
+                Button:
+                    size_hint: 0.5, 0.2
+                    pos_hint: {'left': 1, 'top': 1}
+                    background_color: 0,0,0,1
+                    text: 'Menu'
+                    color: 0,0,0,0
+                    on_release: root.menu.open(self)
+                    #Image:
+                        #pos_hint_x: {'center_x'}
+                        #pos_hint_y: {'center_y'}
+                        #source: 'menubar.png'
+        PassMenu:
+            id: menu
+            auto_dismiss: False
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True 
+            size_hint: 0.3, 1
+            BoxLayout:
+                spacing: 10
+                padding: [10]
+                orientation: 'vertical'
+                TextInput:
+                    text: 'Enter Pick Up Location'
+                    multiline: False
+                    size_hint: 1, 0.5
+                TextInput:
+                    text: 'Enter Destination'
+                    multiline: False
+                    size_hint: 1, 0.5
+                RoundedButton:
+                    id: suggest1
+                    text: '' 
+                    size_hint: 1, 0.5
+                RoundedButton:
+                    id: suggest2
+                    text: ''
+                    size_hint: 1, 0.5
+                RoundedButton:
+                    id: suggest3
+                    text: ''
+                    size_hint: 1, 0.5
+                AnchorLayout:
+                    anchor_y: 'bottom'
+                    Button:
+                        text: 'Logout'
+                        size_hint: 1, 0.2
+                        on_release: app.root.current= 'main'
+
+<PassMenu>:
+    Button:
+        text: 'Profile'
+    
+    Button:
+        text: 'Your Rides'
+    
+    Button:
+        text: 'Logout'
+
+<RoundedButton@Button>:
+    background_color: (0,0,0,0)
+    background_normal: ''
+    canvas.before:
+        Color:
+            rgba: (50/255, 47/255, 80/255,0)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [58]
+
