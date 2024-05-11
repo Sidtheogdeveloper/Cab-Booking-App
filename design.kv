@@ -661,27 +661,32 @@ Windows:
     name: 'Phome'
     BoxLayout:
         orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            size_hint: 0.1, 1
+            Button:
+                text: 'Profile'
+                size_hint: 1, 0.1
+            Button:
+                text: 'Rides'
+                size_hint: 1, 0.1
+            Button:
+                text: 'Transactions'
+                size_hint: 1, 0.1
+            Label:
+                size_hint: 1, 0.6
+                text: ''
+            Button:
+                text: 'Logout'
+                size_hint: 1, 0.1
+                on_release: app.root.current= 'main'
         MapView:
             size_hint: 0.7, 1
             zoom: 12
             lat: 13.0827
             lon: 80.2707
-            RelativeLayout:
-                spacing: 10
-                Button:
-                    size_hint: 0.5, 0.2
-                    pos_hint: {'left': 1, 'top': 1}
-                    background_color: 0,0,0,1
-                    text: 'Menu'
-                    color: 0,0,0,0
-                    on_release: root.menu.open(self)
-                    #Image:
-                        #pos_hint_x: {'center_x'}
-                        #pos_hint_y: {'center_y'}
-                        #source: 'menubar.png'
-        PassMenu:
-            id: menu
-            auto_dismiss: False
+        
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True 
@@ -691,11 +696,12 @@ Windows:
                 padding: [10]
                 orientation: 'vertical'
                 TextInput:
-                    text: 'Enter Pick Up Location'
+                    hint_text: 'Enter Pick Up Location'
                     multiline: False
                     size_hint: 1, 0.5
+                    on_triple_tap: 
                 TextInput:
-                    text: 'Enter Destination'
+                    hint_text: 'Enter Destination'
                     multiline: False
                     size_hint: 1, 0.5
                 RoundedButton:
@@ -713,11 +719,10 @@ Windows:
                 AnchorLayout:
                     anchor_y: 'bottom'
                     Button:
-                        text: 'Logout'
+                        text: 'Book'
                         size_hint: 1, 0.2
-                        on_release: app.root.current= 'main'
 
-<PassMenu>:
+<PassMenu@DropDown>:
     Button:
         text: 'Profile'
     
