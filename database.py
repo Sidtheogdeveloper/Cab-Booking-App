@@ -1,29 +1,29 @@
 import mysql.connector as mySql
 
-class Database:
-    def __init__(self, dbname):
+class DriverDatabase:
+    def __init__(self, dbname, tbname):
         self.dbname= dbname
-        self.db= mySql.connect(host = "localhost", user = "root", password = "Subash@2005")
+        self.tbname = tbname
+        self.db= mySql.connect(host = "localhost", user = "root", password = "Subash@2005", database = dbname)
         if self.db.is_connected():
             self.cursor= self.db.cursor()
-            self.cursor.execute(f"CREATE DATABASE IF NOT EXISTS {dbname}")
-            print("DB created")
-            self.cursor.execute(f"USE {dbname}")
-            print("db connected")
         else:
             print("db not connected")
-    def __create_table__(self, tbname):
-        if self.dbname.lower()=="user":
-            self.cursor.execute(f"create table {tbname} (username varchar(30), email varchar(30))")
-            print("user table created")
-        elif self.dbname.lower()=="driver":
-            self.cursor.execute(f"create table {tbname} (username varchar(30), email varchar(30))")
-            print("driver table created")
+    def addDriver(self, driverID, lat, lon):
+        self.cursor.execute(f"insert into {self.tbname} (driverID, latitude, longitude, distance) values ('{driverID}', '{lat}', '{lon}', 0)")
         self.db.commit()
+        print("driver added")
+    def calculateDistance(self, userLatitude, userLongitude):
+        self.cursor.execute(f"UPDATE {self.tbname} SET distance = sqrt(pow({userLatitude}-latitude, 2) + pow({userLongitude}-longitude, 2))")
+        self.db.commit()
+        self.cursor.execute(f"select * from {self.tbname} order by distance limit 5")
+        result = self.cursor.fetchall()
+        for row in result:
+            print(row)
 
-user= Database(dbname="USER")
-name= input("enter your name: ")
-user.__create_table__(tbname= name)
+database = DriverDatabase("drivercoords", "coordinates")
+# database.addDriver(4, 13.27, 80.25)
+# database.calculateDistance(13.116253, 80.224059)
 
 '''
 database = mySql.connect(
