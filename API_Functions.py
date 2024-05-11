@@ -131,12 +131,13 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
     for driver in nearbyDrivers:
         result = api.get_details(driver['latitude'], driver['longitude'], latitude, longitude)
         if result != None:
-            time, distance = result
+            time= result[0]
             calculated[driver['driverID']] = time/driver['rating']
     calculated = sorted(calculated.items(), key=lambda item: item[1])
     return calculated
 
-bestDrivers = getTop5NearestDrivers(13.22, 80.34, 'car')
-print(getDriver(bestDrivers[0][0]))
-print()
-print(bestDrivers)
+# deleteDriver
+# bestDrivers = getTop5NearestDrivers(13.22, 80.34, 'car')
+# print(getDriver(bestDrivers[0][0]))
+# print()
+# print(bestDrivers)
