@@ -3,7 +3,14 @@ import requests, requests.exceptions
 
 baseURL = "http://127.0.0.1:8000/"
 
-def updateUserPassword(userID: int, newPassword: str):
+def updateUserPassword(userID: int, newPassword: str) -> dict:
+    """
+        Updates the password of a user with the given userID to the given newPassword.
+
+        :param userID: The ID of the user to update.
+        :param newPassword: The new password of the user.
+        :return: A dictionary with the details of the user.
+    """
     Data = {
         "userID": userID,
         "password": newPassword
@@ -15,6 +22,13 @@ def updateUserPassword(userID: int, newPassword: str):
     return requests.exceptions.HTTPError
 
 def updateDriverPassword(driverID: int, newPassword: str):
+    """
+        Updates the password of a driver with the given driverID to the given newPassword.
+
+        :param driverID: The ID of the driver to update
+        :param newPassword: The new password of the driver
+        :return: A dictionary with the details of the driver.
+    """
     Data = {
         "driverID": driverID,
         "password": newPassword
@@ -26,6 +40,14 @@ def updateDriverPassword(driverID: int, newPassword: str):
     return requests.exceptions.HTTPError
 
 def updateDriverCoordinates(driverID: int, newLatitude: float, newLongitude: float):
+    """
+        Updates the coordinates of a driver with the given driverID to the given newLatitude and newLongitude.
+
+        :param driverID: The ID of the driver to update
+        :param newLatitude: The new latitude of the driver
+        :param newLongitude: The new longitude of the driver
+        :return: A dictionary with the details of the driver.
+    """
     Data = {
         "driverID": driverID,
         "latitude": newLatitude,
@@ -38,6 +60,13 @@ def updateDriverCoordinates(driverID: int, newLatitude: float, newLongitude: flo
     return requests.exceptions.HTTPError
 
 def updateDriverAvailability(driverID: int, newAvailability: bool):
+    """
+        Updates the availability of a driver with the given driverID to the given newAvailability.
+        
+        :params driverID: The ID of the driver to update
+        :params newAvailability: The new availability of the driver
+        :return: A dictionary with the details of the driver.
+    """
     Data = {
         "driverID": driverID,
         "available": newAvailability

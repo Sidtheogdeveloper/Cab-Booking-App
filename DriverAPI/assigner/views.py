@@ -51,12 +51,25 @@ class crudDriver(APIView):
 class crudUser(APIView):
     def get(self, request):
         user_id = request.query_params.get("userID")
+        email = request.query_params.get("email")
+        password = request.query_params.get("password")
         try:
-            user = User.objects.get(userID = user_id)
-            serializer = userSerializer(user)
-            return(Response(serializer.data, status=status.HTTP_200_OK))
+            if user_id:
+                user = User.objects.get(userID=user_id)
+                serializer = userSerializer(user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            elif email and password:
+                user = User.objects.filter(email=email, password=password).first()
+                if user:
+                    serializer = userSerializer(user)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response("User with provided email and password does not exist", status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response("Invalid request parameters", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
-            raise Http404("User does not exist")
+            return Response("User does not exist", status=status.HTTP_404_NOT_FOUND)
+
     
     def post(self, request):
         serializer = userSerializer(data=request.data)
@@ -122,6 +135,7 @@ class crudAssigner(APIView):
         drivers = sorted(drivers, key=lambda x: (x.distance, x.rating), reverse=False)[:5]
         serializer = driverSerializer(drivers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 
 
