@@ -20,5 +20,5 @@ from django.contrib import admin
 urlpatterns = [
     path('admin/', admin.site.urls),
     # API
-    path('', include('assigner.urls')),
+    path('', include('MyAPI.urls')),
 ]
