@@ -6,87 +6,13 @@ import auth
 from kivy.uix.scrollview import ScrollView
 from kivy_garden.mapview import MapView
 from kivy.uix.dropdown import DropDown
+import API_Functions as db
 
 class MainScreen(Screen):
     pass
 
-class DriverScreen(Screen):
-    pass
-
 class PassMenu(DropDown):
     pass
-
-class Driversignup(Screen):
-    def __enter_data__(self, name, user, email,vehicle,pwd ,cpwd, widget):  
-        f= open("driverdetails.csv", "a")
-        writer = csv.writer(f)
-        g= open("driverdetails.csv", 'r')
-        reader= csv.reader(g)
-        if pwd==cpwd:
-            for i in reader:
-                if user in i or email in i:
-                    widget.text= "User already exists"
-                    break
-            else:
-                self.otp= auth.gen_otp()
-                auth.mail(email, name, self.otp)
-                widget.text= "OTP Sent to your Email ID"
-                writer.writerow([name, email, vehicle ,user, pwd])  
-        f.close()
-        g.close()
-
-    def verify_otp(self, otp, widget):
-        if  otp == self.otp:
-            widget.text= "OTP verified"
-            self.manager.current= 'Dlogin'
-        else:
-            widget.text= 'Invalid OTP'
-
-
-class DriverLog(Screen):
-    def __recent__(self, widget1, widget2):
-        if os.path.exists("recentDlogin.csv"):
-            f= open('recentDlogin.csv', 'r')
-            reader= csv.reader(f)
-            add_= []
-            for i in reader:
-                add_.append(i)
-            email= add_[0][0]
-            pwd= add_[0][1]
-            widget1.text= email
-            widget2.text= pwd
-        else:
-            pass
-
-    def __submit__(self, email, password, widget):
-        with open('driverdetails.csv', 'r') as f:
-            reader= csv.reader(f)
-            p=1
-            for i in reader:
-                if len(i)==5 and email in i and password in i:
-                    self.otp= auth.gen_otp()
-                    auth.mail(email, i[0], self.otp)
-                    f= open("recentDlogin.csv", 'w', newline='')
-                    writer= csv.writer(f)
-                    writer.writerow([email, password]) 
-                    f.close()
-                    widget.text="OTP sent to your Mail"
-                    break
-                elif email in i and password not in i:
-                    p=0
-
-            else:
-                if p==0:
-                    widget.text= 'Password Incorrect'
-                else:
-                    widget.text= 'Email doesn\'t exist'
-
-    def __verify__(self, otp, widget):  
-        if self.otp==otp:
-            widget.text= 'OTP Verified'
-            self.manager.current= 'Dhome'
-        else:
-            widget.text= 'Incorrect OTP'
 
 class PassengerLog(Screen):
     def __recent__(self, widget1, widget2):
@@ -161,29 +87,6 @@ class PassengerSP(Screen):
         else:
             widget.text= 'Invalid OTP'
 
-class ForgotpwdDri(Screen):
-    def _verify_(self, email, widget):
-        f= open('driverdetails.csv', 'r')
-        data= csv.reader(f)
-        for i in data:
-            if len(i)>0 and email.lower() in i:
-                self.otp= auth.gen_otp()
-                auth.pwd_change_req(email,i[0], self.otp)
-                self.email= email
-                widget.text= 'OTP sent to you mail'
-                break
-        else:
-            widget.text= "Email doesn't exist"
-        
-    def change_pwd(self, otp, widget):
-        if self.otp==otp:
-            with open('fpdriv.csv', 'w',newline= '') as f:
-                writer= csv.writer(f)
-                writer.writerow([self.email])
-            self.manager.current= 'chpwddr'
-        else:
-            widget.text= 'Incorrect OTP'
-
 class ForgotpwdPas(Screen):
     def __verify__(self, email, widget):
         f= open('userdetails.csv', 'r')
@@ -209,45 +112,6 @@ class ForgotpwdPas(Screen):
 
 class PassengerScreen(Screen):
     pass
-
-class DriverHome(Screen):
-    pass
-
-class ChpwdDriv(Screen):
-    def _check_pwd_(self, npwd, cpwd, widget):
-        if npwd!=cpwd:
-            widget.text= "Passwords does't match"
-        else:
-            widget.text= 'Good to go'
-    
-    def _submit_(self, newpwd, cpwd, widget):
-        if newpwd==cpwd:
-            f= open('driverdetails.csv', 'r')
-            g= open('drdet.csv', 'w', newline='')
-            p= open('fpdriv.csv','r')
-            reader= csv.reader(f)
-            writer= csv.writer(g)
-            pw= csv.reader(p)
-            for i in pw:
-                email= i[0]
-            p.close()
-            for i in reader:
-                if i[1]==email:
-                    i[4]=newpwd
-                    name= i[0]
-                    writer.writerow(i)
-                else:
-                    writer.writerow(i)
-            f.close()
-            g.close()
-            os.remove('driverdetails.csv')
-            os.rename('drdet.csv', 'driverdetails.csv')
-            auth.pwd_reset_info(email, name)
-            widget.text= 'Password Updated'
-            os.remove('fpdriv.csv')
-            self.manager.current= 'Dhome'
-        else:
-            widget.text= "Password doesn't match"
 
 class ChpwdPass(Screen):
     def _check_pwd_(self, npwd, cpwd, widget):
@@ -299,4 +163,3 @@ class CabBookingApp(App):
     
 if __name__ == '__main__':
     CabBookingApp().run()
-
