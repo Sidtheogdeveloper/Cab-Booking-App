@@ -2,19 +2,11 @@
 
 Windows:
     MainScreen:
-    DriverScreen:
-    PassengerScreen:
-    Driversignup:
-    DriverLog:
     PassengerSP:
     PassengerLog:
-    DriverHome:
     PassengerHome:
     ForgotpwdPas:
-    ForgotpwdDri:
-    ChpwdDriv:
     ChpwdPass:
-
 
 <MainScreen>:
     name: "main"
@@ -24,87 +16,12 @@ Windows:
             size: self.size
             source: 'background.jpg'
     orientation: 'vertical'
-    AnchorLayout:
-        anchor_x: 'right'
-        anchor_y: 'center'
-        
-        BoxLayout:
-            orientation: 'vertical'
-            spacing: 20
-            Label:
-                text: "Welcome to Cab Booking App\n    Select your Profile Type"
-                font_size: 35
-                size_hint: (1, 0.4)
-        
-            AnchorLayout:
-                anchor_y: 'bottom'
-                size_hint_y: 0.4
-                spacing: 10
-                BoxLayout:
-                    orientation:  'horizontal'
-                    Button:
-                        text: "Passenger"
-                        size_hint: (0.5, 0.2)
-                        pos_hint: {'center_x': 0.5}
-                        halign: 'center'
-                        valign: 'center'
-                        on_release:
-                            root.manager.transition = FadeTransition()  
-                            app.root.current = "Passenger"
-                    Button:
-                        text: "Driver"
-                        size_hint: (0.5, 0.2)
-                        pos_hint: {'center_x': 0.5}
-                        halign: 'center'
-                        valign: 'center'
-                        on_release: 
-                            root.manager.transition = FadeTransition()
-                            app.root.current = "Driver"
-
-
-<DriverScreen>:
-    name: "Driver"
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    orientation: 'vertical'
-    BoxLayout:
-        orientation: 'vertical'
-        padding: [30]
-        spacing: 20
-        Label:
-            text: "Welcome Partner, Have a nice day!"
-            font_size: 28
-        RoundedButton:
-            text: "Sign Up"
-            size_hint: 0.2, 0.2
-            on_release: app.root.current = "Dsign"
-
-        RoundedButton:
-            text: "Login"
-            size_hint: 0.2, 0.2
-            on_release: app.root.current = "Dlogin"
-        
-        RoundedButton:
-            text: "Go Back"
-            size_hint: 0.2, 0.2
-            on_release: app.root.current= "main"
-
-<PassengerScreen>:
-    name: "Passenger"
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    orientation: 'vertical'
     GridLayout:
         cols: 1
         Label:
-            text: "Welcome, Have a wonderful day!"
+            text: "  Welcome to EzCabz\n Have a wonderful day!"
             font_size: 36
+            font: 'consalas'
             size_hint: 1, 0.4
         BoxLayout:
             orientation: 'vertical'
@@ -114,162 +31,16 @@ Windows:
             RoundedButton:
                 text: "SignUp"
                 size_hint: 0.2, 0.1
-                on_release: app.root.current = "Psignup"
+                on_release: 
+                	root.manager.transition = FadeTransition()
+                	app.root.current = "Psignup"
+                
             RoundedButton:
                 text: "Login"
                 size_hint: 0.2, 0.1
-                on_release: app.root.current = "Plogin"
-            RoundedButton:
-                text: "Go Back"
-                size_hint: 0.2, 0.1
-                on_release: app.root.current= "main"
-
-<Driversignup>:
-    name: "Dsign"
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    orientation: 'vertical'
-    BoxLayout:
-        orientation: 'vertical'
-        Label:
-            text: 'Please fill in all the details correctly'
-            size_hint: 1, 0.2
-        GridLayout:
-            size_hint: 1, 0.6
-            cols: 2
-            spacing: 20
-            Label:
-                text: "Name"
-            TextInput:
-                id: name
-                text: "your name"
-            Label:
-                text: "Email ID"
-            TextInput:
-                id: email
-                multiline: False
-                text: "example@email.com"
-            Label:
-                text: "username"
-            TextInput:
-                id: usrname
-                multilline: False
-                text: "example123"
-            Label:
-                text: "Vehicle Type"
-            TextInput:
-                id: vehicle
-                multilline: False
-                text: "auto/car/bike.."
-            
-            Label:
-                text: "Password"
-            TextInput:
-                id: pwd
-                password: True
-                multiline: False
-            Label:
-                text: "Confirm password"
-            TextInput:
-                id: cpwd
-                password: True
-                multiline: False
-            Label:
-                text: 'OTP'
-                color: 1,0,0
-            TextInput:
-                id: otp
-                multiline: False
-                password: True
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint: 1, 0.2
-            spacing: 10
-            padding: [30]
-            Button:
-                text: "Send OTP"
-                size_hint: 1, 0.3
-                on_release: root.__enter_data__(name.text, usrname.text, email.text, vehicle.text,pwd.text, cpwd.text, errormsg)
-            Label:
-                id: errormsg
-                text: ''
-            Button:
-                text: "Submit"
-                size_hint: 0.5, 0.3
                 on_release: 
-                    root.verify_otp(otp.text, errormsg)
-            Button:
-                text: "Go Back"
-                size_hint: 0.5, 0.3
-                on_release: app.root.current = "Driver"
-
-<DriverLog>:
-    name: "Dlogin"
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    orientation: 'vertical'
-    AnchorLayout:
-        anchor_x: 'center'
-        spacing: 40
-        BoxLayout:
-            orientation: 'vertical'
-            padding: 50,50
-            spacing: 40
-            Label:
-                text: "Welcome Back Partner"
-                font_size: 36
-            GridLayout:
-                cols: 2
-                Label:
-                    text: 'Email ID'
-                TextInput:
-                    id: email
-                    multiline: False
-                    on_double_tap: root.__recent__(email, pwd)
-                Label:
-                    text: "Password"
-                TextInput:
-                    id: pwd
-                    password: True
-                    multiline:  False
-                Label:
-                    text: 'OTP'
-                TextInput:
-                    id: otp
-                    multiline: False
-                    password: True
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 20
-                Button:
-                    text: "Submit"
-                    size_hint: 0.5, 0.2
-                    on_release: 
-                        root.__verify__(otp.text, errormsg)
-                        root.manager.transition = FadeTransition()
-                        app.root.current= 'Dhome'
-                Button:
-                    text: 'Forgot Password'
-                    size_hint: 0.8, 0.2
-                    on_release: app.root.current= 'FPdriv'
-                Button:
-                    text: 'Send OTP'
-                    size_hint: 0.5, 0.2
-                    on_press: root.__submit__(email.text, pwd.text, errormsg)
-                    #on_release: app.root.current = ''
-                Label:
-                    id: errormsg
-                    text: ''
-                Button:
-                    text: "Go back"
-                    size_hint: 0.5, 0.2
-                    on_release: app.root.current = 'Driver'
+                	root.manager.transition = FadeTransition()
+                	app.root.current = "Plogin"
 
 <PassengerLog>:
     name: 'Plogin'
@@ -319,7 +90,7 @@ Windows:
                 Button:
                     text: "Go back"
                     size_hint: 0.5, 0.3
-                    on_release: app.root.current = 'Passenger'
+                    on_release: app.root.current = 'main'
                 Button:
                     text: "Send OTP"
                     size_hint: 0.5, 0.3
@@ -359,19 +130,20 @@ Windows:
                 text: "Name"
             TextInput:
                 id: name
-                text: "your name"
+                multiline: False
+                hint_text: "your name"
             Label:
                 text: "Email ID"
             TextInput:
                 id: email
                 multiline: False
-                text: "example@gmail.com"
+                hint_text: "example@gmail.com"
             Label:
-                text: "username"
+                text: "Phone Number"
             TextInput:
-                id: usrname
+                id: phone
                 multilline: False
-                text: "example123"
+                hint_text: "1234567890"
             Label:
                 text: "Password"
             TextInput:
@@ -398,7 +170,7 @@ Windows:
                 text: 'Send OTP'
                 size_hint: 0.5, 0.3
                 on_release: 
-                    root.__enter_data__(name.text, usrname.text,email.text, pwd.text, cpwd.text, errormsg)
+                    root.__enter_data__(name.text, phone.text,email.text, pwd.text, cpwd.text, errormsg)
             Label:
                 id: errormsg
                 size_hint: 0.5, 0.3
@@ -414,7 +186,7 @@ Windows:
                 text: "Go Back"
                 size_hint: 0.5, 0.3
                 on_release:
-                    app.root.current = "Passenger"
+                    app.root.current = "main"
 
 <ForgotpwdPas>:
     name: 'FPpass'
@@ -468,109 +240,6 @@ Windows:
                     size_hint: 0.5, 0.3
                     on_press: root.change_pwd(otp.text, errormsg)
 
-<ForgotpwdDri>:
-    name: 'FPdriv'
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'center'
-        spacing: 30
-        padding: [30]
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, 0.8
-            pos_hint_x: {'center_x'}
-            pos_hint_y: {'center_y'}
-            Label:
-                text: 'Enter Your details'
-            GridLayout:
-                cols: 2
-                spacing: 20
-                Label:
-                    text: 'Email ID'
-                TextInput:
-                    id: email
-                    multiline: False
-                Label:
-                    text: 'OTP'
-                TextInput:
-                    id: otp
-                    password: True
-                    multiline: False
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 10
-                Button:
-                    text: 'Go Back'
-                    size_hint: 0.5, 0.3
-                    on_release: app.root.current= 'Dlogin'
-                Button:
-                    text: 'Send OTP'
-                    size_hint: 0.5, 0.3
-                    on_release: root._verify_(email.text, errormsg)
-                Label:
-                    id: errormsg
-                    text: ''
-                Button:
-                    text: 'Submit'
-                    size_hint: 0.5, 0.3
-                    on_release: root.change_pwd(otp.text, errormsg)
-
-<ChpwdDriv>:
-    name: 'chpwddr'
-    canvas:
-        Rectangle:
-            pos: self.pos
-            size: self.size
-            source: 'background.jpg'
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'center'
-        size_hint: 0.8, 0.8
-        spacing: 10
-        BoxLayout:
-            orientation: 'vertical'
-            pos_hint_x: {'center_x'}
-            pos_hint_y: {'center_y'}
-            spacing: 10
-            Label:
-                text: 'Password Reset'
-            GridLayout:
-                cols: 2
-                spacing: 10
-                Label:
-                    text: 'New Password'
-                TextInput:
-                    id: newpwd
-                    multiline: False
-                    password: True
-                Label:
-                    text: 'Confirm New Password'
-                TextInput:
-                    id: conpwd
-                    multiline: False
-                    password: True
-                    on_text_validate: root._check_pwd_(newpwd.text, conpwd.text, errormsg)
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: 10
-                Button:
-                    text: 'Go Back'
-                    size_hint: 0.8, 0.4
-                    on_release: app.root.current= 'FPdriv'
-                Label:
-                    id: errormsg
-                    text: ''
-                Button:
-                    text: 'Submit'
-                    size_hint: 0.8, 0.4
-                    on_release: root._submit_(newpwd.text, conpwd.text, errormsg)
-
-
 <ChpwdPass>:
     name: 'chpwdps'
     canvas:
@@ -621,42 +290,6 @@ Windows:
                     on_release: root._submit_(newpwd.text, conpwd.text, errormsg)
 
 
-<DriverHome>:
-    name: 'Dhome'
-    BoxLayout:
-        orientation: 'horizontal'
-        BoxLayout:
-            size_hint: 0.2, 1
-            spacing: 10
-            orientation: 'vertical'
-            Button:
-                text: 'Profile'
-            Button:
-                text: 'Rides'
-            Button:
-                text: 'Account'
-        MapView:
-            zoom: 13
-            lat: 13.0827
-            lon: 80.2707
-            size_hint: 0.6, 1
-            Button:
-                text: 'Menu'
-                background_normal: ''
-                pos_hint_x: {'left'}
-                pos_hint_y: {'top'} 
-        BoxLayout:
-            size_hint: 0.2, 1
-            spacing: 20
-            Button:
-                size_hint: 1, 0.2
-                text: 'click here'
-            Button:
-                size_hint: 1, 0.2
-                text: 'nothing'
-            Label:
-                text: ''
-
 <PassengerHome>:
     name: 'Phome'
     BoxLayout:
@@ -674,14 +307,18 @@ Windows:
             Button:
                 text: 'Transactions'
                 size_hint: 1, 0.1
+            Button:
+            	text: 'Advanced\nBooking'
+            	size_hint: 1, 0.1
             Label:
-                size_hint: 1, 0.6
+                size_hint: 1, 0.5
                 text: ''
             Button:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
         MapView:
+            id: passmap
             size_hint: 0.7, 1
             zoom: 12
             lat: 13.0827
@@ -696,14 +333,16 @@ Windows:
                 padding: [10]
                 orientation: 'vertical'
                 TextInput:
-                    hint_text: 'Enter Pick Up Location'
+                    hint_text: 'Enter Pick Up Location(double tap to get suggestions)'
                     multiline: False
                     size_hint: 1, 0.5
-                    on_triple_tap: 
                 TextInput:
-                    hint_text: 'Enter Destination'
+                    hint_text: 'Enter Destination(double tap to get suggestions)'
                     multiline: False
                     size_hint: 1, 0.5
+                Label:
+                    text: 'double tap the text boxes\n to get suggestions'
+                    size_hint: 1, 0.2
                 RoundedButton:
                     id: suggest1
                     text: '' 
@@ -742,4 +381,3 @@ Windows:
             size: self.size
             pos: self.pos
             radius: [58]
-
