@@ -247,8 +247,8 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
 
 # print(postDriver("Subash", "abc@gmail.com", "12345", "123", 13.22, 80.24, "car", 4.8, True))
 # print()
-# print(postUser("Raj", "xyz@gmail.com", "4567", "345"))
+# print(postUser("Sub", "123@gmail.com", "4560", "100"))
 # print()
 # print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
 
-print(getRide(1))
+print(startUser("123@gmail.com", "100"))

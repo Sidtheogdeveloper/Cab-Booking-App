@@ -6,7 +6,6 @@ import auth
 from kivy.uix.scrollview import ScrollView
 from kivy_garden.mapview import MapView
 from kivy.uix.dropdown import DropDown
-import API_Functions as db
 
 class MainScreen(Screen):
     pass

@@ -51,15 +51,15 @@ class crudDriver(APIView):
 class crudUser(APIView):
     def get(self, request):
         user_id = request.query_params.get("userID")
-        email = request.query_params.get("email")
-        password = request.query_params.get("password")
+        Email = request.query_params.get("email")
+        Password = request.query_params.get("password")
         try:
             if user_id:
                 user = User.objects.get(userID=user_id)
                 serializer = userSerializer(user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            elif email and password:
-                user = User.objects.filter(email=email, password=password).first()
+            elif Email and Password:
+                user = User.objects.filter(email=Email, password=Password).first()
                 if user:
                     serializer = userSerializer(user)
                     return Response(serializer.data, status=status.HTTP_200_OK)
