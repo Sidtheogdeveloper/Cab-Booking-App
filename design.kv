@@ -362,37 +362,76 @@ Windows:
                     size_hint: 1, 0.1
                     on_release: root.select_option(self.text, 2, notify)
 
-                CheckBox:
-                    active: False
-                    size_hint: None, None
-                    size: 50, 50
-                    # on_active: root.on_checkbox_active(self, self.active)
+                Label:
+                    id: vehicle
+                    text: ''
+                    size_hint: 1, 0.2
                 
-
-                # BoxLayout:
-                #     orientation: 'horizontal'
-                #     spacing: 10
-
-                #     VehicleOption:
-                #         option_name: "Mini Car"
-                #         image_source: "Mini-Car.png"
-                #     VehicleOption:
-                #         option_name: "SUV"
-                #         image_source: "SUV.jpeg"
-                #     VehicleOption:
-                #         option_name: "Bike"
-                #         image_source: "Bike.jpeg"
-                #     VehicleOption:
-                #         option_name: "Auto"
-                #         image_source: "Auto.png"
-                #     VehicleOption:
-                #         option_name: "Side-by-Side"
-                #         image_source: "side_by_side.jpg"
-
-
-
                 AnchorLayout:
                     anchor_y: 'bottom'
+                        
+                    GridLayout:
+                        size_hint: 1, 1
+                        cols: 4
+                        padding: [20]
+                        spacing: 10
+                        Button:
+                            id: bike
+                            background_normal: 'Bike.png'
+                            background_down: 'Bike.png'
+                            #text: 'BIKE'
+                            font_size: 20
+                            size_hint: 0.25, 1
+                            valign: 'middle'
+                            halign: 'center'
+                            on_release: root.set_option('bike')
+                        Button:
+                            id: auto
+                            background_normal: 'Auto.png'
+                            background_down: 'Auto.png'
+                            #text: 'AUTO'
+                            font_size: 20
+                            size_hint: 0.25, 1
+                            valign: 'top'
+                            halign: 'center'
+                            on_release: root.set_option('auto')
+                        Button:
+                            id: mini
+                            background_normal: 'Mini-Car.png'
+                            background_down: 'Mini-Car.png'
+                            #text: 'SEDAN'
+                            font_size: 20
+                            valign: 'top'
+                            halign: 'center'
+                            size_hint: 0.25, 1
+                            on_release: root.set_option('sedan')
+                        Button:
+                            id: suv
+                            background_normal: 'SUV.png'
+                            background_down: 'SUV.png'
+                            #text: 'SUV'
+                            font_size: 20
+                            valign: 'top'
+                            size_hint: 0.25, 1
+                            halign: 'center'
+                            on_release: root.set_option('suv')
+                        Label:
+                            text: 'BIKE'
+                            size_hint: 0.25, 1
+                            
+                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                        Label:
+                            text: 'AUTO'
+                            size_hint: 0.25, 1
+                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                        Label:
+                            text: 'SEDAN'
+                            size_hint: 0.25, 1
+                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                        Label:
+                            text: 'SUV'
+                            size_hint: 0.25, 1
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                     Button:
                         text: 'Book'
                         size_hint: 1, 0.2
@@ -418,9 +457,14 @@ Windows:
             pos: self.pos
             radius: [58]
 
-# <VehicleOption@CheckBox>:
-#     background_normal: root.image_source
-#     background_down: root.image_source
-#     size_hint: None, None
-#     size: 200, 200
-#     on_press: root.toggle_selection()
+
+# <RoundedButton@Button>:
+#     background_color: (0,0,0,0)
+#     background_normal: ''
+#     canvas.before:
+#         Color:
+#             rgba: (50/255, 47/255, 80/255,0)
+#         Rectamgle:
+#             size: self.size
+#             pos: self.pos
+#             radius: [58]

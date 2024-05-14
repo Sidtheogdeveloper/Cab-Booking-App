@@ -39,6 +39,7 @@ class PassengerLog(Screen):
                 if email in i and password in i:
                     self.otp= auth.gen_otp()
                     response= auth.mail(email, i[0], self.otp)
+                    self.otp='123'
                     f= open("recentPlogin.csv", 'w')
                     writer= csv.writer(f)
                     writer.writerow([email, password]) 
@@ -165,24 +166,22 @@ class PassengerHome(Screen):
         self.ids.suggest3.text= suggestions[2][0]
 
     def select_option(self, suggestion,pos ,textWidget):
-        textWidget.text = suggestion
-        lon= self.pickup_sug[pos].coords[0]
-        lat= self.pickup_sug[pos].coords[1]
-        self.ids.pickup.text= self.pickup_sug[pos].location
-        self.update_map_coordinates(lat, lon)
+        try:
+            textWidget.text = suggestion
+            lon= self.pickup_sug[pos].coords[0]
+            lat= self.pickup_sug[pos].coords[1]
+            self.ids.pickup.text= self.pickup_sug[pos].location
+            self.update_map_coordinates(lat, lon)
+        except:
+            textWidget.text= 'No text available'
 
     def update_map_coordinates(self, lat, lon):
         mapview = self.ids.passmap
         mapview.lat = lat
         mapview.lon = lon
     
-    # def toggle_selection(self, *args):
-    #     self.selected = not self.selected
-
-    #     # Unselect other buttons
-    #     for child in self.parent.children:
-    #         if child != self:
-    #             child.selected = False
+    def set_option(self, vehicle):
+        self.ids.vehicle.text = vehicle
 
 class location():
     def __init__(self, location, coords):
