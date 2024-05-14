@@ -204,6 +204,21 @@ def startUser(email, password) -> dict:
         return response.json()
     return requests.exceptions.HTTPError
 
+def getRidesOfUsers(userID: int):
+    """
+        Gets all the rides of a user
+        :param userID: The ID of the user
+        :return: A list of dictionaries containing the rides of the user
+    """
+    Data = {
+        "userID": userID
+    }
+    path = "user/"
+    response = requests.get(url=baseURL+path, params=Data)
+    if response.status_code==200:
+        return response.json()
+    return requests.exceptions.HTTPError
+
 def nearestDrivers(latitude, longitude, vehicle_type):
     """
         Returns the 5 nearest drivers to the user

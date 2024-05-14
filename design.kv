@@ -305,13 +305,10 @@ Windows:
                 text: 'Rides'
                 size_hint: 1, 0.1
             Button:
-                text: 'Transactions'
+                text: 'Advanced\n Booking'
                 size_hint: 1, 0.1
-            Button:
-            	text: 'Advanced\nBooking'
-            	size_hint: 1, 0.1
             Label:
-                size_hint: 1, 0.5
+                size_hint: 1, 0.6
                 text: ''
             Button:
                 text: 'Logout'
@@ -333,28 +330,67 @@ Windows:
                 padding: [10]
                 orientation: 'vertical'
                 TextInput:
+                    id: pickup
                     hint_text: 'Enter Pick Up Location(double tap to get suggestions)'
                     multiline: False
                     size_hint: 1, 0.5
+                    on_double_tap: root.on_text_pickup(self)
+                    
                 TextInput:
+                    id: drop
                     hint_text: 'Enter Destination(double tap to get suggestions)'
                     multiline: False
                     size_hint: 1, 0.5
+                    on_double_tap: root.on_text_pickup(self)
                 Label:
+                    id: notify
                     text: 'double tap the text boxes\n to get suggestions'
                     size_hint: 1, 0.2
                 RoundedButton:
                     id: suggest1
-                    text: '' 
-                    size_hint: 1, 0.5
+                    text: ''
+                    size_hint: 1, 0.1
+                    on_release: root.select_option(self.text, 0, notify)
                 RoundedButton:
                     id: suggest2
                     text: ''
-                    size_hint: 1, 0.5
+                    size_hint: 1, 0.1
+                    on_release: root.select_option(self.text, 1, notify)
                 RoundedButton:
                     id: suggest3
                     text: ''
-                    size_hint: 1, 0.5
+                    size_hint: 1, 0.1
+                    on_release: root.select_option(self.text, 2, notify)
+
+                CheckBox:
+                    active: False
+                    size_hint: None, None
+                    size: 50, 50
+                    # on_active: root.on_checkbox_active(self, self.active)
+                
+
+                # BoxLayout:
+                #     orientation: 'horizontal'
+                #     spacing: 10
+
+                #     VehicleOption:
+                #         option_name: "Mini Car"
+                #         image_source: "Mini-Car.png"
+                #     VehicleOption:
+                #         option_name: "SUV"
+                #         image_source: "SUV.jpeg"
+                #     VehicleOption:
+                #         option_name: "Bike"
+                #         image_source: "Bike.jpeg"
+                #     VehicleOption:
+                #         option_name: "Auto"
+                #         image_source: "Auto.png"
+                #     VehicleOption:
+                #         option_name: "Side-by-Side"
+                #         image_source: "side_by_side.jpg"
+
+
+
                 AnchorLayout:
                     anchor_y: 'bottom'
                     Button:
@@ -381,3 +417,10 @@ Windows:
             size: self.size
             pos: self.pos
             radius: [58]
+
+# <VehicleOption@CheckBox>:
+#     background_normal: root.image_source
+#     background_down: root.image_source
+#     size_hint: None, None
+#     size: 200, 200
+#     on_press: root.toggle_selection()

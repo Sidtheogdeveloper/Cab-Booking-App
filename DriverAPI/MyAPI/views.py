@@ -100,12 +100,22 @@ class crudUser(APIView):
 class crudRides(APIView):
     def get(self, request):
         ride_id = request.query_params.get("rideID")
-        try:
-            ride = Ride.objects.get(rideID = ride_id)
-            serializer = rideSerializer(ride)
-            return(Response(serializer.data, status=status.HTTP_200_OK))
-        except:
-            raise Http404("Ride does not exist")
+        user_id = request.query_params.get("userID")
+        if ride_id:
+            try:
+                ride = Ride.objects.get(rideID = ride_id)
+                serializer = rideSerializer(ride)
+                return(Response(serializer.data, status=status.HTTP_200_OK))
+            except:
+                raise Http404("Ride does not exist")
+        elif user_id:
+            try:
+                user = User.objects.filter(userID = user_id)
+                serializer = userSerializer(user, many=True)
+                return(Response(serializer.data, status=status.HTTP_200_OK))
+            except:
+                raise Http404("User does not exist")
+
     
     def post(self, request):
         serializer = rideSerializer(data=request.data)

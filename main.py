@@ -3,9 +3,12 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 import csv, os
 import auth
+from kivy.uix.button import Button
+from kivy.uix.dropdown import DropDown
 from kivy.uix.scrollview import ScrollView
 from kivy_garden.mapview import MapView
 from kivy.uix.dropdown import DropDown
+import map
 
 class MainScreen(Screen):
     pass
@@ -149,7 +152,43 @@ class ChpwdPass(Screen):
             widget.text= "Password doesn't match"
 
 class PassengerHome(Screen):
-    pass
+    def on_text_pickup(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.pickup_sug= []
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.pickup_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+
+    def select_option(self, suggestion,pos ,textWidget):
+        textWidget.text = suggestion
+        lon= self.pickup_sug[pos].coords[0]
+        lat= self.pickup_sug[pos].coords[1]
+        self.ids.pickup.text= self.pickup_sug[pos].location
+        self.update_map_coordinates(lat, lon)
+
+    def update_map_coordinates(self, lat, lon):
+        mapview = self.ids.passmap
+        mapview.lat = lat
+        mapview.lon = lon
+    
+    # def toggle_selection(self, *args):
+    #     self.selected = not self.selected
+
+    #     # Unselect other buttons
+    #     for child in self.parent.children:
+    #         if child != self:
+    #             child.selected = False
+
+class location():
+    def __init__(self, location, coords):
+        self.location = location
+        self.coords = coords
+
 
 class Windows(ScreenManager):
     pass

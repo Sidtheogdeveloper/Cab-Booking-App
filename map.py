@@ -35,18 +35,15 @@ class API():
         results = requests.get(url)
         if results.status_code == 200:
             results = results.json()["suggestions"]
-            print("Suggestions:")
-            for index, suggestion in enumerate(results):
-                print(index + 1, ". ", suggestion["name"], sep="")
-            choice = int(input("Enter Choice: "))
-            if (choice not in range(1, len(suggestion) + 1)):
-                print("Invalid choice")
-                return
-            mapID = results[choice - 1]["mapbox_id"]
-            coords = requests.get(f"https://api.mapbox.com/search/searchbox/v1/retrieve/{mapID}?session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}")
-            return coords.json()["features"][0]["geometry"]["coordinates"]
-        else:
-            print("Error:", results.status_code)
+            suggestions = [[result["name"], result["mapbox_id"]] for result in results]
+            return suggestions
+
+    def suggestionCoordinates(self, prompt):
+        suggestions = self.searchResults(prompt)
+        for suggestion in suggestions:
+            coords = requests.get(f"https://api.mapbox.com/search/searchbox/v1/retrieve/{suggestion[1]}?session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}")
+            suggestion[1] = coords.json()["features"][0]["geometry"]["coordinates"]
+        return suggestions
 '''
     def get_top_drivers(self, table):
         
@@ -60,11 +57,14 @@ class API():
             print("Success")
         else:
             print("Error:", data.status_code)
-
+'''
 if __name__ == "__main__":
     api = API()
     # api.get_details(80.224059,13.116253, 80.199316,12.749928)
-    pickup = api.searchResults(input("Enter Pick-up Location: "))
-    drop = api.searchResults(input("Enter Drop Location: "))
-    api.get_details(pickup[0], pickup[1], drop[0], drop[1])
-    '''
+    # pickup = api.searchResults(input("Enter Pick-up Location: "))
+    # drop = api.searchResults(input("Enter Drop Location: "))
+    # api.get_details(pickup[0], pickup[1], drop[0], drop[1])
+    # firstFunction = api.suggestionCoordinates(input("Pickup: "))
+    # print(firstFunction)
+  
+
