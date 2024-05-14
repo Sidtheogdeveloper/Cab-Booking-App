@@ -30,33 +30,22 @@ class PassengerLog(Screen):
             widget2.text= pwd
         else:
             pass
-
+    
     def __submit__(self, email, password, widget):
-        with open('userdetails.csv', 'r') as f:
-            reader= csv.reader(f)
-            p=1
-            for i in reader:
-                if email in i and password in i:
-                    self.otp= auth.gen_otp()
-                    response= auth.mail(email, i[0], self.otp)
-                    self.otp='123'
-                    f= open("recentPlogin.csv", 'w')
-                    writer= csv.writer(f)
-                    writer.writerow([email, password]) 
-                    f.close()
-                    if response== "error":
-                        widget.text= "Some Error occurred"
-                        break
-                    widget.text="OTP sent to your Mail"
-                    break
-                elif email in i and password not in i:
-                    p=0
-
+        check= db.startUser(email=email, password=password)
+        if check != "error":
+            self.otp= auth.gen_otp()
+            response= auth.mail(email, check['name'], self.otp)
+            f= open("recentPlogin.csv", 'w')
+            writer= csv.writer(f)
+            writer.writerow([email, password, check['userID']])
+            f.close()
+            if response== "error":
+                widget.text= "Some Error occurred"
             else:
-                if p==0:
-                    widget.text= 'Password Incorrect'
-                else:
-                    widget.text= 'email doesn\'t exist'
+                widget.text="OTP sent to your Mail"
+        else:
+            widget.text= 'Email does not exist'
 
     def __verify__(self, otp, widget):  
         if self.otp==otp:
@@ -66,23 +55,16 @@ class PassengerLog(Screen):
             widget.text= 'Incorrect OTP'
 
 class PassengerSP(Screen):
-    def __enter_data__(self, name, user, email,pwd ,cpwd, widget):  
-        f= open("userdetails.csv", "a", newline= '')
-        writer = csv.writer(f)
-        g= open("userdetails.csv", 'r')
-        reader= csv.reader(g)
+    def __enter_data__(self, name, phone, email,pwd ,cpwd, widget):  
+        
         if pwd==cpwd:
-            for i in reader:
-                if user in i or email in i:
-                    widget.text= "User already exists"
-                    break
+            insert= db.postUser(name, email ,phone, pwd)
+            if insert=='error':
+            	widget.text= 'email or phone already exists'
             else:
                 self.otp= auth.gen_otp()
                 auth.mail(email, name, self.otp)
                 widget.text= "OTP Sent to your Email ID"
-                writer.writerow([name, email ,user, pwd])  
-        f.close()
-        g.close()
 
     def verify_otp(self, otp, widget):
         if  otp == self.otp:
