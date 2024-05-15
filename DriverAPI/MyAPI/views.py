@@ -65,6 +65,13 @@ class crudUser(APIView):
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
                     return Response("User with provided email and password does not exist", status=status.HTTP_404_NOT_FOUND)
+            elif Email:
+                user = User.objects.filter(email=Email).first()
+                if user:
+                    serializer = userSerializer(user)
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response("User with provided email does not exist", status=status.HTTP_404_NOT_FOUND)
             else:
                 return Response("Invalid request parameters", status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
