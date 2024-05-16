@@ -245,6 +245,50 @@ class location():
         self.coords = coords
 
 
+class Profileviewer(Screen):
+    def on_enter(self, *args):
+        scroll= self.ids.ridelay
+        f= open('recentPlogin.csv', 'r')
+        reader= csv.reader(f)
+        for i in reader:
+            if len(i)>1:
+                user= i[2]
+        det= db.getUser(user)
+        f.close()
+        if det!= "error":
+            self.ids.name.text= det['name']
+            self.ids.email.text= det['email']
+            self.ids.phone.text= det['phone']
+        self.grid= GridLayout(cols= 5)
+        self.l1= Label(text= 'Date', markup= True)
+        self.l2= Label(text= 'Driver',markup= True)
+        self.l3= Label(text= 'Pickup Location',markup= True)
+        self.l4= Label(text= 'Destination',markup= True)
+        self.l5= Label(text= 'Ride Fare',markup= True)
+        self.grid.add_widget(self.l1)
+        self.grid.add_widget(self.l2)
+        self.grid.add_widget(self.l3)
+        self.grid.add_widget(self.l4)
+        self.grid.add_widget(self.l5)
+        rides= db.getRidesOfUsers(userID= user)
+        for j in range(len(rides)):
+            i= rides[j]
+            driv= db.getDriver(i['driverID'])
+            pickup= db.get_address(i['start_lat'], i['start_long'])
+            destination= db.get_address(i['end_lat'], i['end_long'])
+            l1= Label(text= f"{i['date']}", size_hint= [0.2, 1])
+            l2= Label(text= f"{driv['name']}",size_hint= [0.2, 1])
+            l3= Label(text= f'{pickup}',size_hint= [0.2, 1])
+            l4= Label(text= f'{destination}',size_hint= [0.2, 1])
+            l5= Label(text= f"{i['price']}",size_hint= [0.2, 1])
+            self.grid.add_widget(l1)
+            self.grid.add_widget(l2)
+            self.grid.add_widget(l3)
+            self.grid.add_widget(l4)
+            self.grid.add_widget(l5)
+        scroll.add_widget(self.grid)
+
+
 class Windows(ScreenManager):
     pass
 
