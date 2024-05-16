@@ -8,6 +8,7 @@ Windows:
     ForgotpwdPas:
     ChpwdPass:
     AdvanceBooking:
+    Profileviewer:
 
 <MainScreen>:
     name: "main"
@@ -611,6 +612,58 @@ Windows:
                     Button:
                         text: 'Book'
                         size_hint: 1, 0.2
+
+
+<Profileviewer>:
+    name: 'profile'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.5
+            spacing: 20
+            padding: [30]
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            Image:
+                source: 'profile.png'
+                size_hint: 0.3, 1
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.5,1
+                Label:
+                    id: name
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 36
+                    markup: True
+                Label:
+                    id: email
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 24
+                Label:
+                    id: phone
+                    text: ''
+                    font_size: 20
+                    pos_hint_x: {'left': 1}
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.2, 1
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.5, 0.2
+                    pos_hint: {'center_x': 1, 'top': 1}
+                    on_release: app.root.current= 'Phome'
+                Label:
+                    text: ''
+                    size_hint: 0.5, 0.8
+        ScrollView:
+            id: ridelay
+            do_scroll_y: True
+            do_scroll_x: False
+            size_hint: 1, 0.5
 
 
 <PassMenu@DropDown>:
