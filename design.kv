@@ -8,6 +8,7 @@ Windows:
     ForgotpwdPas:
     ChpwdPass:
     AdvanceBooking:
+    Profileviewer:
 
 <MainScreen>:
     name: "main"
@@ -241,6 +242,57 @@ Windows:
                     size_hint: 0.5, 0.3
                     on_press: root.change_pwd(otp.text, errormsg)
 
+<Profileviewer>:
+    name: 'profile'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.5
+            spacing: 20
+            padding: [30]
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            Image:
+                source: 'profile.png'
+                size_hint: 0.3, 1
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.5,1
+                Label:
+                    id: name
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 36
+                    markup: True
+                Label:
+                    id: email
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 24
+                Label:
+                    id: phone
+                    text: ''
+                    font_size: 20
+                    pos_hint_x: {'left': 1}
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.2, 1
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.5, 0.2
+                    pos_hint: {'center_x': 1, 'top': 1}
+                    on_release: app.root.current= 'Phome'
+                Label:
+                    text: ''
+                    size_hint: 0.5, 0.8
+        ScrollView:
+            id: ridelay
+            do_scroll_y: True
+            do_scroll_x: False
+            size_hint: 1, 0.5
+
 <ChpwdPass>:
     name: 'chpwdps'
     canvas:
@@ -298,10 +350,11 @@ Windows:
         BoxLayout:
             orientation: 'vertical'
             spacing: 10
-            size_hint: 0.05, 1
+            size_hint: 0.1, 1
             Button:
                 text: 'Profile'
                 size_hint: 1, 0.1
+                on_release: app.root.current= 'profile'
             Button:
                 text: 'Advanced\n Booking'
                 size_hint: 1, 0.1
@@ -322,22 +375,22 @@ Windows:
                 lon: 80.2707
                 MapMarker:
                     id: pickupmarker
-                    lat: 13.22
-                    lon: 80.24
+                    lat: 13.069344
+                    lon: 80.195203
                     size: '2dp', '2dp'
                     size_hint: 0.1,0.1
-                    source: "destination_pointer.png"
+                    source: "pickup_pointer.png"
                 MapMarker:
                     id: destinationmarker
-                    lat: 13.25
-                    lon: 80.12
+                    lat: 13.0827
+                    lon: 80.2707
                     size: '2dp', '2dp'
                     size_hint: 0.1, 0.1
                     source: "destination_pointer.png"
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True 
-            size_hint: 0.25, 1
+            size_hint: 0.2, 1
             BoxLayout:
                 spacing: 10
                 padding: [10]
@@ -451,10 +504,11 @@ Windows:
         BoxLayout:
             orientation: 'vertical'
             spacing: 10
-            size_hint: 0.075, 1
+            size_hint: 0.1, 1
             Button:
                 text: 'Profile'
                 size_hint: 1, 0.1
+                on_release: app.root.current= 'profile'
             Button:
                 text: 'Book Cab Now'
                 size_hint: 1, 0.1
@@ -466,31 +520,32 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
-            size_hint: 0.7, 1
-            zoom: 12
-            lat: 13.0827
-            lon: 80.2707
-            MapMarker:
-                id: pickupmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: None, None
-            	source: "destination_pointer.png"
-            MapMarker:
-                id: destinationmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: None, None
-            	source: "destination_pointer.png"
+        BoxLayout:
+            MapView:
+                id: passmap
+                size_hint: 0.7, 1
+                zoom: 12
+                lat: 13.0827
+                lon: 80.2707
+                MapMarker:
+                    id: pickupmarker
+                    lat: 13.069344
+                    lon: 80.195203
+                    size: '2dp', '2dp'
+                    size_hint: 0.1,0.1
+                    source: "pickup_pointer.png"
+                MapMarker:
+                    id: destinationmarker
+                    lat: 13.0827
+                    lon: 80.2707
+                    size: '2dp', '2dp'
+                    size_hint: 0.1, 0.1
+                    source: "destination_pointer.png"
         ScrollView:
             id: right_screen
             do_scroll_x: False
             do_scroll_y: True 
-            size_hint: 0.225, 1
+            size_hint: 0.2, 1
             BoxLayout:
                 spacing: 10
                 padding: [10]
@@ -654,13 +709,6 @@ Windows:
         Label:
             id: driver_vehicle_details
             text: 'Vehicle Number:' + root.vehicle_number
-        Label:
-            text: 'OTP:'
-        BoxLayout:
-            id: otp_box
-            orientation: 'vertical'
-            font_size: '20sp'
-            text: root.otp
         Button:
             text: 'Go Back'
             on_release: root.goBack

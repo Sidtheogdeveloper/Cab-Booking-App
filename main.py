@@ -13,6 +13,8 @@ import map
 import API_Functions as db
 import update_API_functions as update_db
 import price_generation as priceGen
+from kivy.uix.label import Label
+from kivy.uix.gridlayout import GridLayout
 
 class MainScreen(Screen):
     pass
@@ -42,6 +44,7 @@ class PassengerLog(Screen):
         if check != "error":
             self.otp= auth.gen_otp()
             response= auth.mail(email, check['name'], self.otp)
+            self.otp= '123'
             f= open("recentPlogin.csv", 'w')
             writer= csv.writer(f)
             writer.writerow([email, password, check['userID']])
@@ -172,44 +175,88 @@ class AdvanceBooking(Screen):
                 self.update_marker(self.ids.destinationmarker, lat, lon)
         except:
             textWidget.text= 'No text available'
-
     def update_map_coordinates(self, lat, lon):
         mapview = self.ids.passmap
         mapview.lat = lat
         mapview.lon = lon
-    
     def update_marker(self, marker, lat, long):
         marker.lat= lat
         marker.lon= long
     def set_option(self, vehicle):
         self.ids.vehicle.text = vehicle
     def generate_price(self):
-        lat1 = self.ids.passmap.ids.pickupmarker.lat
-        lon1 = self.ids.passmap.ids.pickupmarker.lon
-        lat2 = self.ids.passmap.ids.destinationmarker.lat
-        lon2 = self.ids.passmap.ids.destinationmarker.lon
-        vehicle_type = self.ids.right_screen.vehicle.text
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        vehicle_type = self.ids.vehicle.text
         myMap = map.API()
-        distance = myMap.get_details(lat1, lon1, lat2, lon2)
-        date = self.ids.right_screen.date.text
-        time = self.ids.right_screen.time.text
-        price = priceGen.adv_price_gen(distance, date, time, vehicle_type)
-        self.ids.final.ids.price_text.text = str(price)
+        distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+        date = self.ids.date.text
+        time = self.ids.time.text
+        price = priceGen.adv_price_gen(distance, vehicle_type, date, time)[-1]
+        self.ids.price_text.text = str(price)
     def book_advanced(self):
-        pickup = self.ids.right_screen.pickup.text
-        drop = self.ids.right_screen.drop.text
-        lat1 = self.ids.passmap.ids.pickupmarker.lat
-        lon1 = self.ids.passmap.ids.pickupmarker.lon
-        lat2 = self.ids.passmap.ids.destinationmarker.lat
-        lon2 = self.ids.passmap.ids.destinationmarker.lon
-        vehicle_type = self.ids.right_screen.vehicle.text
-        date = self.ids.right_screen.date.text
-        time = self.ids.right_screen.time.text
+        pickup = self.ids.pickup.text
+        drop = self.ids.drop.text
+        lat1 = self.ids.pickupmarker.lat
+        lon1 = self.ids.pickupmarker.lon
+        lat2 = self.ids.destinationmarker.lat
+        lon2 = self.ids.destinationmarker.lon
+        vehicle_type = self.ids.vehicle.text
+        date = self.ids.date.text
+        time = self.ids.time.text
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
-        advanced_ride_details_screen = AdvancedRideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"])
-        self.manager.current = 'advancedridedetails'
-        self.manager.transition.direction = 'left'
+        print(details)
+        print(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"], sep='\t')
+        # advanced_ride_details_screen = AdvancedRideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"])
+        # self.manager.current = 'advancedridedetails'
+        # self.manager.transition.direction = 'left'
 
+class Profileviewer(Screen):
+    def on_enter(self, *args):
+        scroll= self.ids.ridelay
+        f= open('recentPlogin.csv', 'r')
+        reader= csv.reader(f)
+        for i in reader:
+            if len(i)>1:
+                user= i[2]
+        det= db.getUser(user)
+        f.close()
+        if det!= "error":
+            self.ids.name.text= det['name']
+            self.ids.email.text= det['email']
+            self.ids.phone.text= det['phone']
+        self.grid= GridLayout(cols= 5)
+        self.l1= Label(text= 'Date', markup= True)
+        self.l2= Label(text= 'Driver',markup= True)
+        self.l3= Label(text= 'Pickup Location',markup= True)
+        self.l4= Label(text= 'Destination',markup= True)
+        self.l5= Label(text= 'Ride Fare',markup= True)
+        self.grid.add_widget(self.l1)
+        self.grid.add_widget(self.l2)
+        self.grid.add_widget(self.l3)
+        self.grid.add_widget(self.l4)
+        self.grid.add_widget(self.l5)
+        rides= db.getRidesOfUsers(userID= user)
+        for j in range(len(rides)):
+            i= rides[j]
+            driv= db.getDriver(i['driverID'])
+            pickup= db.get_address(i['start_lat'], i['start_long'])
+            destination= db.get_address(i['end_lat'], i['end_long'])
+            l1= Label(text= f"{i['date']}", size_hint= [0.2, 1])
+            l2= Label(text= f"{driv['name']}",size_hint= [0.2, 1])
+            l3= Label(text= f'{pickup}',size_hint= [0.2, 1])
+            l4= Label(text= f'{destination}',size_hint= [0.2, 1])
+            l5= Label(text= f"{i['price']}",size_hint= [0.2, 1])
+            self.grid.add_widget(l1)
+            self.grid.add_widget(l2)
+            self.grid.add_widget(l3)
+            self.grid.add_widget(l4)
+            self.grid.add_widget(l5)
+        scroll.add_widget(self.grid)
 
 class PassengerHome(Screen):
     def on_text_pickup(self, prompt):
@@ -286,11 +333,13 @@ class PassengerHome(Screen):
         lon1 = pickupMarker.lon
         lat2 = destinationMarker.lat
         lon2 = destinationMarker.lon
+        print(lat1, lon1, lat2, lon2)
         vehicle_type = self.ids.vehicle.text
         details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
-        ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
-        self.manager.current = 'ridedetails'
-        self.manager.transition.direction = 'left'
+        print(details)
+        print(pickup, drop, pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], sep='\t')
+        # ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
+        # self.manager.current = 'ridedetails'
 
 
 class RideDetailsScreen(Screen):
@@ -306,7 +355,7 @@ class RideDetailsScreen(Screen):
         self.total_price = price_generated
         self.driver_name_text = driver_name
         self.vehicle_number = vehicle_number
-        self.otp_text = otp
+        self.otp = otp
     def goBack(self):
         self.manager.current = 'Phome'
 
