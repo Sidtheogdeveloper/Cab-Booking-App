@@ -4,7 +4,7 @@ from .models import Driver, User, Ride
 class driverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
-        fields = ['driverID', 'name', 'email', 'phone', 'password', 'latitude', 'longitude', 'vehicle_type', 'rating', 'available']
+        fields = ['driverID', 'name', 'email', 'phone', 'password', 'vehicle_number', 'latitude', 'longitude', 'vehicle_type', 'rating', 'available']
 
 class userSerializer(serializers.ModelSerializer):
     class Meta:

@@ -40,7 +40,7 @@ def postUser(name: str, email: str, phone: str, password: str) -> dict:
     response = requests.post(url=baseURL+path, json=data)
     if response.status_code==201:
         return response.json()
-    return requests.exceptions.HTTPError
+    return "error"
 
 def deleteUser(userID: int) -> dict:
     """
@@ -75,7 +75,7 @@ def getDriver(driverID: int) -> dict:
         return response.json()
     return requests.exceptions.HTTPError
 
-def postDriver(name: str, email: str, phone: str, password:str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
+def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
     """
         Creates a driver in the Database
 
@@ -83,6 +83,7 @@ def postDriver(name: str, email: str, phone: str, password:str, latitude: float,
         :param email: The email of the driver
         :param phone: The phone number of the driver
         :param password: The password of the driver
+        :param vehicle_number: The vehicle number of the driver
         :param latitude: The latitude of the driver
         :param longitude: The longitude of the driver
         :param vehicle_type: The type of vehicle the driver has
@@ -95,6 +96,7 @@ def postDriver(name: str, email: str, phone: str, password:str, latitude: float,
         "email" : email,
         "phone" : phone,
         "password" : password,
+        "vehicle_number": vehicle_number,
         "latitude" : latitude,
         "longitude" : longitude,
         "vehicle_type" : vehicle_type,
@@ -202,7 +204,27 @@ def startUser(email, password) -> dict:
     response = requests.get(url=baseURL+path, params=data)
     if response.status_code==200:
         return response.json()
-    return requests.exceptions.HTTPError
+    return "error"
+
+
+def forgotUser(email) -> dict:
+    """
+        Starts a user session in login page
+
+        :param email: The email of the user
+        :param password: The password of the user
+        :return: A dictionary containing the user's information
+    """
+
+    data = {
+        "email": email
+    }
+    path = "user/"
+    response = requests.get(url=baseURL+path, params=data)
+    if response.status_code==200:
+        return response.json()
+    return "error"
+
 
 def getRidesOfUsers(userID: int):
     """
@@ -213,7 +235,7 @@ def getRidesOfUsers(userID: int):
     Data = {
         "userID": userID
     }
-    path = "user/"
+    path = "ride/"
     response = requests.get(url=baseURL+path, params=Data)
     if response.status_code==200:
         return response.json()
@@ -260,10 +282,10 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
     return calculated
 
 
-# print(postDriver("Subash", "abc@gmail.com", "12345", "123", 13.22, 80.24, "car", 4.8, True))
-# print()
-# print(postUser("Sub", "123@gmail.com", "4560", "100"))
-# print()
-# print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
-
-print(startUser("123@gmail.com", "100"))
+# print(postDriver("Subash", "abc@gmail.com", "12345", "123", "TN05 BE4392", 13.22, 80.24, "car", 4.8, True))
+# # print()
+# # print(postUser("Sub", "123@gmail.com", "4560", "100"))
+# # print()
+# # print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
+# print(getDriver(1))
+# #print(startUser("123@gmail.com", "100"))

@@ -6,9 +6,13 @@ import auth
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.scrollview import ScrollView
-from kivy_garden.mapview import MapView
+from kivy_garden.mapview.view import MapView
+from kivy_garden.mapview.view import MapMarker
 from kivy.uix.dropdown import DropDown
 import map
+import API_Functions as db
+import update_API_functions as update_db
+import price_generation as priceGen
 
 class MainScreen(Screen):
     pass
@@ -30,33 +34,26 @@ class PassengerLog(Screen):
             widget2.text= pwd
         else:
             pass
-
+    
+    
     def __submit__(self, email, password, widget):
-        with open('userdetails.csv', 'r') as f:
-            reader= csv.reader(f)
-            p=1
-            for i in reader:
-                if email in i and password in i:
-                    self.otp= auth.gen_otp()
-                    response= auth.mail(email, i[0], self.otp)
-                    self.otp='123'
-                    f= open("recentPlogin.csv", 'w')
-                    writer= csv.writer(f)
-                    writer.writerow([email, password]) 
-                    f.close()
-                    if response== "error":
-                        widget.text= "Some Error occurred"
-                        break
-                    widget.text="OTP sent to your Mail"
-                    break
-                elif email in i and password not in i:
-                    p=0
-
+        check= db.startUser(email=email, password=password)
+        check_mail= db.forgotUser(email= email)
+        if check != "error":
+            self.otp= auth.gen_otp()
+            response= auth.mail(email, check['name'], self.otp)
+            f= open("recentPlogin.csv", 'w')
+            writer= csv.writer(f)
+            writer.writerow([email, password, check['userID']])
+            f.close()
+            if response== "error":
+                widget.text= "Some Error occurred"
             else:
-                if p==0:
-                    widget.text= 'Password Incorrect'
-                else:
-                    widget.text= 'email doesn\'t exist'
+                widget.text="OTP sent to your Mail"
+        elif check=='error' and check_mail!='error':
+            widget.text= 'Incorrect Password'
+        else:
+            widget.text= 'Email does not exist'
 
     def __verify__(self, otp, widget):  
         if self.otp==otp:
@@ -66,23 +63,16 @@ class PassengerLog(Screen):
             widget.text= 'Incorrect OTP'
 
 class PassengerSP(Screen):
-    def __enter_data__(self, name, user, email,pwd ,cpwd, widget):  
-        f= open("userdetails.csv", "a", newline= '')
-        writer = csv.writer(f)
-        g= open("userdetails.csv", 'r')
-        reader= csv.reader(g)
+    def __enter_data__(self, name, phone, email,pwd ,cpwd, widget):  
+        
         if pwd==cpwd:
-            for i in reader:
-                if user in i or email in i:
-                    widget.text= "User already exists"
-                    break
+            insert= db.postUser(name, email ,phone, pwd)
+            if insert=='error':
+                widget.text= 'email or phone already exists'
             else:
                 self.otp= auth.gen_otp()
                 auth.mail(email, name, self.otp)
                 widget.text= "OTP Sent to your Email ID"
-                writer.writerow([name, email ,user, pwd])  
-        f.close()
-        g.close()
 
     def verify_otp(self, otp, widget):
         if  otp == self.otp:
@@ -92,23 +82,21 @@ class PassengerSP(Screen):
 
 class ForgotpwdPas(Screen):
     def __verify__(self, email, widget):
-        f= open('userdetails.csv', 'r')
-        data= csv.reader(f)
-        for i in data:
-            if len(i)>0 and email in i:
-                self.otp= auth.gen_otp()
-                auth.pwd_change_req(email,i[0], self.otp)
-                self.email= email
-                widget.text= 'OTP sent to you mail'
-                break
-        else:
+        check= db.forgotUser(email)
+        if check=='error':
             widget.text= "Email doesn't exist"
-        
+        else:
+            self.otp= auth.gen_otp()
+            auth.pwd_change_req(email,check['name'], self.otp)
+            self.email= email
+            self.user_id= check['userID']
+            widget.text= 'OTP sent to you mail'
+    
     def change_pwd(self, otp, widget):
         if self.otp==otp:
             with open('fppass.csv', 'w',newline= '') as f:
                 writer= csv.writer(f)
-                writer.writerow([self.email])
+                writer.writerow([self.user_id,self.email])
             self.manager.current= 'chpwdps'
         else:
             widget.text= 'Incorrect OTP'
@@ -124,39 +112,28 @@ class ChpwdPass(Screen):
             widget.text= 'Good to go'
     def _submit_(self, newpwd, cpwd, widget):
         if newpwd==cpwd:
-            f= open('userdetails.csv', 'r')
-            g= open('userdet.csv', 'w', newline='')
             p= open('fppass.csv','r')
-            reader= csv.reader(f)
-            writer= csv.writer(g)
             pw= csv.reader(p)
             for i in pw:
-                email= i[0]
+                user_id= i[0]
+                email= i[1]
             p.close()
-            for i in reader:
-                x= i
-                if len(x)>1 and x[1]==email:
-                    x[3]=str(newpwd)
-                    name= x[0]
-                    writer.writerow(x)
-                else:
-                    writer.writerow(i)
-            f.close()
-            g.close()
-            os.remove('userdetails.csv')
-            os.rename('userdet.csv', 'userdetails.csv')
-            auth.pwd_reset_info(email, name)
+            check= update_db.updateUserPassword(userID= user_id, newPassword= newpwd)
+            data= db.getUser(user_id)
+            auth.pwd_reset_info(email, data['name'])
             widget.text= 'Password Updated'
             os.remove('fppass.csv')
+            os.remove('recentPlogin.csv')
             self.manager.current= 'Phome'
         else:
             widget.text= "Password doesn't match"
 
-class PassengerHome(Screen):
+class AdvanceBooking(Screen):
     def on_text_pickup(self, prompt):
         myMap = map.API()
         suggestions = myMap.suggestionCoordinates(prompt.text)
         print(suggestions)
+        self.choice= 'pickup'
         self.pickup_sug= []
         for i in suggestions[:3]:
             a= location(location= i[0], coords= i[1])
@@ -165,13 +142,34 @@ class PassengerHome(Screen):
         self.ids.suggest2.text= suggestions[1][0]
         self.ids.suggest3.text= suggestions[2][0]
 
-    def select_option(self, suggestion,pos ,textWidget):
+    def on_text_destination(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.destination_sug= []
+        self.choice= "destination"
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.destination_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+
+    def select_option(self, suggestion,pos,textWidget):
         try:
             textWidget.text = suggestion
-            lon= self.pickup_sug[pos].coords[0]
-            lat= self.pickup_sug[pos].coords[1]
-            self.ids.pickup.text= self.pickup_sug[pos].location
-            self.update_map_coordinates(lat, lon)
+            if self.choice== 'pickup':
+                lon= self.pickup_sug[pos].coords[0]
+                lat= self.pickup_sug[pos].coords[1]
+                self.ids.pickup.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)                                                                                                                                                                                                                                                   
+                self.update_marker(self.ids.pickupmarker, lat, lon)
+            elif self.choice== 'destination':
+                lon= self.destination_sug[pos].coords[0]
+                lat= self.destination_sug[pos].coords[1]
+                self.ids.drop.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)
+                self.update_marker(self.ids.destinationmarker, lat, lon)
         except:
             textWidget.text= 'No text available'
 
@@ -180,8 +178,156 @@ class PassengerHome(Screen):
         mapview.lat = lat
         mapview.lon = lon
     
+    def update_marker(self, marker, lat, long):
+        marker.lat= lat
+        marker.lon= long
     def set_option(self, vehicle):
         self.ids.vehicle.text = vehicle
+    def generate_price(self):
+        lat1 = self.ids.passmap.ids.pickupmarker.lat
+        lon1 = self.ids.passmap.ids.pickupmarker.lon
+        lat2 = self.ids.passmap.ids.destinationmarker.lat
+        lon2 = self.ids.passmap.ids.destinationmarker.lon
+        vehicle_type = self.ids.right_screen.vehicle.text
+        myMap = map.API()
+        distance = myMap.get_details(lat1, lon1, lat2, lon2)
+        date = self.ids.right_screen.date.text
+        time = self.ids.right_screen.time.text
+        price = priceGen.adv_price_gen(distance, date, time, vehicle_type)
+        self.ids.final.ids.price_text.text = str(price)
+    def book_advanced(self):
+        pickup = self.ids.right_screen.pickup.text
+        drop = self.ids.right_screen.drop.text
+        lat1 = self.ids.passmap.ids.pickupmarker.lat
+        lon1 = self.ids.passmap.ids.pickupmarker.lon
+        lat2 = self.ids.passmap.ids.destinationmarker.lat
+        lon2 = self.ids.passmap.ids.destinationmarker.lon
+        vehicle_type = self.ids.right_screen.vehicle.text
+        date = self.ids.right_screen.date.text
+        time = self.ids.right_screen.time.text
+        details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
+        advanced_ride_details_screen = AdvancedRideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"])
+        self.manager.current = 'advancedridedetails'
+        self.manager.transition.direction = 'left'
+
+
+class PassengerHome(Screen):
+    def on_text_pickup(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.pickup_sug= []
+        self.choice= 'pickup'
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.pickup_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+    def on_text_destination(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.destination_sug= []
+        self.choice= "destination"
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.destination_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+    def select_option(self, suggestion,pos ,textWidget):
+        try:
+            textWidget.text = suggestion
+            if self.choice== 'pickup':
+                lon= self.pickup_sug[pos].coords[0]
+                lat= self.pickup_sug[pos].coords[1]
+                self.ids.pickup.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)
+                self.update_marker(self.ids.pickupmarker, lat, lon)
+            elif self.choice== 'destination':
+                lon= self.destination_sug[pos].coords[0]
+                lat= self.destination_sug[pos].coords[1]
+                self.ids.drop.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)
+                self.update_marker(self.ids.destinationmarker, lat, lon)
+        except:
+            textWidget.text= 'No text available'
+    def update_map_coordinates(self, lat, lon):
+        mapview = self.ids.passmap
+        mapview.lat = lat
+        mapview.lon = lon
+    def set_option(self, vehicle):
+        self.ids.vehicle.text = vehicle
+    def update_marker(self, marker, lat, lon):
+        marker.lat= lat
+        marker.lon= lon
+    def generate_price(self):
+        print("HI")
+        mapview = self.ids.passmap
+        pickupMarker = mapview.ids.pickupmarker
+        destinationMarker = mapview.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        print(lat1, lon1, lat2, lon2)
+        vehicle_type = self.ids.right_screen.vehicle.text
+        myMap = map.API()
+        distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+        print(distance)
+        price = priceGen.price_gen(distance, vehicle_type)
+        print(price)
+        self.ids.price_text.text = str(price)
+    def book_now(self):
+        pickup = self.ids.right_screen.pickup.text
+        drop = self.ids.right_screen.drop.text
+        lat1 = self.ids.passmap.ids.pickupmarker.lat
+        lon1 = self.ids.passmap.ids.pickupmarker.lon
+        lat2 = self.ids.passmap.ids.destinationmarker.lat
+        lon2 = self.ids.passmap.ids.destinationmarker.lon
+        vehicle_type = self.ids.right_screen.vehicle.text
+        details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
+        ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
+        self.manager.current = 'ridedetails'
+        self.manager.transition.direction = 'left'
+
+
+class RideDetailsScreen(Screen):
+    def __init__(self, pickup_text, drop_text, vehicle_type, price_generated, driver_name, vehicle_number, otp, basic, gst, convenience, insurance,**kwargs):
+        super(RideDetailsScreen, self).__init__(**kwargs)
+        self.pickup_location_text = pickup_text
+        self.destination_location_text = drop_text
+        self.vehicle_type = vehicle_type
+        self.basic = basic
+        self.gst = gst
+        self.convenience = convenience
+        self.insurance = insurance
+        self.total_price = price_generated
+        self.driver_name_text = driver_name
+        self.vehicle_number = vehicle_number
+        self.otp_text = otp
+    def goBack(self):
+        self.manager.current = 'Phome'
+
+
+class AdvancedRideDetailsScreen(Screen):
+    def __init__(self, pickup_text, drop_text, vehicle_type, price_generated, driver_name, vehicle_number, otp, basic, gst, convenience, insurance, advance_fee, **kwargs):
+        super(AdvancedRideDetailsScreen, self).__init__(**kwargs)
+        self.pickup_location_text = pickup_text
+        self.destination_location_text = drop_text
+        self.vehicle_type = vehicle_type
+        self.basic = basic
+        self.gst = gst
+        self.convenience = convenience
+        self.insurance = insurance
+        self.advance_fee = advance_fee
+        self.total_price = price_generated
+        self.driver_name_text = driver_name
+        self.vehicle_number = vehicle_number
+        self.otp_text = otp
+    def goBack(self):
+        self.manager.current = 'Phome'
 
 class location():
     def __init__(self, location, coords):

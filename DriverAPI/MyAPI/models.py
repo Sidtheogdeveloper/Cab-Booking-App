@@ -6,6 +6,7 @@ class Driver(models.Model):
     email = models.CharField(max_length=100, default="", unique=True)
     phone = models.CharField(max_length=12, default="", unique=True)
     password = models.CharField(max_length=50, default="")
+    vehicle_number = models.CharField(max_length=15, default="")
     latitude = models.FloatField(default=0)
     longitude = models.FloatField(default=0)
     vehicle_type = models.CharField(max_length=20, default="")
