@@ -6,11 +6,15 @@ import auth
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.scrollview import ScrollView
-from kivy_garden.mapview import MapView
+from kivy_garden.mapview.view import MapView
+from kivy_garden.mapview.view import MapMarker
 from kivy.uix.dropdown import DropDown
 import map
 import API_Functions as db
 import update_API_functions as update_db
+import price_generation as priceGen
+from kivy.uix.label import Label
+from kivy.uix.gridlayout import GridLayout
 
 class MainScreen(Screen):
     pass
@@ -40,6 +44,7 @@ class PassengerLog(Screen):
         if check != "error":
             self.otp= auth.gen_otp()
             response= auth.mail(email, check['name'], self.otp)
+            self.otp= '123'
             f= open("recentPlogin.csv", 'w')
             writer= csv.writer(f)
             writer.writerow([email, password, check['userID']])
@@ -66,7 +71,7 @@ class PassengerSP(Screen):
         if pwd==cpwd:
             insert= db.postUser(name, email ,phone, pwd)
             if insert=='error':
-            	widget.text= 'email or phone already exists'
+                widget.text= 'email or phone already exists'
             else:
                 self.otp= auth.gen_otp()
                 auth.mail(email, name, self.otp)
@@ -170,80 +175,45 @@ class AdvanceBooking(Screen):
                 self.update_marker(self.ids.destinationmarker, lat, lon)
         except:
             textWidget.text= 'No text available'
-
     def update_map_coordinates(self, lat, lon):
         mapview = self.ids.passmap
         mapview.lat = lat
         mapview.lon = lon
-    
     def update_marker(self, marker, lat, long):
         marker.lat= lat
         marker.lon= long
     def set_option(self, vehicle):
         self.ids.vehicle.text = vehicle
-
-class PassengerHome(Screen):
-    def on_text_pickup(self, prompt):
+    def generate_price(self):
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        vehicle_type = self.ids.vehicle.text
         myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.pickup_sug= []
-        self.choice= 'pickup'
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.pickup_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
-
-    def on_text_destination(self, prompt):
-        myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.destination_sug= []
-        self.choice= "destination"
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.destination_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
-
-    def select_option(self, suggestion,pos ,textWidget):
-        try:
-            textWidget.text = suggestion
-            if self.choice== 'pickup':
-                lon= self.pickup_sug[pos].coords[0]
-                lat= self.pickup_sug[pos].coords[1]
-                self.ids.pickup.text= self.pickup_sug[pos].location
-                self.update_map_coordinates(lat, lon)
-                self.update_marker(self.ids.pickupmarker, lat, lon)
-            elif self.choice== 'destination':
-                lon= self.destination_sug[pos].coords[0]
-                lat= self.destination_sug[pos].coords[1]
-                self.ids.drop.text= self.pickup_sug[pos].location
-                self.update_map_coordinates(lat, lon)
-                self.update_marker(self.ids.destinationmarker, lat, lon)
-        except:
-            textWidget.text= 'No text available'
-
-    def update_map_coordinates(self, lat, lon):
-        mapview = self.ids.passmap
-        mapview.lat = lat
-        mapview.lon = lon
-    
-    def set_option(self, vehicle):
-        self.ids.vehicle.text = vehicle
-    
-    def update_marker(self, marker, lat, long):
-        marker.lat= lat
-        marker.lon= long
-
-class location():
-    def __init__(self, location, coords):
-        self.location = location
-        self.coords = coords
-
+        distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+        date = self.ids.date.text
+        time = self.ids.time.text
+        price = priceGen.adv_price_gen(distance, vehicle_type, date, time)[-1]
+        self.ids.price_text.text = str(price)
+    def book_advanced(self):
+        pickup = self.ids.pickup.text
+        drop = self.ids.drop.text
+        lat1 = self.ids.pickupmarker.lat
+        lon1 = self.ids.pickupmarker.lon
+        lat2 = self.ids.destinationmarker.lat
+        lon2 = self.ids.destinationmarker.lon
+        vehicle_type = self.ids.vehicle.text
+        date = self.ids.date.text
+        time = self.ids.time.text
+        details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
+        print(details)
+        print(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"], sep='\t')
+        # advanced_ride_details_screen = AdvancedRideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"])
+        # self.manager.current = 'advancedridedetails'
+        # self.manager.transition.direction = 'left'
 
 class Profileviewer(Screen):
     def on_enter(self, *args):
@@ -287,6 +257,131 @@ class Profileviewer(Screen):
             self.grid.add_widget(l4)
             self.grid.add_widget(l5)
         scroll.add_widget(self.grid)
+
+class PassengerHome(Screen):
+    def on_text_pickup(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.pickup_sug= []
+        self.choice= 'pickup'
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.pickup_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+    def on_text_destination(self, prompt):
+        myMap = map.API()
+        suggestions = myMap.suggestionCoordinates(prompt.text)
+        print(suggestions)
+        self.destination_sug= []
+        self.choice= "destination"
+        for i in suggestions[:3]:
+            a= location(location= i[0], coords= i[1])
+            self.destination_sug.append(a)
+        self.ids.suggest1.text= suggestions[0][0]
+        self.ids.suggest2.text= suggestions[1][0]
+        self.ids.suggest3.text= suggestions[2][0]
+    def select_option(self, suggestion,pos ,textWidget):
+        try:
+            textWidget.text = suggestion
+            if self.choice== 'pickup':
+                lon= self.pickup_sug[pos].coords[0]
+                lat= self.pickup_sug[pos].coords[1]
+                self.ids.pickup.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)
+                self.update_marker(self.ids.pickupmarker, lat, lon)
+            elif self.choice== 'destination':
+                lon= self.destination_sug[pos].coords[0]
+                lat= self.destination_sug[pos].coords[1]
+                self.ids.drop.text= self.pickup_sug[pos].location
+                self.update_map_coordinates(lat, lon)
+                self.update_marker(self.ids.destinationmarker, lat, lon)
+        except:
+            textWidget.text= 'No text available'
+    def update_map_coordinates(self, lat, lon):
+        mapview = self.ids.passmap
+        mapview.lat = lat
+        mapview.lon = lon
+    def set_option(self, vehicle):
+        self.ids.vehicle.text = vehicle
+    def update_marker(self, marker, lat, lon):
+        marker.lat= lat
+        marker.lon= lon
+    def generate_price(self):
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        print(lat1, lon1, lat2, lon2)
+        vehicle_type = self.ids.vehicle.text
+        myMap = map.API()
+        distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+        print(distance)
+        price = priceGen.price_gen(distance, vehicle_type)
+        print(price)
+        self.ids.price_text.text = str(price[-1])
+    def book_now(self):
+        pickup = self.ids.pickup.text
+        drop = self.ids.drop.text
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        print(lat1, lon1, lat2, lon2)
+        vehicle_type = self.ids.vehicle.text
+        details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
+        print(details)
+        print(pickup, drop, pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], sep='\t')
+        # ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
+        # self.manager.current = 'ridedetails'
+
+
+class RideDetailsScreen(Screen):
+    def __init__(self, pickup_text, drop_text, vehicle_type, price_generated, driver_name, vehicle_number, otp, basic, gst, convenience, insurance,**kwargs):
+        super(RideDetailsScreen, self).__init__(**kwargs)
+        self.pickup_location_text = pickup_text
+        self.destination_location_text = drop_text
+        self.vehicle_type = vehicle_type
+        self.basic = basic
+        self.gst = gst
+        self.convenience = convenience
+        self.insurance = insurance
+        self.total_price = price_generated
+        self.driver_name_text = driver_name
+        self.vehicle_number = vehicle_number
+        self.otp = otp
+    def goBack(self):
+        self.manager.current = 'Phome'
+
+
+class AdvancedRideDetailsScreen(Screen):
+    def __init__(self, pickup_text, drop_text, vehicle_type, price_generated, driver_name, vehicle_number, otp, basic, gst, convenience, insurance, advance_fee, **kwargs):
+        super(AdvancedRideDetailsScreen, self).__init__(**kwargs)
+        self.pickup_location_text = pickup_text
+        self.destination_location_text = drop_text
+        self.vehicle_type = vehicle_type
+        self.basic = basic
+        self.gst = gst
+        self.convenience = convenience
+        self.insurance = insurance
+        self.advance_fee = advance_fee
+        self.total_price = price_generated
+        self.driver_name_text = driver_name
+        self.vehicle_number = vehicle_number
+        self.otp_text = otp
+    def goBack(self):
+        self.manager.current = 'Phome'
+
+class location():
+    def __init__(self, location, coords):
+        self.location = location
+        self.coords = coords
 
 
 class Windows(ScreenManager):
