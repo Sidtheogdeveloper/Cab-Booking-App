@@ -76,7 +76,6 @@ def getDriver(driverID: int) -> dict:
     return requests.exceptions.HTTPError
 
 def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
-def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
     """
         Creates a driver in the Database
 
@@ -84,7 +83,6 @@ def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: 
         :param email: The email of the driver
         :param phone: The phone number of the driver
         :param password: The password of the driver
-        :param vehicle_number: The vehicle number of the driver
         :param vehicle_number: The vehicle number of the driver
         :param latitude: The latitude of the driver
         :param longitude: The longitude of the driver
@@ -98,7 +96,6 @@ def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: 
         "email" : email,
         "phone" : phone,
         "password" : password,
-        "vehicle_number": vehicle_number,
         "vehicle_number": vehicle_number,
         "latitude" : latitude,
         "longitude" : longitude,
@@ -284,25 +281,6 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
             calculated[driver['driverID']] = time/driver['rating']
     calculated = sorted(calculated.items(), key=lambda item: item[1])
     return calculated
-
-def get_address(lat, lon):
-    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
-    query= f"https://api.mapbox.com/search/geocode/v6/reverse?longitude={lon}&latitude={lat}&access_token={apikey}"
-    #To get the address of that location
-    res= requests.get(query)
-    address_info= res.json()
-    address= address_info['features'][0]['properties']['full_address']
-    return address
-
-print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
-
-# print(postDriver("Subash", "abc@gmail.com", "12345", "123", "TN05 BE4392", 13.22, 80.24, "car", 4.8, True))
-# # print()
-# # print(postUser("Sub", "123@gmail.com", "4560", "100"))
-# # print()
-# # print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
-# print(getDriver(1))
-# #print(startUser("123@gmail.com", "100"))
 
 def get_address(lat, lon):
     apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"

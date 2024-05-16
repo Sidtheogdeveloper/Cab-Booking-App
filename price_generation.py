@@ -95,7 +95,7 @@ def adv_price_gen(distance, type, date, time):
             return
 
         basicfare, gst, confee, insurance, total = price_gen(distance, type)
-        total_with_advance = total + advance_charge
+        total_with_advance = round(total + advance_charge)
 
         return advance_charge, basicfare, gst, confee, insurance, total_with_advance
     
