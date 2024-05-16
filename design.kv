@@ -242,6 +242,57 @@ Windows:
                     size_hint: 0.5, 0.3
                     on_press: root.change_pwd(otp.text, errormsg)
 
+<Profileviewer>:
+    name: 'profile'
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.5
+            spacing: 20
+            padding: [30]
+            pos_hint_x: {'center_x'}
+            pos_hint_y: {'center_y'}
+            Image:
+                source: 'profile.png'
+                size_hint: 0.3, 1
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.5,1
+                Label:
+                    id: name
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 36
+                    markup: True
+                Label:
+                    id: email
+                    text: ''
+                    pos_hint_x: {'left': 1}
+                    font_size: 24
+                Label:
+                    id: phone
+                    text: ''
+                    font_size: 20
+                    pos_hint_x: {'left': 1}
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 0.2, 1
+                Button:
+                    text: 'Go Back'
+                    size_hint: 0.5, 0.2
+                    pos_hint: {'center_x': 1, 'top': 1}
+                    on_release: app.root.current= 'Phome'
+                Label:
+                    text: ''
+                    size_hint: 0.5, 0.8
+        ScrollView:
+            id: ridelay
+            do_scroll_y: True
+            do_scroll_x: False
+            size_hint: 1, 0.5
+
 <ChpwdPass>:
     name: 'chpwdps'
     canvas:
@@ -315,30 +366,31 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
-            size_hint: 0.7, 1
-            zoom: 12
-            lat: 13.0827
-            lon: 80.2707
-            MapMarker:
-                id: pickupmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: 0.1,0.1
-            	source: "destination_pointer.png"
-            MapMarker:
-                id: destinationmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: 0.1, 0.1
-            	source: "destination_pointer.png"
+        BoxLayout:
+            MapView:
+                id: passmap
+                size_hint: 0.7, 1
+                zoom: 12
+                lat: 13.0827
+                lon: 80.2707
+                MapMarker:
+                    id: pickupmarker
+                    lat: 13.069344
+                    lon: 80.195203
+                    size: '2dp', '2dp'
+                    size_hint: 0.1,0.1
+                    source: "destination_pointer.png"
+                MapMarker:
+                    id: destinationmarker
+                    lat: 13.0827
+                    lon: 80.2707
+                    size: '2dp', '2dp'
+                    size_hint: 0.1, 0.1
+                    source: "destination_pointer.png"
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True 
-            size_hint: 0.3, 1
+            size_hint: 0.2, 1
             BoxLayout:
                 spacing: 10
                 padding: [10]
@@ -349,7 +401,6 @@ Windows:
                     multiline: False
                     size_hint: 1, 0.2
                     on_double_tap: root.on_text_pickup(self)
-                    
                 TextInput:
                     id: drop
                     hint_text: 'Enter Destination(double tap to get suggestions)'
@@ -375,29 +426,22 @@ Windows:
                     text: ''
                     size_hint: 1, 0.15
                     on_release: root.select_option(self.text, 2, notify)
-
                 Label:
                     id: vehicle
                     text: ''
                     size_hint: 1, 0.2
-                
                 AnchorLayout:
-                    anchor_y: 'bottom'
-                        
+                    anchor_y: 'bottom' 
                     GridLayout:
                         size_hint: 1, 1
                         cols: 4
-                        padding: [20]
-                        spacing: 10
                         Button:
                             id: bike
                             background_normal: 'Bike.png'
                             background_down: 'Bike.png'
                             #text: 'BIKE'
                             font_size: 20
-                            size_hint: 0.25, 1
-                            valign: 'middle'
-                            halign: 'center'
+                            size_hint: 0.20, None
                             on_release: root.set_option('bike')
                         Button:
                             id: auto
@@ -405,9 +449,7 @@ Windows:
                             background_down: 'Auto.png'
                             #text: 'AUTO'
                             font_size: 20
-                            size_hint: 0.25, 1
-                            valign: 'top'
-                            halign: 'center'
+                            size_hint: 0.25, None 
                             on_release: root.set_option('auto')
                         Button:
                             id: mini
@@ -415,9 +457,7 @@ Windows:
                             background_down: 'Mini-Car.png'
                             #text: 'SEDAN'
                             font_size: 20
-                            valign: 'top'
-                            halign: 'center'
-                            size_hint: 0.25, 1
+                            size_hint: 0.30, None
                             on_release: root.set_option('sedan')
                         Button:
                             id: suv
@@ -425,30 +465,37 @@ Windows:
                             background_down: 'SUV.png'
                             #text: 'SUV'
                             font_size: 20
-                            valign: 'top'
-                            size_hint: 0.25, 1
-                            halign: 'center'
+                            size_hint: 0.25, None
                             on_release: root.set_option('suv')
                         Label:
                             text: 'BIKE'
-                            size_hint: 0.25, 1
-                            
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.20, None
                         Label:
                             text: 'AUTO'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.25, None
                         Label:
                             text: 'SEDAN'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.30, None
                         Label:
                             text: 'SUV'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            size_hint: 0.25, None
+                Label:
+                    id: price_text
+                    text: ''
+                    font_size: 20
+                BoxLayout:
+                    id: final
+                    orientation: 'horizontal'    
                     Button:
-                        text: 'Book'
+                        id: price
+                        text: 'Check Price'
                         size_hint: 1, 0.2
+                        on_release: root.generate_price()
+                    Button:
+                        id: book
+                        text: 'Book Now'
+                        size_hint: 1, 0.2
+                        on_release: root.book_now()
 
 <AdvanceBooking>:
     name: 'advancebook'
@@ -473,30 +520,32 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
-            size_hint: 0.7, 1
-            zoom: 12
-            lat: 13.0827
-            lon: 80.2707
-            MapMarker:
-                id: pickupmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: None, None
-            	source: "destination_pointer.png"
-            MapMarker:
-                id: destinationmarker
-                lat: 0
-                lon: 0
-                size: '2dp', '2dp'
-            	size_hint: None, None
-            	source: "destination_pointer.png"
+        BoxLayout:
+            MapView:
+                id: passmap
+                size_hint: 0.7, 1
+                zoom: 12
+                lat: 13.0827
+                lon: 80.2707
+                MapMarker:
+                    id: pickupmarker
+                    lat: 13.069344
+                    lon: 80.195203
+                    size: '2dp', '2dp'
+                    size_hint: 0.1,0.1
+                    source: "destination_pointer.png"
+                MapMarker:
+                    id: destinationmarker
+                    lat: 13.0827
+                    lon: 80.2707
+                    size: '2dp', '2dp'
+                    size_hint: 0.1, 0.1
+                    source: "destination_pointer.png"
         ScrollView:
+            id: right_screen
             do_scroll_x: False
             do_scroll_y: True 
-            size_hint: 0.3, 1
+            size_hint: 0.2, 1
             BoxLayout:
                 spacing: 10
                 padding: [10]
@@ -541,28 +590,23 @@ Windows:
                 TextInput:
                     id: date
                     hint_text: 'Date(format: DD-MM-YYYY)'
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.2
                 TextInput:
                     id: time
-                    hint_text: 'Time (24hr format: MM:HH)'
-                    size_hint: 1,0.1
+                    hint_text: 'Time(24hr format: HH:MM)'
+                    size_hint: 1,0.2
                 AnchorLayout:
                     anchor_y: 'bottom'
-                        
                     GridLayout:
                         size_hint: 1, 1
                         cols: 4
-                        padding: [20]
-                        spacing: 10
                         Button:
                             id: bike
                             background_normal: 'Bike.png'
                             background_down: 'Bike.png'
                             #text: 'BIKE'
                             font_size: 20
-                            size_hint: 0.25, 0.5
-                            valign: 'middle'
-                            halign: 'center'
+                            size_hint: 0.20, None
                             on_release: root.set_option('bike')
                         Button:
                             id: auto
@@ -570,9 +614,7 @@ Windows:
                             background_down: 'Auto.png'
                             #text: 'AUTO'
                             font_size: 20
-                            size_hint: 0.25, 0.5
-                            valign: 'top'
-                            halign: 'center'
+                            size_hint: 0.25, None
                             on_release: root.set_option('auto')
                         Button:
                             id: mini
@@ -580,9 +622,7 @@ Windows:
                             background_down: 'Mini-Car.png'
                             #text: 'SEDAN'
                             font_size: 20
-                            valign: 'top'
-                            halign: 'center'
-                            size_hint: 0.25, 0.5
+                            size_hint: 0.30, None
                             on_release: root.set_option('sedan')
                         Button:
                             id: suv
@@ -590,83 +630,157 @@ Windows:
                             background_down: 'SUV.png'
                             #text: 'SUV'
                             font_size: 20
-                            valign: 'top'
-                            size_hint: 0.25, 0.5
-                            halign: 'center'
+                            size_hint: 0.25, None
                             on_release: root.set_option('suv')
                         Label:
                             text: 'BIKE'
-                            size_hint: 0.25, 1
-                            
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.25, 0.5
                         Label:
                             text: 'AUTO'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.25, 0.5
                         Label:
                             text: 'SEDAN'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'bottom': 1}
+                            size_hint: 0.25, 0.5
                         Label:
                             text: 'SUV'
-                            size_hint: 0.25, 1
-                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                    Button:
-                        text: 'Book'
-                        size_hint: 1, 0.2
-
-
-<Profileviewer>:
-    name: 'profile'
-    BoxLayout:
-        orientation: 'vertical'
-        spacing: 10
-        BoxLayout:
-            orientation: 'horizontal'
-            size_hint: 1, 0.5
-            spacing: 20
-            padding: [30]
-            pos_hint_x: {'center_x'}
-            pos_hint_y: {'center_y'}
-            Image:
-                source: 'profile.png'
-                size_hint: 0.3, 1
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint: 0.5,1
+                            size_hint: 0.25, 0.5
                 Label:
-                    id: name
-                    text: ''
-                    pos_hint_x: {'left': 1}
-                    font_size: 36
-                    markup: True
-                Label:
-                    id: email
-                    text: ''
-                    pos_hint_x: {'left': 1}
-                    font_size: 24
-                Label:
-                    id: phone
+                    id: price_text
                     text: ''
                     font_size: 20
-                    pos_hint_x: {'left': 1}
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint: 0.2, 1
-                Button:
-                    text: 'Go Back'
-                    size_hint: 0.5, 0.2
-                    pos_hint: {'center_x': 1, 'top': 1}
-                    on_release: app.root.current= 'Phome'
-                Label:
-                    text: ''
-                    size_hint: 0.5, 0.8
-        ScrollView:
-            id: ridelay
-            do_scroll_y: True
-            do_scroll_x: False
-            size_hint: 1, 0.5
+                BoxLayout:
+                    id: final
+                    orientation: 'horizontal'    
+                    Button:
+                        id: price
+                        text: 'Check Price'
+                        size_hint: 1, 0.2
+                        on_release: root.generate_price()
+                    Button:
+                        id: book
+                        text: 'Book Now'
+                        size_hint: 1, 0.2
+                        on_release: root.book_advanced()
 
+<RideDetailsScreen>:
+    name: 'ridedetails'
+    GridLayout:
+        cols: 2
+        spacing: [10, 10]
+        
+        Label:
+            text: root.driver_name_text
+            font_size: '24sp' 
+            size_hint_y: None        
+        Label:
+            text: 'Pickup Location:'
+        Label:
+            id: pickup_location
+            text: '    ' + root.pickup_location_text
+        Label:
+            text: 'Destination Location:'
+        Label:
+            id: destination_location
+            text: '    ' + root.destination_location_text
+        Label:
+            id: vehicle_type
+            text: 'Type of Vehicle: ' + root.vehicle_type
+        Label:
+            text: 'Price Details:'
+            font_size: '18sp'
+            size_hint_y: None
+        Label:
+            id: basic
+            text: 'Basic: ' + root.basic
+        Label:
+            id: gst
+            text: 'GST: ' + root.gst
+        Label:
+            id: convenience
+            text: 'Convenience Fee: ' + root.convenience
+        Label:
+            id: insurance
+            text: 'Insurance: ' + root.insurance
+        Label:
+            text: 'Total'
+        Label:
+            id: total
+            text: root.total_price
+        Label:
+            id: driver_vehicle_details
+            text: 'Vehicle Number:' + root.vehicle_number
+        Button:
+            text: 'Go Back'
+            on_release: root.goBack
+
+
+<AdvancedRideDetailsScreen>:
+    name: 'advancedridedetails'
+    GridLayout:
+        cols: 2
+        spacing: [10, 10]
+        
+        Label:
+            text: root.driver_name_text
+            font_size: '24sp'  # Set font size to make the driver name larger
+            size_hint_y: None        
+        Label:
+            text: 'Pickup Location:'
+        Label:
+            id: pickup_location
+            text: '    ' + root.pickup_location_text
+        Label:
+            text: 'Destination Location:'
+        Label:
+            id: destination_location
+            text: '    ' + root.destination_location_text
+        Label:
+            id: vehicle_type
+            text: 'Type of Vehicle: ' + root.vehicle_type
+        Label:
+            text: 'Price Details:'
+            font_size: '18sp'
+            size_hint_y: None
+        Label:
+            id: basic
+            text: 'Basic: ' + root.basic
+        Label:
+            id: gst
+            text: 'GST: ' + root.gst
+        Label:
+            id: convenience
+            text: 'Convenience Fee: ' + root.convenience
+        Label:
+            id: insurance
+            text: 'Insurance: ' + root.insurance
+        Label:
+            id: advanced
+            text: 'Book in advance fee: ' + root.advance
+        Label:
+            text: 'Total'
+        Label:
+            id: total
+            text: root.total_price
+        Label:
+            id: date
+            text: 'Date: ' + root.date
+        Label:
+            id: time
+            text: 'Time: ' + root.time
+        Label:
+            id: driver_vehicle_details
+            text: 'Vehicle Number:' + root.vehicle_number
+        Label:
+            text: 'OTP:'
+        BoxLayout:
+            id: otp_box
+            orientation: 'vertical'
+            font_size: '20sp'
+            text: root.otp
+        Button:
+            text: 'Go Back'
+            on_release: root.goBack
+        
 
 <PassMenu@DropDown>:
     Button:
