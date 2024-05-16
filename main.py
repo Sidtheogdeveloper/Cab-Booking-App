@@ -263,16 +263,14 @@ class PassengerHome(Screen):
         marker.lat= lat
         marker.lon= lon
     def generate_price(self):
-        print("HI")
-        mapview = self.ids.passmap
-        pickupMarker = mapview.ids.pickupmarker
-        destinationMarker = mapview.ids.destinationmarker
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
         lat1 = pickupMarker.lat
         lon1 = pickupMarker.lon
         lat2 = destinationMarker.lat
         lon2 = destinationMarker.lon
         print(lat1, lon1, lat2, lon2)
-        vehicle_type = self.ids.right_screen.vehicle.text
+        vehicle_type = self.ids.vehicle.text
         myMap = map.API()
         distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
         print(distance)
