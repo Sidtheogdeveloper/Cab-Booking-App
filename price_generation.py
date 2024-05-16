@@ -95,7 +95,7 @@ def adv_price_gen(distance, type, date, time):
             return
 
         basicfare, gst, confee, insurance, total = price_gen(distance, type)
-        total_with_advance = total + advance_charge
+        total_with_advance = round(total + advance_charge)
 
         return advance_charge, basicfare, gst, confee, insurance, total_with_advance
     
@@ -109,7 +109,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
     myMap = map.API()
     distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
     basicfare, gst, confee, insurance, total = price_gen(distance, vehicle_type)
-    driver_details = getDriver(getTop5NearestDrivers()[0][0])
+    driver_details = getDriver(getTop5NearestDrivers(lat1, lon1, vehicle_type)[0][0])
     details = {
         "price": total,
         "driver_name": driver_details["name"],
@@ -126,11 +126,11 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
     myMap = map.API()
     distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
     advance_charge, basicfare, gst, confee, insurance, total_with_advance = adv_price_gen(distance, vehicle_type, date, time)
-    driver_details = getDriver(getTop5NearestDrivers()[0][0])
+    driver_details = getDriver(getTop5NearestDrivers(lat1, lon1, vehicle_type)[0][0])
     details = {
         "price": total_with_advance,
         "driver_name": driver_details["name"],
-        "vehicle_number": driver_details["vehicle_number"], # To be done
+        "vehicle_number": driver_details["vehicle_number"], 
         "otp": 1234,
         "basic": basicfare,
         "gst": gst,
@@ -139,7 +139,6 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
         "advance": advance_charge
     }
     return details
-
 
 
 print(adv_price_gen(10000, 'sedan', '16-05-24', '18:00'))
