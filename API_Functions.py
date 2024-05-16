@@ -75,7 +75,7 @@ def getDriver(driverID: int) -> dict:
         return response.json()
     return requests.exceptions.HTTPError
 
-def postDriver(name: str, email: str, phone: str, password:str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
+def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
     """
         Creates a driver in the Database
 
@@ -83,6 +83,7 @@ def postDriver(name: str, email: str, phone: str, password:str, latitude: float,
         :param email: The email of the driver
         :param phone: The phone number of the driver
         :param password: The password of the driver
+        :param vehicle_number: The vehicle number of the driver
         :param latitude: The latitude of the driver
         :param longitude: The longitude of the driver
         :param vehicle_type: The type of vehicle the driver has
@@ -95,6 +96,7 @@ def postDriver(name: str, email: str, phone: str, password:str, latitude: float,
         "email" : email,
         "phone" : phone,
         "password" : password,
+        "vehicle_number": vehicle_number,
         "latitude" : latitude,
         "longitude" : longitude,
         "vehicle_type" : vehicle_type,
@@ -233,7 +235,7 @@ def getRidesOfUsers(userID: int):
     Data = {
         "userID": userID
     }
-    path = "user/"
+    path = "ride/"
     response = requests.get(url=baseURL+path, params=Data)
     if response.status_code==200:
         return response.json()
@@ -288,10 +290,12 @@ def get_address(lat, lon):
     address= address_info['features'][0]['properties']['full_address']
     return address
 
-# print(postDriver("Subash", "abc@gmail.com", "12345", "123", 13.22, 80.24, "car", 4.8, True))
-# print()
-# print(postUser("Sub", "123@gmail.com", "4560", "100"))
-# print()
-# print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
+print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
 
-#print(startUser("123@gmail.com", "100"))
+# print(postDriver("Subash", "abc@gmail.com", "12345", "123", "TN05 BE4392", 13.22, 80.24, "car", 4.8, True))
+# # print()
+# # print(postUser("Sub", "123@gmail.com", "4560", "100"))
+# # print()
+# # print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
+# print(getDriver(1))
+# #print(startUser("123@gmail.com", "100"))
