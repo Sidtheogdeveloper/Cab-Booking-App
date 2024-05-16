@@ -16,6 +16,7 @@ def money_gen(distance, base, dbase):
     return (basicfare, gst, confee, insurance, total)
 
 def price_gen(distance, type):
+    distance = distance/1000
     current_time = datetime.datetime.now().time()
     if current_time.hour >= 6 and current_time.hour < 12 and type == 'sedan':
         return money_gen(distance, 18, 16)
@@ -108,7 +109,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
     myMap = map.API()
     distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
     basicfare, gst, confee, insurance, total = price_gen(distance, vehicle_type)
-    driver_details = getDriver(getTop5NearestDrivers[0][0])
+    driver_details = getDriver(getTop5NearestDrivers()[0][0])
     details = {
         "price": total,
         "driver_name": driver_details["name"],
@@ -125,7 +126,7 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
     myMap = map.API()
     distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
     advance_charge, basicfare, gst, confee, insurance, total_with_advance = adv_price_gen(distance, vehicle_type, date, time)
-    driver_details = getDriver(getTop5NearestDrivers[0][0])
+    driver_details = getDriver(getTop5NearestDrivers()[0][0])
     details = {
         "price": total_with_advance,
         "driver_name": driver_details["name"],
@@ -141,5 +142,5 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
 
 
 
-print(adv_price_gen(10, 'sedan', '15-05-24', '22:00'))
-print(price_gen(10, 'suv'))
+print(adv_price_gen(10000, 'sedan', '16-05-24', '18:00'))
+print(price_gen(10000, 'suv'))

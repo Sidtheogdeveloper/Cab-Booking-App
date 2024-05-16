@@ -276,15 +276,17 @@ class PassengerHome(Screen):
         print(distance)
         price = priceGen.price_gen(distance, vehicle_type)
         print(price)
-        self.ids.price_text.text = str(price)
+        self.ids.price_text.text = str(price[-1])
     def book_now(self):
-        pickup = self.ids.right_screen.pickup.text
-        drop = self.ids.right_screen.drop.text
-        lat1 = self.ids.passmap.ids.pickupmarker.lat
-        lon1 = self.ids.passmap.ids.pickupmarker.lon
-        lat2 = self.ids.passmap.ids.destinationmarker.lat
-        lon2 = self.ids.passmap.ids.destinationmarker.lon
-        vehicle_type = self.ids.right_screen.vehicle.text
+        pickup = self.ids.pickup.text
+        drop = self.ids.drop.text
+        pickupMarker = self.ids.pickupmarker
+        destinationMarker = self.ids.destinationmarker
+        lat1 = pickupMarker.lat
+        lon1 = pickupMarker.lon
+        lat2 = destinationMarker.lat
+        lon2 = destinationMarker.lon
+        vehicle_type = self.ids.vehicle.text
         details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
         ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
         self.manager.current = 'ridedetails'

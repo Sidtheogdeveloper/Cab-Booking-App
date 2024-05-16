@@ -117,8 +117,8 @@ class crudRides(APIView):
                 raise Http404("Ride does not exist")
         elif user_id:
             try:
-                user = User.objects.filter(userID = user_id)
-                serializer = userSerializer(user, many=True)
+                user = Ride.objects.filter(userID = user_id)
+                serializer = rideSerializer(user, many=True)
                 return(Response(serializer.data, status=status.HTTP_200_OK))
             except:
                 raise Http404("User does not exist")
