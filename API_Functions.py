@@ -279,6 +279,14 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
     calculated = sorted(calculated.items(), key=lambda item: item[1])
     return calculated
 
+def get_address(lat, lon):
+    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    query= f"https://api.mapbox.com/search/geocode/v6/reverse?longitude={lon}&latitude={lat}&access_token={apikey}"
+    #To get the address of that location
+    res= requests.get(query)
+    address_info= res.json()
+    address= address_info['features'][0]['properties']['full_address']
+    return address
 
 # print(postDriver("Subash", "abc@gmail.com", "12345", "123", 13.22, 80.24, "car", 4.8, True))
 # print()
