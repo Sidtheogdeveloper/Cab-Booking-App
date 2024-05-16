@@ -95,7 +95,7 @@ def adv_price_gen(distance, type, date, time):
             return
 
         basicfare, gst, confee, insurance, total = price_gen(distance, type)
-        total_with_advance = round(total + advance_charge)
+        total_with_advance = total + advance_charge
 
         return advance_charge, basicfare, gst, confee, insurance, total_with_advance
     
@@ -139,7 +139,6 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
         "advance": advance_charge
     }
     return details
-
-
-print(adv_price_gen(10000, 'sedan', '16-05-24', '18:00'))
-print(price_gen(10000, 'suv'))
+    
+# print(adv_price_gen(10000, 'sedan', '16-05-24', '18:00'))
+# print(price_gen(10000, 'suv'))
