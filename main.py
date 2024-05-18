@@ -210,7 +210,7 @@ class AdvanceBooking(Screen):
         time = self.ids.time.text
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
         print(details)
-        print(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"], sep='\t')
+        print(f"Pickup: {pickup}\nDrop: {drop}\nVehicle Type: {vehicle_type}\nPrice: {details["price"]}\nDriver Name: {details["driver_name"]}\nVehicle Number: {details["vehicle_number"]}\nOTP: {details["otp"]}\nBasic Fee: {details["basic"]}\nGST: {details["gst"]}\nConvenience Fee: {details["convenience"]}\nInsurance: {details["insurance"]}\nAdvance Booking Fee: {details["advance"]}\n Time of Arrival: {details["time_to_arrive"]}\nTravel Time: {details["time_of_travel"]}")
         # advanced_ride_details_screen = AdvancedRideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"])
         # self.manager.current = 'advancedridedetails'
         # self.manager.transition.direction = 'left'
@@ -337,7 +337,7 @@ class PassengerHome(Screen):
         vehicle_type = self.ids.vehicle.text
         details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
         print(details)
-        print(pickup, drop, pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], sep='\t')
+        print(f"Pickup: {pickup}\nDrop: {drop}\nVehicle Type: {vehicle_type}\nPrice: {details["price"]}\nDriver Name: {details["driver_name"]}\nVehicle Number: {details["vehicle_number"]}\nOTP: {details["otp"]}\nBasic Fee: {details["basic"]}\nGST: {details["gst"]}\nConvenience Fee: {details["convenience"]}\nInsurance: {details["insurance"]}\n Time of Arrival: {details["time_to_arrive"]}\nTravel Time: {details["time_of_travel"]}")
         # ride_details_screen = RideDetailsScreen(pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"])
         # self.manager.current = 'ridedetails'
 
