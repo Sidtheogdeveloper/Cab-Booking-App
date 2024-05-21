@@ -9,6 +9,7 @@ Windows:
     ChpwdPass:
     AdvanceBooking:
     Profileviewer:
+    RideDetailsScreen:
 
 <MainScreen>:
     name: "main"
@@ -249,7 +250,7 @@ Windows:
         spacing: 10
         BoxLayout:
             orientation: 'horizontal'
-            size_hint: 1, 0.5
+            size_hint: 0.8, 0.3
             spacing: 20
             padding: [30]
             pos_hint_x: {'center_x'}
@@ -287,12 +288,16 @@ Windows:
                 Label:
                     text: ''
                     size_hint: 0.5, 0.8
+        Label:
+            text: 'Your Rides'
+            markup: True
+            font_size: 20
+            size_hint: 1, 0.05
         ScrollView:
             id: ridelay
-            do_scroll_y: True
-            do_scroll_x: False
-            size_hint: 1, 0.5
-
+            size_hint: 1, 0.65
+            size: root.width, root.height
+            
 <ChpwdPass>:
     name: 'chpwdps'
     canvas:
@@ -482,7 +487,8 @@ Windows:
                 Label:
                     id: price_text
                     text: ''
-                    font_size: 20
+                    font_size: 16
+                    size_hint: 1, 0.2
                 BoxLayout:
                     id: final
                     orientation: 'horizontal'    
@@ -662,6 +668,260 @@ Windows:
                         size_hint: 1, 0.2
                         on_release: root.book_advanced()
 
+<RideDetailsScreen>:
+    name: 'ridedetails'
+    BoxLayout:
+        orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.1, 1
+            spacing: 10
+            padding: [10]
+            Button:
+                text: 'Profile'
+                size_hint: 1, 0.1
+                on_release: app.root.current= 'profile'
+            Button:
+                text: 'Go Back'
+                size_hint: 1, 0.1
+                on_release: root.goBack()
+            Label:
+                text: ''
+                size_hint: 1, 0.7
+            Button:
+                text: 'Logout'
+                size_hint: 1, 0.1
+                on_release: app.root.current= 'main'
+        MapView:
+            id: bookmap
+            size_hint: 0.7, 1
+            zoom: 12
+            lat: 13.0827
+            lon: 80.2707
+            MapMarker:
+                id: pickupmarker
+                lat: 13.069344
+                lon: 80.195203
+                size: '2dp', '2dp'
+                size_hint: 0.1,0.1
+                source: "pickup_pointer.png"
+            MapMarker:
+                id: destinationmarker
+                lat: 13.0827
+                lon: 80.2707
+                size: '2dp', '2dp'
+                size_hint: 0.1, 0.1
+                source: "destination_pointer.png"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.2, 1
+            spacing: 10
+            Label:
+                text: 'Booking Details'
+                size_hint: 1, 0.3
+                markup: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 1, 0.7
+                spacing: 5
+                Label:
+                    id: dname
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    markup: True
+                Label:
+                    id: dvehicletype
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: dvehicleno
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                #Label:
+                    #id: dphone
+                    #text: ''
+                    #size_hint: 1, 0.1
+                    #halign: 'left'
+                Label:
+                    id: otp
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+                Label:
+                    id: pickup
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: destination
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+                Label:
+                    id: price
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: basic
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: gst
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: convenience
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    id: insurance
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint: 1, 0.3
+                    spacing: 10
+                    Button:
+                        text: 'Cancel Ride'
+                        size_hint: 0.5, 0.5
+                        on_release: root.cancel_ride()
+                    Button:
+                        text: 'End Ride'
+                        size_hint: 0.5, 0.5 
+
+
+<AdvancedRideDetailsScreen>:
+    name: 'advancedridedetails'
+    BoxLayout:
+        orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.1, 1
+            Button:
+                text: 'Profile'
+                size_hint: 1, 0.2
+                on_release: app.root.current= 'profile'
+            Button:
+                text: 'Go Back'
+                size_hint: 1, 0.2
+                on_release: root.goBack()
+            Label:
+                text: ''
+                size_hint: 1, 0.4
+            Button:
+                text: 'Logout'
+                size_hint: 1, 0.2
+                on_release: app.root.current= 'main'
+        MapView:
+            id: bookmap
+            size_hint: 0.6, 1
+            zoom: 12
+            lat: 13.0827
+            lon: 80.2707
+            MapMarker:
+                id: pickupmarker
+                lat: 13.069344
+                lon: 80.195203
+                size: '2dp', '2dp'
+                size_hint: 0.1,0.1
+                source: "pickup_pointer.png"
+            MapMarker:
+                id: destinationmarker
+                lat: 13.0827
+                lon: 80.2707
+                size: '2dp', '2dp'
+                size_hint: 0.1, 0.1
+                source: "destination_pointer.png"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.3, 1
+            Label:
+                id: dname
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+                markup: True
+            Label:
+                id: dvehicletype
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: dvehicleno
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            #Label:
+                #id: dphone
+                #text: ''
+                #size_hint: 1, 0.1
+                #halign: 'left'
+            Label:
+                id: otp
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                text: ''
+            Label:
+                id: pickup
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: destination
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                text: ''
+            
+            Label:
+                id: price
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: basic
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: gst
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: convenience
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                id: insurance
+                text: ''
+                size_hint: 1, 0.1
+                halign: 'left'
+            Label:
+                text: ''
+            Button:
+                text: 'Cancel Ride'
 
 <PassMenu@DropDown>:
     Button:
