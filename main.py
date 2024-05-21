@@ -46,7 +46,7 @@ class PassengerLog(Screen):
             check_mail= db.forgotUser(email= email)
             if check != "error" and check['password']==password:
                 self.otp= auth.gen_otp()
-                self.otp= '123'
+                
                 response= auth.mail(email, check['name'], self.otp)
                 f= open("recentPlogin.csv", 'w')
                 writer= csv.writer(f)
@@ -74,6 +74,7 @@ class PassengerLog(Screen):
                 widget.text= 'Incorrect OTP'
         except:
             widget.text= "Enter Valid Information"
+            
 class PassengerSP(Screen):
     def __enter_data__(self, name, phone, email,pwd ,cpwd, widget):  
         try:
