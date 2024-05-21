@@ -277,8 +277,8 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
         result = api.get_details(driver['latitude'], driver['longitude'], latitude, longitude)
         if result != None:
             time= result[0]
-            calculated[driver['driverID']] = time/driver['rating']
-    calculated = sorted(calculated.items(), key=lambda item: item[1])
+            calculated[driver['driverID']] = time/driver['rating'], time
+    calculated = sorted(calculated.items(), key=lambda item: item[1][0])
     return calculated
 
 def get_address(lat, lon):

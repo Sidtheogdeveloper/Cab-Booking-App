@@ -11,7 +11,7 @@ def money_gen(distance, base, dbase):
     gst = round(18 / 100 * basicfare,2)
     confee = round(1 / 100 * basicfare,2)
     insurance = round(1 / 100 * basicfare,2)
-    total = round(basicfare + gst + confee + insurance, 2)
+    total = round(basicfare + gst + confee + insurance)
     
     return (basicfare, gst, confee, insurance, total)
 
@@ -107,40 +107,52 @@ def adv_price_gen(distance, type, date, time):
 
 def book_now(lat1, lon1, lat2, lon2, vehicle_type):
     myMap = map.API()
-    distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+    duration, distance = myMap.get_details(lat1, lon1, lat2, lon2)[:2]
     basicfare, gst, confee, insurance, total = price_gen(distance, vehicle_type)
-    driver_details = getDriver(getTop5NearestDrivers(lat1, lon1, vehicle_type)[0][0])
+    driver = getTop5NearestDrivers(lat1, lon1, vehicle_type)[0]
+    time_of_travel = driver[1][1]
+    driver_details = getDriver(driver[0])
+    print(driver_details)
     details = {
         "price": total,
         "driver_name": driver_details["name"],
         "driverID": driver_details['driverID'],
         "vehicle_number": driver_details["vehicle_number"],
+        "phone": driver_details["phone"],
         "otp": 1234,
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
         "insurance": insurance,
-        "ride_distance": distance
+        "ride_distance": int(distance//1000),
+        "duration": int(duration//60),
+        "time_of_travel": int(time_of_travel//60)
     }
     return details
 
 def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
     myMap = map.API()
-    distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+    duration, distance = myMap.get_details(lat1, lon1, lat2, lon2)[:2]
     advance_charge, basicfare, gst, confee, insurance, total_with_advance = adv_price_gen(distance, vehicle_type, date, time)
-    driver_details = getDriver(getTop5NearestDrivers(lat1, lon1, vehicle_type)[0][0])
+    driver = getTop5NearestDrivers(lat1, lon1, vehicle_type)[0]
+    time_of_travel = driver[1][1]
+    driver_details = getDriver(driver[0])
+    print(driver_details)
     details = {
         "price": total_with_advance,
         "driver_name": driver_details["name"],
         "driverID": driver_details['driverID'],
         "vehicle_number": driver_details["vehicle_number"], 
+        "phone": driver_details["phone"],
         "otp": 1234,
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
         "insurance": insurance,
         "advance": advance_charge,
-        "ride_distance": distance
+        "ride_distance": int(distance//1000),
+        "duration": int(duration//60),
+        "time_of_travel": int(time_of_travel//60)
     }
     return details
     
