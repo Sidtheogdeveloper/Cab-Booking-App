@@ -246,7 +246,23 @@ class AdvanceBooking(Screen):
         time = self.ids.time.text
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
         #pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"]
-        self.manager.advance_shared_data = AdvanceSharedData(pickup= pickup, drop_text= drop, vehicle= vehicle_type, driver_name= details["driver_name"], vehicle_no= details["vehicle_number"], otp= details['otp'], basic_pr= details['basic'], gst=details["gst"], convenience= details["convenience"], insurance= details["insurance"], pick_marker= [lat1, lon1], des_marker= [lat2, lon2])
+        self.manager.advance_shared_data = AdvanceSharedData(
+            pickup= pickup, 
+            drop_text= drop, 
+            vehicle= vehicle_type, 
+            price= details["price"], 
+            driver_name= details["driver_name"], 
+            vehicle_no= details["vehicle_number"], 
+            otp= details['otp'], 
+            basic_pr= details['basic'], 
+            gst=details["gst"], 
+            convenience= details["convenience"], 
+            insurance= details["insurance"], 
+            pick_marker= [lat1, lon1], 
+            des_marker= [lat2, lon2], 
+            date=date, 
+            time= time
+            )
         self.manager.current = 'advancedridedetails'
         # self.manager.transition.direction = 'left'
 
@@ -409,7 +425,7 @@ class PassengerHome(Screen):
         #print(details)
         ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, False, details['price']//1)
         #print(pickup, drop, pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], sep='\t')
-        self.manager.shared_data= SharedData(pickup=pickup, drop_text= drop, vehicle=vehicle_type, price=details["price"], driver_name=details["driver_name"], vehicle_no=details["vehicle_number"], otp=details["otp"], basic_pr=details["basic"], gst= details["gst"], convenience=details["convenience"], insurance=details["insurance"], pick_marker= [lat1, lon2], des_marker= [lat2, lon2], ride_id=details['rideID'] )
+        self.manager.shared_data= SharedData(pickup=pickup, drop_text= drop, vehicle=vehicle_type, price=details["price"], driver_name=details["driver_name"], vehicle_no=details["vehicle_number"], otp=details["otp"], basic_pr=details["basic"], gst= details["gst"], convenience=details["convenience"], insurance=details["insurance"], pick_marker= [lat1, lon2], des_marker= [lat2, lon2], ride_id=ride['rideID'] )
         #postRide(userID: int, driverID: int, start_lat:float, start_long: float, end_lat: float, end_long:float, advanced_booking:bool, price: float)
         self.manager.current = 'ridedetails'
 
@@ -433,7 +449,7 @@ class SharedData():
         self.rideID= ride_id
 
 class AdvanceSharedData():
-    def __init__(self, pickup=None, drop_text=None, vehicle=None, price=None, driver_name=None, vehicle_no=None, otp=None, basic_pr=None, gst=None, convenience= None, insurance=None, pick_marker= None, des_marker= None, time= None, date= None, ):
+    def __init__(self, pickup=None, drop_text=None, vehicle=None, price=None, driver_name=None, vehicle_no=None, otp=None, basic_pr=None, gst=None, convenience= None, insurance=None, pick_marker= None, des_marker= None, time= None, date= None):
         self.pickup_location_text = pickup
         self.destination_location_text = drop_text
         self.vehicle_type = vehicle
@@ -481,12 +497,12 @@ class RideDetailsScreen(Screen):
         self.manager.current = 'Phome'
 
     def cancel_ride(self):
-        
+        pass
         
 
 class AdvancedRideDetailsScreen(Screen):
     def on_enter(self):
-        details = self.manager.advancedshared_data
+        details = self.manager.advance_shared_data
         self.pickup_location_text = details.pickup_location_text
         self.destination_location_text = details.destination_location_text
         self.vehicle_type = details.vehicle_type
