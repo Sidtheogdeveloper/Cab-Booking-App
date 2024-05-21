@@ -236,7 +236,6 @@ def getRidesOfUsers(userID: int):
         "userID": userID
     }
     path = "ride/"
-    path = "ride/"
     response = requests.get(url=baseURL+path, params=Data)
     if response.status_code==200:
         return response.json()
@@ -278,8 +277,8 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
         result = api.get_details(driver['latitude'], driver['longitude'], latitude, longitude)
         if result != None:
             time= result[0]
-            calculated[driver['driverID']] = time/driver['rating'], time
-    calculated = sorted(calculated.items(), key=lambda item: item[1][0])
+            calculated[driver['driverID']] = time/driver['rating']
+    calculated = sorted(calculated.items(), key=lambda item: item[1])
     return calculated
 
 def get_address(lat, lon):
@@ -289,14 +288,23 @@ def get_address(lat, lon):
     res= requests.get(query)
     address_info= res.json()
     address= address_info['features'][0]['properties']['full_address']
-    return address
+    return(address)
 
-print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
+def route(start_lat, end_lat, start_lon, end_lon):
+    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    url= f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lon}%2C{start_lat}%3B{end_lon}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token={apikey}"
+    res= requests.get(url)
+    routes= res.json()
+    return routes['routes'][0]['geometry']['coordinates']
+
+#print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
 
 # print(postDriver("Subash", "abc@gmail.com", "12345", "123", "TN05 BE4392", 13.22, 80.24, "car", 4.8, True))
 # # print()
 # # print(postUser("Sub", "123@gmail.com", "4560", "100"))
 # # print()
-# # print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, False, 450))
-# print(getDriver(1))
+#print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, True, 450))
 # #print(startUser("123@gmail.com", "100"))
+#get_address(13.0827, 80.2707)
+#print(getRidesOfUsers(4))
+
