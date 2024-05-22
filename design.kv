@@ -786,70 +786,80 @@ Windows:
 
             Label:
                 text: '[b]Booking Details[/b]'
-                size_hint: 1, 0.3
+                size_hint: 1, 0.2
                 markup: True
                 font_size: 24
                 color: 0.1, 0.1, 0.1, 1
 
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: 1, 0.7
+                size_hint: 1, 0.8
                 spacing: 5
                 padding: [10, 0, 10, 0]
 
                 Label:
                     id: dname
-                    text: 'Driver Name: '
+                    text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
+                    bold: True
 
                 Label:
                     id: dvehicletype
-                    text: 'Vehicle Type: '
+                    text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
 
                 Label:
                     id: dvehicleno
-                    text: 'Vehicle No: '
+                    text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
+                    bold: True
 
                 Label:
                     id: driver_phone
-                    text: 'Driver Phone: '
+                    text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
+                Label:
+                    text: ''
+                    size_hint: 1, 0.1
 
                 Label:
                     id: time_of_arrival
-                    text: 'Time of Arrival: '
+                    text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
+                    markup: True
 
                 Label:
                     id: otp
-                    text: 'OTP: '
-                    size_hint: 1, 0.1
-                    halign: 'left'
+                    text: ''
+                    size_hint: 1, 0.2
+                    font_size: "30sp"
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
+                    markup: True
 
                 Label:
                     text: ''
@@ -930,7 +940,7 @@ Windows:
                     id: duration
                     text: 'Duration: '
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
@@ -939,7 +949,7 @@ Windows:
                     id: ride_distance
                     text: 'Distance: '
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
@@ -980,8 +990,8 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
+        CustomMapView:
+            id: bookmap
             size_hint: 0.6, 1
             zoom: 12
             lat: 13.0827
@@ -1004,119 +1014,232 @@ Windows:
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.3, 1
+            padding: [10, 10, 10, 10]
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
             Label:
-                text: 'Booking Details'
-                size_hint: 1, 0.3
+                text: '[b]Booking Details[/b]'
+                size_hint: 1, 0.2
                 markup: True
+                font_size: 24
+                color: 0.1, 0.1, 0.1, 1
+
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: 1, 0.7
+                size_hint: 1, 0.8
                 spacing: 5
+                padding: [10, 0, 10, 0]
+
                 Label:
                     id: dname
                     text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
-                    markup: True
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
                 Label:
                     id: dvehicletype
                     text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: dvehicleno
                     text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
                 Label:
                     id: driver_phone
                     text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
+                Label:
+                    text: ''
+                    size_hint: 1, 0.1
+
                 Label:
                     id: time_of_arrival
                     text: ''
                     size_hint: 1, 0.1
-                    halign: 'left'
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    markup: True
+
                 Label:
                     id: otp
                     text: ''
-                    size_hint: 1, 0.1
-                    halign: 'left'
+                    size_hint: 1, 0.2
+                    font_size: "30sp"
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    markup: True
+
                 Label:
                     text: ''
+                    size_hint: 1, 0.2
+
                 Label:
                     id: pickup
-                    text: ''
+                    text: 'Pickup Location: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: destination
-                    text: ''
+                    text: 'Destination: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Label:
                     id: basic
-                    text: ''
+                    text: 'Basic Fare: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: gst
-                    text: ''
+                    text: 'GST: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: convenience
-                    text: ''
+                    text: 'Convenience Fee: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: insurance
-                    text: ''
+                    text: 'Insurance: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: advance
-                    text: ''
+                    text: 'Advance: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: price
-                    text: ''
+                    text: 'Total Price: '
                     size_hint: 1, 0.1
                     halign: 'left'
-                Label:
-                    text: 'Advance Booking Time'
-                    size_hint: 1, 0.1
-                Label:
-                    id: date
-                    text: ''
-                    size_hint: 1, 0.1
-                Label:
-                    id: time
-                    text: ''
-                    size_hint: 1, 0.1
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Label:
                     id: duration
-                    text: ''
+                    text: 'Duration: '
                     size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: ride_distance
-                    text: ''
+                    text: 'Distance: '
                     size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
+                Label:
+                    text: 'Advance Booking Time'
+                    text: 'Distance: '
+                    size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                
+                Label:
+                    id: date
+                    text: 'Date: '
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                
+                Label:
+                    id: time
+                    text: 'Time: '
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Button:
                     text: 'Cancel Ride'
                     size_hint: 1, None
+                    height: 40
                     on_release: root.cancel_ride()
+                    background_color: (1, 0.2, 0.2, 1)
+                    color: (1, 1, 1, 1)
 
 <CancellationScreen>:
     name: 'cancelscreen'
@@ -1143,7 +1266,7 @@ Windows:
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
         MapView:
-            id: passmap
+            id: bookmap
             size_hint: 0.6, 1
             zoom: 12
             lat: 13.0827

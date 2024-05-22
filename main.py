@@ -247,7 +247,6 @@ class AdvanceBooking(Screen):
         time = self.ids.time.text
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
         ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, True, details['price'])
-        #pickup, drop, vehicle_type, details["price"], details["driver_name"], details["vehicle_number"], details["otp"], details["basic"], details["gst"], details["convenience"], details["insurance"], details["advance"]
         self.manager.advance_shared_data = AdvanceSharedData(
             pickup= pickup, 
             drop_text= drop, 
@@ -337,7 +336,6 @@ class CustomMapView(MapView):
         super().__init__(**kwargs)
         self.lines = []  # To store the Line objects
         self.coordinates = []
-        self.canvas.clear()
     def update_lines(self, coordinates):
         # Store the coordinates for later use
         self.coordinates = coordinates
@@ -570,7 +568,7 @@ class RideDetailsScreen(Screen):
         self.ids.dname.text= self.driver_name_text
         self.ids.dvehicletype.text= (self.vehicle_type).upper()
         self.ids.dvehicleno.text= self.vehicle_number
-        self.ids.otp.text= 'OTP: '+str(self.otp)
+        self.ids.otp.text= f"[b]OTP:[/b] [color=ff0000]{str(self.otp)}[/color]"
         self.ids.pickup.text= 'Pickup: '+self.pickup_location_text
         self.ids.destination.text= 'Drop: '+ self.destination_location_text
         self.ids.price.text= 'Price: '+ str(self.total_price)
@@ -582,7 +580,7 @@ class RideDetailsScreen(Screen):
         self.ids.driver_phone.text = 'Phone: ' + str(self.driver_phone)
         self.ids.ride_distance.text='Ride Distance: ' + str(self.ride_distance) + " km"
         self.ids.duration.text = 'Travel Time: '+ str(self.duration) + " mins"
-        self.ids.time_of_arrival.text = "Driver is " + str(self.time_of_arrival) + " minutes away"
+        self.ids.time_of_arrival.text = f"Driver is [color=0000ff]{str(self.time_of_arrival)}[/color] minutes away"
 
     def goBack(self):
         self.manager.current = 'Phome'
@@ -626,7 +624,7 @@ class AdvancedRideDetailsScreen(Screen):
         self.ids.dname.text= self.driver_name_text
         self.ids.dvehicletype.text= (self.vehicle_type).upper()
         self.ids.dvehicleno.text= self.vehicle_number
-        self.ids.otp.text= 'OTP: '+str(self.otp)
+        self.ids.otp.text= f"[b]OTP:[/b] [color=ff0000]{str(self.otp)}[/color]"
         self.ids.pickup.text= 'Pickup: '+self.pickup_location_text
         self.ids.destination.text= 'Drop: '+ self.destination_location_text
         self.ids.price.text= 'Price: '+ str(self.total_price)
@@ -641,7 +639,7 @@ class AdvancedRideDetailsScreen(Screen):
         self.ids.advance.text = "Advance: " + str(self.advance)
         self.ids.ride_distance.text = 'Ride Distance: '+str(self.ride_distance) + " km"
         self.ids.duration.text = 'Travel Time: '+ str(self.duration) + " mins"
-        self.ids.time_of_arrival.text = "Driver is " + str(self.time_of_arrival) + " minutes away"
+        self.ids.time_of_arrival.text = f"Driver is [color=0000ff]{str(self.time_of_arrival)}[/color] minutes away"
 
     def goBack(self):
         self.manager.current = 'Phome'
