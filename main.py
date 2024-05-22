@@ -335,6 +335,7 @@ class PassengerHome(Screen):
     def on_enter(self):
         self.pick=0
         self.des= 0
+        self.lines = []
 
     def on_text_pickup(self, prompt):
         myMap = map.API()
@@ -416,6 +417,14 @@ class PassengerHome(Screen):
             distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
             price = priceGen.price_gen(distance, vehicle_type)
             self.ids.price_text.text = str(price[-1])
+            # coords = db.route(lat1, lat2, lon1, lon2)
+            # for line in self.lines:
+            #     self.canvas.remove(line)
+            # self.lines.clear()
+            # with self.canvas:
+            #     Color(1, 0, 0, 1)
+            #     for i in range(len(coords)-1):
+            #         self.lines.append(Line(points=[coords[i][0], coords[i][1], coords[i+1][0], coords[i+1][1]]))
 
     def book_now(self):
         pickup = self.ids.pickup.text
@@ -511,6 +520,7 @@ class RideDetailsScreen(Screen):
         self.driver_name_text = details.driver_name_text
         self.vehicle_number = details.vehicle_number
         self.otp = details.otp_text
+        self.rideID = details.rideID
         # New
         self.driver_phone = details.driver_phone
         self.ride_distance = details.ride_distance
@@ -538,7 +548,9 @@ class RideDetailsScreen(Screen):
         self.manager.current = 'Phome'
 
     def cancel_ride(self):
-        pass
+        cancellationFee = priceGen.cancelRide(rideID=self.rideID)
+        self.manager.get_screen('cancelscreen').update_result(cancellationFee)
+        self.manager.current = 'cancelscreen'
         
 
 class AdvancedRideDetailsScreen(Screen):
@@ -556,6 +568,7 @@ class AdvancedRideDetailsScreen(Screen):
         self.driver_name_text = details.driver_name_text
         self.vehicle_number = details.vehicle_number
         self.otp = details.otp_text
+        self.rideID = details.rideID
         # New
         self.date = details.date
         self.time = details.time
@@ -588,7 +601,16 @@ class AdvancedRideDetailsScreen(Screen):
         self.manager.current = 'Phome'
 
     def cancel_ride(self):
-        pass
+        cancellationFee = priceGen.cancelRide(rideID=self.rideID)
+        self.manager.get_screen('cancelscreen').update_result(cancellationFee)
+        self.manager.current = 'cancelscreen'
+
+
+class CancellationScreen(Screen):
+    def update_result(self, computed_value):
+        self.ids.cancelfee.text = "Cancellation Fee: " + str(computed_value)
+    def goBack(self):
+        self.manager.current = 'Phome'
 
 class location():
     def __init__(self, location, coords):

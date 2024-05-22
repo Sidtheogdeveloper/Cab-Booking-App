@@ -2,7 +2,7 @@ import requests
 from urllib.parse import quote
 
 class API():
-    apiKey = "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXBhdm1lMDk1ZzJqbmpxZHJuMzNrOCJ9.EFJgFVLpWcw6na48RwJN-g"
+    apiKey = "pk.eyJ1Ijoic2l2YXNyaXJhbWFuIiwiYSI6ImNsd2dtZDc2bDA0dTEyanFtcWZsOWo2ZW8ifQ.M0oXYvhObW1puI72Tk1zZw"
 
     def get_image(self, lon1, lat1, lon2, lat2, geometry):
         geometry = quote(geometry, safe="")
