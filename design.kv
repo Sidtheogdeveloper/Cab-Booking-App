@@ -374,7 +374,7 @@ Windows:
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
         BoxLayout:
-            MapView:
+            CustomMapView:
                 id: passmap
                 size_hint: 0.6, 1
                 zoom: 12
@@ -505,6 +505,64 @@ Windows:
                         size_hint: 1, 0.2
                         on_release: root.book_now()
 
+<CancellationScreen>:
+    name: 'cancelscreen'
+    BoxLayout:
+        orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.1, 1
+            spacing: 10
+            padding: [10]
+            Button:
+                text: 'Profile'
+                size_hint: 1, 0.1
+                on_release: app.root.current= 'profile'
+            Button:
+                text: 'Go Back'
+                size_hint: 1, 0.1
+                on_release: root.goBack()
+            Label:
+                text: ''
+                size_hint: 1, 0.7
+            Button:
+                text: 'Logout'
+                size_hint: 1, 0.1
+                on_release: app.root.current= 'main'
+        MapView:
+            id: passmap
+            size_hint: 0.6, 1
+            zoom: 12
+            lat: 13.0827
+            lon: 80.2707
+            MapMarker:
+                id: pickupmarker
+                lat: 13.069344
+                lon: 80.195203
+                size: '2dp', '2dp'
+                size_hint: 0.1,0.1
+                source: "pickup_pointer.png"
+            MapMarker:
+                id: destinationmarker
+                lat: 13.0827
+                lon: 80.2707
+                size: '2dp', '2dp'
+                size_hint: 0.1, 0.1
+                source: "destination_pointer.png"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.3, 1
+            Label:
+                text: 'RIDE CANCELLED\nSUCCESSFULLY'
+                markup: True
+            Label:
+                id: cancelfee
+                text: ''
+            Button:
+                text: 'Go Back'
+                size_hint: 1, None
+                on_release: root.goBack()
+
 <AdvanceBooking>:
     name: 'advancebook'
     BoxLayout:
@@ -529,7 +587,7 @@ Windows:
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
         BoxLayout:
-            MapView:
+            CustomMapView:
                 id: passmap
                 size_hint: 0.6, 1
                 zoom: 12
@@ -694,8 +752,8 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
+        CustomMapView:
+            id: bookmap
             size_hint: 0.6, 1
             zoom: 12
             lat: 13.0827
@@ -717,105 +775,187 @@ Windows:
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.3, 1
+            padding: [10, 10, 10, 10]
             spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
             Label:
-                text: 'Booking Details'
+                text: '[b]Booking Details[/b]'
                 size_hint: 1, 0.3
                 markup: True
+                font_size: 24
+                color: 0.1, 0.1, 0.1, 1
+
             BoxLayout:
                 orientation: 'vertical'
                 size_hint: 1, 0.7
                 spacing: 5
+                padding: [10, 0, 10, 0]
+
                 Label:
                     id: dname
-                    text: ''
+                    text: 'Driver Name: '
                     size_hint: 1, 0.1
                     halign: 'left'
-                    markup: True
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: dvehicletype
-                    text: ''
+                    text: 'Vehicle Type: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: dvehicleno
-                    text: ''
+                    text: 'Vehicle No: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: driver_phone
-                    text: ''
+                    text: 'Driver Phone: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: time_of_arrival
-                    text: ''
+                    text: 'Time of Arrival: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: otp
-                    text: ''
+                    text: 'OTP: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Label:
                     id: pickup
-                    text: ''
+                    text: 'Pickup Location: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: destination
-                    text: ''
+                    text: 'Destination: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Label:
                     id: basic
-                    text: ''
+                    text: 'Basic Fare: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: gst
-                    text: ''
+                    text: 'GST: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: convenience
-                    text: ''
+                    text: 'Convenience Fee: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: insurance
-                    text: ''
+                    text: 'Insurance: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: price
-                    text: ''
+                    text: 'Total Price: '
                     size_hint: 1, 0.1
                     halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Label:
                     id: duration
-                    text: ''
+                    text: 'Duration: '
                     size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     id: ride_distance
-                    text: ''
+                    text: 'Distance: '
                     size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
                 Label:
                     text: ''
                     size_hint: 1, 0.2
+
                 Button:
                     text: 'Cancel Ride'
                     size_hint: 1, None
+                    height: 40
                     on_release: root.cancel_ride()
+                    background_color: (1, 0.2, 0.2, 1)
+                    color: (1, 1, 1, 1)
+
 
 
 <AdvancedRideDetailsScreen>:
@@ -1046,6 +1186,11 @@ Windows:
     
     Button:
         text: 'Logout'
+
+<CustomMapView>:
+    on_zoom: self.redraw_lines()
+    on_size: self.redraw_lines()
+    on_touch_up: self.redraw_lines()
 
 <RoundedButton@Button>:
     background_color: (0,0,0,0)

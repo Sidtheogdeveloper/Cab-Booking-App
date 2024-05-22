@@ -31,7 +31,7 @@ class API():
             print("Error:", data.status_code)
 
     def searchResults(self, prompt):
-        url = f"https://api.mapbox.com/search/searchbox/v1/suggest?q={prompt.replace(" ", "+")}&language=en&session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}"
+        url = f'https://api.mapbox.com/search/searchbox/v1/suggest?q={prompt.replace(" ", "+")}&language=en&session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}'
         results = requests.get(url)
         if results.status_code == 200:
             results = results.json()["suggestions"]

@@ -17,6 +17,7 @@ import update_API_functions as update_db
 import price_generation as priceGen
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
+from kivy.clock import Clock
 
 class MainScreen(Screen):
     pass
@@ -328,15 +329,58 @@ class Profileviewer(Screen):
         scroll.add_widget(self.grid)
 
 class SharedRideData():
-    def __init__(self, rideID=None, ):
+    def __init__(self, rideID=None):
         self.ride= rideID 
+
+class CustomMapView(MapView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.lines = []  # To store the Line objects
+        self.coordinates = []
+        self.canvas.clear()
+    def update_lines(self, coordinates):
+        # Store the coordinates for later use
+        self.coordinates = coordinates
+        self.redraw_lines()
+
+    def redraw_lines(self, *args):
+        # Clear previous lines from the canvas
+        
+        for line in self.lines:
+            self.canvas.remove(line)
+        self.lines.clear()
+
+        if not self.coordinates:
+            return
+
+        # Draw new lines
+        with self.canvas:
+            Color(1, 0, 0, 1)  # Set the line color to red
+            for i in range(len(self.coordinates) - 1):
+                if self.valid_coordinates(self.coordinates[i]) and self.valid_coordinates(self.coordinates[i + 1]):
+                    x1, y1 = self.convert_to_screen_coordinates(self.coordinates[i][1], self.coordinates[i][0])
+                    x2, y2 = self.convert_to_screen_coordinates(self.coordinates[i + 1][1], self.coordinates[i+1][0])
+                    # Draw the line between two points
+                    line = Line(points=[x1, y1, x2, y2], width=2)
+                    self.lines.append(line)
+
+    def valid_coordinates(self, coord):
+        # Check if the coordinates are valid (not None)
+        return coord[0] is not None and coord[1] is not None
+
+    def convert_to_screen_coordinates(self, lati, long):
+        # Convert lat/lon to screen coordinates
+        #lat, lon = lati, long
+        return self.to_local(*super().get_window_xy_from(lati, long, self.zoom))
+
 
 class PassengerHome(Screen):
     def on_enter(self):
         self.pick=0
         self.des= 0
-        self.lines = []
-
+        self.map= self.ids.passmap
+        self.route_map(self.ids.pickupmarker.lat, self.ids.destinationmarker.lat,  self.ids.pickupmarker.lon,self.ids.destinationmarker.lon)
+        
     def on_text_pickup(self, prompt):
         myMap = map.API()
         suggestions = myMap.suggestionCoordinates(prompt.text)
@@ -349,6 +393,7 @@ class PassengerHome(Screen):
         self.ids.suggest1.text= suggestions[0][0]
         self.ids.suggest2.text= suggestions[1][0]
         self.ids.suggest3.text= suggestions[2][0]
+
     def on_text_destination(self, prompt):
         myMap = map.API()
         suggestions = myMap.suggestionCoordinates(prompt.text)
@@ -374,7 +419,7 @@ class PassengerHome(Screen):
             elif self.choice== 'destination':
                 lon= self.destination_sug[pos].coords[0]
                 lat= self.destination_sug[pos].coords[1]
-                self.ids.drop.text= self.pickup_sug[pos].location
+                self.ids.drop.text= self.destination_sug[pos].location
                 self.update_map_coordinates(lat, lon)
                 self.update_marker(self.ids.destinationmarker, lat, lon)
                 self.des=1
@@ -394,15 +439,10 @@ class PassengerHome(Screen):
         marker.lat= lat
         marker.lon= lon
     
-    def route_map(self, start_lat, end_lat, start_lon, end_lon, instance):
-        route_layer= MapLayer()
-        for layer in map.layers[:]:
-            if isinstance(layer, MapLayer):
-                map.remove_layer(layer)
+    def route_map(self, start_lat, end_lat, start_lon, end_lon):
+        self.map.lines= []
         route= db.route(start_lat, end_lat, start_lon, end_lon)
-        for point in route:
-            route_layer.add_point(point[1], point[0])
-        map.add_layer(route_layer)
+        self.map.update_lines(route)
 
     def generate_price(self):
         pickupMarker = self.ids.pickupmarker
@@ -457,7 +497,7 @@ class PassengerHome(Screen):
             duration=details["duration"], 
             time_of_travel=details["time_of_travel"], 
             ride_id=ride['rideID']
-            )
+        )
         self.manager.current = 'ridedetails'
 
 
@@ -552,6 +592,12 @@ class RideDetailsScreen(Screen):
         self.manager.get_screen('cancelscreen').update_result(cancellationFee)
         self.manager.current = 'cancelscreen'
         
+
+class CancellationScreen(Screen):
+    def update_result(self, computed_value):
+        self.ids.cancelfee.text = "Cancellation Fee: " + str(computed_value)
+    def goBack(self):
+        self.manager.current = 'Phome'
 
 class AdvancedRideDetailsScreen(Screen):
     def on_enter(self):
