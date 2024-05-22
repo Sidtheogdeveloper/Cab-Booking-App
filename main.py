@@ -152,6 +152,7 @@ class AdvanceBooking(Screen):
         dlat= self.ids.destinationmarker.lat
         plon= self.ids.pickupmarker.lon
         dlon= self.ids.pickupmarker.lon
+        self.map= self.ids.passmap
         self.route_map(plat, dlat, plon, dlon, self.ids.passmap)
     def on_text_pickup(self, prompt):
         myMap = map.API()
@@ -214,11 +215,9 @@ class AdvanceBooking(Screen):
         self.ids.vehicle.text = vehicle
 
     def route_map(self, start_lat, end_lat, start_lon, end_lon, map):
-        pass
-        #route= db.route(start_lat, end_lat, start_lon, end_lon)
-        #routeline= MapPolyLine(points= route, line_color= [0,1,0,1])
-        #map.add_polyline(routeline)
-
+        route= db.route(start_lat, end_lat, start_lon, end_lon)
+        self.route= route
+        self.map.update_lines(route)       
         
     def generate_price(self):
         pickupMarker = self.ids.pickupmarker
@@ -243,8 +242,11 @@ class AdvanceBooking(Screen):
         lat2 = self.ids.destinationmarker.lat
         lon2 = self.ids.destinationmarker.lon
         vehicle_type = self.ids.vehicle.text
+        self.manager.advance_pick_loc=[lat1, lon1]
+        self.manager.advance_des_loc=[lat2, lon2]
         date = self.ids.date.text
         time = self.ids.time.text
+        self.manager.advance_route= self.route
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
         ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, True, details['price'])
         self.manager.advance_shared_data = AdvanceSharedData(
@@ -438,8 +440,8 @@ class PassengerHome(Screen):
         marker.lon= lon
     
     def route_map(self, start_lat, end_lat, start_lon, end_lon):
-        self.map.lines= []
         route= db.route(start_lat, end_lat, start_lon, end_lon)
+        self.route= route
         self.map.update_lines(route)
 
     def generate_price(self):
@@ -474,6 +476,9 @@ class PassengerHome(Screen):
         lat2 = destinationMarker.lat
         lon2 = destinationMarker.lon
         vehicle_type = self.ids.vehicle.text
+        self.manager.pickup_loc= [lat1, lon1]
+        self.manager.des_loc= [lat2, lon2]
+        self.manager.route= self.route
         details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
         ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, False, details['price'])
         self.manager.shared_data= SharedData(
@@ -564,7 +569,10 @@ class RideDetailsScreen(Screen):
         self.ride_distance = details.ride_distance
         self.duration = details.duration
         self.time_of_arrival = details.time_of_arrival
-
+        self.ids.pickupmarker.lat= self.manager.pickup_loc[0]
+        self.ids.pickupmarker.lon= self.manager.pickup_loc[1]
+        self.ids.destinationmarker.lat= self.manager.des_loc[0]
+        self.ids.destinationmarker.lon= self.manager.des_loc[1]
         self.ids.dname.text= self.driver_name_text
         self.ids.dvehicletype.text= (self.vehicle_type).upper()
         self.ids.dvehicleno.text= self.vehicle_number
@@ -581,7 +589,8 @@ class RideDetailsScreen(Screen):
         self.ids.ride_distance.text='Ride Distance: ' + str(self.ride_distance) + " km"
         self.ids.duration.text = 'Travel Time: '+ str(self.duration) + " mins"
         self.ids.time_of_arrival.text = f"Driver is [color=0000ff]{str(self.time_of_arrival)}[/color] minutes away"
-
+        self.mapp= self.ids.bookmap
+        self.mapp.update_lines(self.manager.route)
     def goBack(self):
         self.manager.current = 'Phome'
 
@@ -620,7 +629,13 @@ class AdvancedRideDetailsScreen(Screen):
         self.ride_distance = details.ride_distance
         self.duration = details.duration
         self.time_of_arrival = details.time_of_arrival
-
+        self.ids.pickupmarker.lat= self.manager.advance_pick_loc[0]
+        self.ids.pickupmarker.lon= self.manager.advance_pick_loc[1]
+        self.ids.destinationmarker.lat= self.manager.advance_des_loc[0]
+        self.ids.destinationmarker.lon= self.manager.advance_des_loc[1]
+        self.mapp= self.ids.bookmap
+        self.mapp.update_lines(self.manager.route)
+        
         self.ids.dname.text= self.driver_name_text
         self.ids.dvehicletype.text= (self.vehicle_type).upper()
         self.ids.dvehicleno.text= self.vehicle_number
