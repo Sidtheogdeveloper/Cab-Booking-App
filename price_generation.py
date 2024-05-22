@@ -1,6 +1,6 @@
 import datetime
 import map
-from API_Functions import getTop5NearestDrivers, getDriver
+from API_Functions import getTop5NearestDrivers, getDriver, getRide, deleteRide
 
 def money_gen(distance, base, dbase):
     if distance <= 20:
@@ -99,7 +99,18 @@ def adv_price_gen(distance, type, date, time):
 
         return advance_charge, basicfare, gst, confee, insurance, total_with_advance
     
-
+def cancelRide(rideID):
+    details = deleteRide(rideID)
+    current_time = datetime.datetime.now()
+    ride_time = datetime.datetime.strptime(details["date"] + ' ' + details["time"], '%Y-%m-%d %H:%M:%S.%f')
+    time_difference = current_time - ride_time
+    difference_in_minutes = time_difference.total_seconds() / 60
+    if difference_in_minutes < 5:
+        return 0
+    elif 5 <= difference_in_minutes < 10:
+        return 50
+    else:
+        return 100
 
 
 # details = something.book_now(lat1, lon1, lat2, lon2, vehicle_type)
