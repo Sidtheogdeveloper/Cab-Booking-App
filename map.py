@@ -2,8 +2,8 @@ import requests
 from urllib.parse import quote
 
 class API():
-    apiKey = "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXBhdm1lMDk1ZzJqbmpxZHJuMzNrOCJ9.EFJgFVLpWcw6na48RwJN-g"
-
+    apiKey = "pk.eyJ1Ijoic2l2YXNyaXJhbWFuIiwiYSI6ImNsd2dtZDc2bDA0dTEyanFtcWZsOWo2ZW8ifQ.M0oXYvhObW1puI72Tk1zZw"
+    # pk.eyJ1Ijoic2l2YXNyaXJhbWFuIiwiYSI6ImNsd2dtZDc2bDA0dTEyanFtcWZsOWo2ZW8ifQ.M0oXYvhObW1puI72Tk1zZw
     def get_image(self, lon1, lat1, lon2, lat2, geometry):
         geometry = quote(geometry, safe="")
         url = "https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-s+ff0000(" + str(lon1) + "," + str(lat1) + "),pin-s+ff0000(" + str(lon2) + "," + str(lat2) + "),path+3734fe(" + geometry + ")/auto/300x200?padding=50&access_token=" + self.apiKey
@@ -31,7 +31,7 @@ class API():
             print("Error:", data.status_code)
 
     def searchResults(self, prompt):
-        url = f"https://api.mapbox.com/search/searchbox/v1/suggest?q={prompt.replace(" ", "+")}&language=en&session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}"
+        url = f'https://api.mapbox.com/search/searchbox/v1/suggest?q={prompt.replace(" ", "+")}&language=en&session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}'
         results = requests.get(url)
         if results.status_code == 200:
             results = results.json()["suggestions"]
