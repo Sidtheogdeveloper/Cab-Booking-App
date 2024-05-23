@@ -295,7 +295,10 @@ def route(start_lat, end_lat, start_lon, end_lon):
     url= f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lon}%2C{start_lat}%3B{end_lon}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token={apikey}"
     res= requests.get(url)
     routes= res.json()
-    return routes['routes'][0]['geometry']['coordinates']
+    try:
+        return routes['routes'][0]['geometry']['coordinates']
+    except IndexError:
+        return []
 
 #print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
 

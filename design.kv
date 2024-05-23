@@ -382,15 +382,15 @@ Windows:
                 lon: 80.2707
                 MapMarker:
                     id: pickupmarker
-                    lat: 13.069344
-                    lon: 80.195203
+                    lat: 0#13.069344
+                    lon: 0#80.195203
                     size: '2dp', '2dp'
                     size_hint: 0.1,0.1
                     source: "pickup_pointer.png"
                 MapMarker:
                     id: destinationmarker
-                    lat: 13.0827
-                    lon: 80.2707
+                    lat: 0#13.0827
+                    lon: 0#80.2707
                     size: '2dp', '2dp'
                     size_hint: 0.1, 0.1
                     source: "destination_pointer.png"
@@ -529,26 +529,27 @@ Windows:
                 text: 'Logout'
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
-        MapView:
-            id: passmap
-            size_hint: 0.6, 1
-            zoom: 12
-            lat: 13.0827
-            lon: 80.2707
-            MapMarker:
-                id: pickupmarker
-                lat: 13.069344
-                lon: 80.195203
-                size: '2dp', '2dp'
-                size_hint: 0.1,0.1
-                source: "pickup_pointer.png"
-            MapMarker:
-                id: destinationmarker
+        BoxLayout:
+            CustomMapView:
+                id: passmap
+                size_hint: 0.6, 1
+                zoom: 12
                 lat: 13.0827
                 lon: 80.2707
-                size: '2dp', '2dp'
-                size_hint: 0.1, 0.1
-                source: "destination_pointer.png"
+                MapMarker:
+                    id: pickupmarker
+                    lat: 0 #13.069344
+                    lon: 0 #80.195203
+                    size: '2dp', '2dp'
+                    size_hint: 0.1,0.1
+                    source: "pickup_pointer.png"
+                MapMarker:
+                    id: destinationmarker
+                    lat: 0 #13.0827
+                    lon: 0 #80.2707
+                    size: '2dp', '2dp'
+                    size_hint: 0.1, 0.1
+                    source: "destination_pointer.png"
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.3, 1
@@ -595,15 +596,15 @@ Windows:
                 lon: 80.2707
                 MapMarker:
                     id: pickupmarker
-                    lat: 13.069344
-                    lon: 80.195203
+                    lat: 0 #13.069344
+                    lon: 0 #80.195203
                     size: '2dp', '2dp'
                     size_hint: 0.1,0.1
                     source: "pickup_pointer.png"
                 MapMarker:
                     id: destinationmarker
-                    lat: 13.0827
-                    lon: 80.2707
+                    lat: 0 #13.0827
+                    lon: 0 #80.2707
                     size: '2dp', '2dp'
                     size_hint: 0.1, 0.1
                     source: "destination_pointer.png"
@@ -760,15 +761,15 @@ Windows:
             lon: 80.2707
             MapMarker:
                 id: pickupmarker
-                lat: 13.069344
-                lon: 80.195203
+                lat: 0 #13.069344
+                lon: 0 #80.195203
                 size: '2dp', '2dp'
                 size_hint: 0.1,0.1
                 source: "pickup_pointer.png"
             MapMarker:
                 id: destinationmarker
-                lat: 13.0827
-                lon: 80.2707
+                lat: 0 #13.0827
+                lon: 0 #80.2707
                 size: '2dp', '2dp'
                 size_hint: 0.1, 0.1
                 source: "destination_pointer.png"
@@ -998,15 +999,15 @@ Windows:
             lon: 80.2707
             MapMarker:
                 id: pickupmarker
-                lat: 13.069344
-                lon: 80.195203
+                lat: 0 #13.069344
+                lon: 0 #80.195203
                 size: '2dp', '2dp'
                 size_hint: 0.1,0.1
                 source: "pickup_pointer.png"
             MapMarker:
                 id: destinationmarker
-                lat: 13.0827
-                lon: 80.2707
+                lat: 0 #13.0827
+                lon: 0 #80.2707
                 size: '2dp', '2dp'
                 size_hint: 0.1, 0.1
                 source: "destination_pointer.png"
@@ -1240,64 +1241,6 @@ Windows:
                     on_release: root.cancel_ride()
                     background_color: (1, 0.2, 0.2, 1)
                     color: (1, 1, 1, 1)
-
-<CancellationScreen>:
-    name: 'cancelscreen'
-    BoxLayout:
-        orientation: 'horizontal'
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 0.1, 1
-            spacing: 10
-            padding: [10]
-            Button:
-                text: 'Profile'
-                size_hint: 1, 0.1
-                on_release: app.root.current= 'profile'
-            Button:
-                text: 'Go Back'
-                size_hint: 1, 0.1
-                on_release: root.goBack()
-            Label:
-                text: ''
-                size_hint: 1, 0.7
-            Button:
-                text: 'Logout'
-                size_hint: 1, 0.1
-                on_release: app.root.current= 'main'
-        MapView:
-            id: bookmap
-            size_hint: 0.6, 1
-            zoom: 12
-            lat: 13.0827
-            lon: 80.2707
-            MapMarker:
-                id: pickupmarker
-                lat: 13.069344
-                lon: 80.195203
-                size: '2dp', '2dp'
-                size_hint: 0.1,0.1
-                source: "pickup_pointer.png"
-            MapMarker:
-                id: destinationmarker
-                lat: 13.0827
-                lon: 80.2707
-                size: '2dp', '2dp'
-                size_hint: 0.1, 0.1
-                source: "destination_pointer.png"
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 0.3, 1
-            Label:
-                text: 'RIDE CANCELLED\nSUCCESSFULLY'
-                markup: True
-            Label:
-                id: cancelfee
-                text: ''
-            Button:
-                text: 'Go Back'
-                size_hint: 1, None
-                on_release: root.goBack()
 
 
 <PassMenu@DropDown>:

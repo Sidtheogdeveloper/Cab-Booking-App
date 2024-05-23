@@ -148,11 +148,17 @@ class AdvanceBooking(Screen):
     pick=0
     des=0
     def on_enter(self):
-        plat= self.ids.pickupmarker.lat
-        dlat= self.ids.destinationmarker.lat
-        plon= self.ids.pickupmarker.lon
-        dlon= self.ids.pickupmarker.lon
+        plat= self.manager.pickup_lat
+        dlat= self.manager.destination_lat
+        plon= self.manager.pickup_lon
+        dlon= self.manager.destination_lon
         self.map= self.ids.passmap
+        self.ids.pickupmarker.lat= plat
+        self.ids.pickupmarker.lon= plon
+        self.ids.destinationmarker.lat= dlat
+        self.ids.destinationmarker.lon= dlon
+        self.ids.drop.text= self.manager.destination_text
+        self.ids.pickup.text= self.manager.pickup_text
         self.route_map(plat, dlat, plon, dlon, self.ids.passmap)
     def on_text_pickup(self, prompt):
         myMap = map.API()
@@ -185,20 +191,30 @@ class AdvanceBooking(Screen):
             textWidget.text = suggestion
             if self.choice== 'pickup':
                 self.picklon= self.pickup_sug[pos].coords[0]
+                self.manager.pickup_lon = self.pickup_sug[pos].coords[0]
                 self.picklat= self.pickup_sug[pos].coords[1]
+                self.manager.pickup_lat = self.pickup_sug[pos].coords[1]
                 self.ids.pickup.text= self.pickup_sug[pos].location
                 self.update_map_coordinates(self.picklat, self.picklon)                                                                                                                                                                                                                                                   
                 self.update_marker(self.ids.pickupmarker, self.picklat, self.picklon)
                 self.pick=1
+                try:
+                    self.route_map(start_lat= self.picklat, end_lat= self.deslat, start_lon= self.picklon, end_lon= self.deslon, map= self.ids.passmap)
+                except:
+                    pass
             elif self.choice== 'destination':
                 self.deslon= self.destination_sug[pos].coords[0]
+                self.manager.destination_lon = self.destination_sug[pos].coords[0]
                 self.deslat= self.destination_sug[pos].coords[1]
-                self.ids.drop.text= self.pickup_sug[pos].location
+                self.manager.destination_lat = self.destination_sug[pos].coords[1]
+                self.ids.drop.text= self.destination_sug[pos].location
                 self.update_map_coordinates(self.deslat, self.deslon)
                 self.update_marker(self.ids.destinationmarker, self.deslat, self.deslon)
                 self.des=1
-            if self.pick and self.des:
-                self.route_map(start_lat= self.picklat, end_lat= self.deslat, start_lon= self.picklon, end_lon= self.deslon, map= self.ids.passmap)
+                try:
+                    self.route_map(start_lat= self.picklat, end_lat= self.deslat, start_lon= self.picklon, end_lon= self.deslon, map= self.ids.passmap)
+                except:
+                    pass
         except:
             textWidget.text= 'No text available'
 
@@ -217,7 +233,7 @@ class AdvanceBooking(Screen):
     def route_map(self, start_lat, end_lat, start_lon, end_lon, map):
         route= db.route(start_lat, end_lat, start_lon, end_lon)
         self.route= route
-        self.map.update_lines(route)       
+        map.update_lines(route)       
         
     def generate_price(self):
         pickupMarker = self.ids.pickupmarker
@@ -242,11 +258,11 @@ class AdvanceBooking(Screen):
         lat2 = self.ids.destinationmarker.lat
         lon2 = self.ids.destinationmarker.lon
         vehicle_type = self.ids.vehicle.text
-        self.manager.advance_pick_loc=[lat1, lon1]
-        self.manager.advance_des_loc=[lat2, lon2]
+        self.manager.pick_loc=[lat1, lon1]
+        self.manager.des_loc=[lat2, lon2]
         date = self.ids.date.text
         time = self.ids.time.text
-        self.manager.advance_route= self.route
+        self.manager.route= self.route
         details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
         ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, True, details['price'])
         self.manager.advance_shared_data = AdvanceSharedData(
@@ -378,8 +394,7 @@ class PassengerHome(Screen):
     def on_enter(self):
         self.pick=0
         self.des= 0
-        self.map= self.ids.passmap
-        self.route_map(self.ids.pickupmarker.lat, self.ids.destinationmarker.lat,  self.ids.pickupmarker.lon,self.ids.destinationmarker.lon)
+        self.route_map(self.ids.pickupmarker.lat, self.ids.destinationmarker.lat,  self.ids.pickupmarker.lon,self.ids.destinationmarker.lon, self.ids.passmap)
         
     def on_text_pickup(self, prompt):
         myMap = map.API()
@@ -412,19 +427,32 @@ class PassengerHome(Screen):
             if self.choice== 'pickup':
                 lon= self.pickup_sug[pos].coords[0]
                 lat= self.pickup_sug[pos].coords[1]
+                self.manager.pickup_lat= lat
+                self.manager.pickup_lon= lon
+                
                 self.ids.pickup.text= self.pickup_sug[pos].location
+                self.manager.pickup_text= self.ids.pickup.text
                 self.update_map_coordinates(lat, lon)
                 self.update_marker(self.ids.pickupmarker, lat, lon)
                 self.pick=1
+                try:
+                    self.route_map(start_lat= self.manager.pickup_lat, end_lat= self.manager.destination_lat, start_lon= self.manager.pickup_lon, end_lon= self.manager.destination_lon, map= self.ids.passmap)
+                except:
+                    pass
             elif self.choice== 'destination':
                 lon= self.destination_sug[pos].coords[0]
                 lat= self.destination_sug[pos].coords[1]
                 self.ids.drop.text= self.destination_sug[pos].location
+                self.manager.destination_text= self.ids.drop.text
                 self.update_map_coordinates(lat, lon)
                 self.update_marker(self.ids.destinationmarker, lat, lon)
+                self.manager.destination_lat= lat
+                self.manager.destination_lon= lon
                 self.des=1
-            if self.pick and self.des:
-                self.route_map(start_lat= self.picklat, end_lat= self.deslat, start_lon= self.picklon, end_lon= self.deslon, map= self.ids.passmap)
+                try:
+                    self.route_map(start_lat= self.manager.pickup_lat, end_lat= self.manager.destination_lat, start_lon= self.manager.pickup_lon, end_lon= self.manager.destination_lon, map= self.ids.passmap)
+                except:
+                    pass
         except:
             textWidget.text= 'No text available'
     def update_map_coordinates(self, lat, lon):
@@ -439,10 +467,10 @@ class PassengerHome(Screen):
         marker.lat= lat
         marker.lon= lon
     
-    def route_map(self, start_lat, end_lat, start_lon, end_lon):
+    def route_map(self, start_lat, end_lat, start_lon, end_lon, map):
         route= db.route(start_lat, end_lat, start_lon, end_lon)
         self.route= route
-        self.map.update_lines(route)
+        map.update_lines(route)
 
     def generate_price(self):
         pickupMarker = self.ids.pickupmarker

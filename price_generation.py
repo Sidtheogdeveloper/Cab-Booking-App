@@ -1,6 +1,7 @@
 import datetime
-import map
+import map, random
 from API_Functions import getTop5NearestDrivers, getDriver, deleteRide, getRide
+
 
 def money_gen(distance, base, dbase):
     if distance <= 20:
@@ -113,6 +114,14 @@ def cancelRide(rideID):
         return 100
 
 
+def gen_otp():
+    otp=''
+    for i in range(4):
+        val= '1234567890'
+        nums= list(val)
+        otp += random.choice(nums)
+    return otp
+
 # details = something.book_now(lat1, lon1, lat2, lon2, vehicle_type)
 # details = something.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
 
@@ -130,7 +139,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
         "driverID": driver_details['driverID'],
         "vehicle_number": driver_details["vehicle_number"],
         "phone": driver_details["phone"],
-        "otp": 1234,
+        "otp": gen_otp(),
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
@@ -155,7 +164,7 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
         "driverID": driver_details['driverID'],
         "vehicle_number": driver_details["vehicle_number"], 
         "phone": driver_details["phone"],
-        "otp": 1234,
+        "otp": gen_otp(),
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
