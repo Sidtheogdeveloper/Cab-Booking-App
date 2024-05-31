@@ -19,6 +19,96 @@ from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.clock import Clock
 
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.clock import mainthread
+
+import socketio
+import threading
+
+# Initialize Socket.IO client
+sio = socketio.Client()
+
+class Chatscreen(Screen):
+    def on_enter(self):
+        self.layout = BoxLayout(orientation='vertical')
+
+        self.scroll_view = ScrollView(size_hint=(1, 0.8))
+        self.message_list = BoxLayout(orientation='vertical', size_hint_y=None)
+        self.message_list.bind(minimum_height=self.message_list.setter('height'))
+        self.scroll_view.add_widget(self.message_list)
+
+        self.input_box = BoxLayout(size_hint=(1, 0.1))
+        self.text_input = TextInput(size_hint=(0.8, 1))
+        self.send_button = Button(text='Send', size_hint=(0.2, 1))
+        self.send_button.bind(on_press=self.send_message)
+        self.back_button= Button(text= 'back', size_hint=(0.1, 1))
+        self.back_button.bind(on_press=self.go_back)
+        self.input_box.add_widget(self.text_input)
+        self.input_box.add_widget(self.send_button)
+        self.input_box.add_widget(self.back_button)
+        self.layout.add_widget(self.scroll_view)
+        self.layout.add_widget(self.input_box)
+	
+        threading.Thread(target=self.connect_to_server, daemon=True).start()
+        self.add_widget(self.layout)
+    
+    def go_back(self, instance):
+    	self.manager.current= 'Phome'
+    
+    def connect_to_server(self):
+        try:
+            sio.connect('http://10.106.226.244:5000/')  # Use your actual server URL
+            sio.on('connect', self.on_connect)
+            sio.on('disconnect', self.on_disconnect)
+            sio.on('message', self.receive_message)
+        except Exception as e:
+            print(f"Connection error: {e}")
+
+    def on_connect(self):
+        print("Connected to server")
+        self.is_connected = True
+
+    def on_disconnect(self):
+        print("Disconnected from server")
+        self.is_connected = False
+
+    def send_message(self, instance):
+        message = self.text_input.text
+        self.sent_msg = message
+        if message:
+            sio.send(message)
+            self.text_input.text = ''
+        boxlay= BoxLayout(orientation='horizontal', size_hint_y=None,height=40)
+        label = Label(text=message, size_hint_x=0.5,size_hint_y=None, height=40, halign='right', valign='center')
+        label2= Label(text='', size_hint_x=0.5,size_hint_y=None, height=40)
+        boxlay.add_widget(label2)
+        boxlay.add_widget(label)
+        
+        self.message_list.add_widget(boxlay)
+        self.scroll_view.scroll_to(label)
+
+    def receive_message(self, msg):
+        if self.sent_msg == msg:
+            self.sent_msg = ''
+            return
+        print(f"Received message: {msg}")  # Debugging statement
+        self.add_message_to_ui(msg, "received")
+
+    @mainthread
+    def add_message_to_ui(self, msg, msg_type):
+        if msg_type == "received":
+            boxlay= BoxLayout(orientation='horizontal', size_hint_y=None,height=40)
+            label = Label(text=msg,size_hint_x= 0.5, size_hint_y=None, height=40, halign='left', valign='center')
+            label2 = Label(text='',size_hint_x= 0.5, size_hint_y=None, height=40, halign='left', valign='center')
+            boxlay.add_widget(label)
+            boxlay.add_widget(label2)
+        self.message_list.add_widget(boxlay)
+        self.scroll_view.scroll_to(label)
+
+
 class MainScreen(Screen):
     pass
 
@@ -525,6 +615,7 @@ class PassengerHome(Screen):
             ride_distance=details["ride_distance"],
             pick_marker= [lat1, lon2], 
             des_marker= [lat2, lon2], 
+            driver_marker= details["driverCoord"],
             duration=details["duration"], 
             time_of_travel=details["time_of_travel"], 
             ride_id=ride['rideID']
@@ -533,7 +624,7 @@ class PassengerHome(Screen):
 
 
 class SharedData():
-    def __init__(self, pickup=None, drop_text=None, vehicle=None, price=None, driver_name=None, vehicle_no=None, driver_phone=None, otp=None, basic_pr=None, gst=None, convenience= None, insurance=None, pick_marker= None, des_marker= None, ride_distance=None, duration=None, time_of_travel = None, ride_id= None):
+    def __init__(self, pickup=None, drop_text=None, vehicle=None, price=None, driver_name=None, vehicle_no=None, driver_phone=None, otp=None, basic_pr=None, gst=None, convenience= None, insurance=None, pick_marker= None, des_marker= None, ride_distance=None, duration=None, time_of_travel = None, ride_id= None, driver_marker= None):
         self.pickup_location_text = pickup
         self.destination_location_text = drop_text
         self.vehicle_type = vehicle
@@ -552,7 +643,7 @@ class SharedData():
         self.duration = duration
         self.time_of_arrival = time_of_travel
         self.rideID= ride_id
-
+        self.driver_marker= driver_marker
 class AdvanceSharedData():
     def __init__(self, pickup=None, drop_text=None, vehicle=None, price=None, driver_name=None, vehicle_no=None, driver_phone=None, otp=None, basic_pr=None, gst=None, convenience= None, insurance=None, advance=None, pick_marker= None, des_marker= None, time= None, date= None, ride_distance=None, duration = None, time_of_travel = None, ride_id = None):
         self.pickup_location_text = pickup
@@ -601,6 +692,8 @@ class RideDetailsScreen(Screen):
         self.ids.pickupmarker.lon= self.manager.pickup_loc[1]
         self.ids.destinationmarker.lat= self.manager.des_loc[0]
         self.ids.destinationmarker.lon= self.manager.des_loc[1]
+        self.ids.driver_loc.lat= details.driver_marker[0]
+        self.ids.driver_loc.lon= details.driver_marker[1]
         self.ids.dname.text= self.driver_name_text
         self.ids.dvehicletype.text= (self.vehicle_type).upper()
         self.ids.dvehicleno.text= self.vehicle_number
@@ -657,10 +750,10 @@ class AdvancedRideDetailsScreen(Screen):
         self.ride_distance = details.ride_distance
         self.duration = details.duration
         self.time_of_arrival = details.time_of_arrival
-        self.ids.pickupmarker.lat= self.manager.advance_pick_loc[0]
-        self.ids.pickupmarker.lon= self.manager.advance_pick_loc[1]
-        self.ids.destinationmarker.lat= self.manager.advance_des_loc[0]
-        self.ids.destinationmarker.lon= self.manager.advance_des_loc[1]
+        self.ids.pickupmarker.lat= self.manager.pick_loc[0]
+        self.ids.pickupmarker.lon= self.manager.pick_loc[1]
+        self.ids.destinationmarker.lat= self.manager.des_loc[0]
+        self.ids.destinationmarker.lon= self.manager.des_loc[1]
         self.mapp= self.ids.bookmap
         self.mapp.update_lines(self.manager.route)
         
