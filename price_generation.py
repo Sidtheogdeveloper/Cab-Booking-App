@@ -137,6 +137,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
         "price": total,
         "driver_name": driver_details["name"],
         "driverID": driver_details['driverID'],
+        "driverCoord": [driver_details["latitude"], driver_details["longitude"]],
         "vehicle_number": driver_details["vehicle_number"],
         "phone": driver_details["phone"],
         "otp": gen_otp(),
