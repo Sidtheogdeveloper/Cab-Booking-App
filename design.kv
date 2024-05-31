@@ -75,30 +75,62 @@ Windows:
             spacing: 40
             Label:
                 text: "Welcome Back"
-                font_size: 36
+                font_size: "40sp"
+                font: 'consalas'
+                color: 0,0,1,1
+                size_hint: 1, 0.4
+                bold: True
             GridLayout:
                 cols: 2
                 Label:
                     text: 'Email'
+                    font_size: "20sp"
+                    bold: True
+                    color: (1,0,0,1)
+                    halign: 'right'
+                    italic: True
                 TextInput:
                     id: email
                     multiline: False
+                    hint_text: "example@gmail.com"
+                    hint_text_color: 0.8,0.8,0.8,1
+                    background_color: 1,1,1,0.5
+                    foreground_color: (0, 0, 0, 1)
+                    font_size: "20sp"
+                    bold: True
                     on_double_tap: root.__recent__(email, pwd)
                 Label:
                     text: "Password"
+                    font_size: "20sp"
+                    bold: True
+                    color: (1,0,0,1)
+                    halign: 'right'
+                    italic: True
                 TextInput:
                     id: pwd
                     password: True
+                    multiline: False
+                    background_color: 1,1,1,0.5
+                    foreground_color: (0, 0, 0, 1)
+                    font_size: "20sp"
+                    bold: True
                     allow_copy: False
                 Label:
                     text: "OTP"
-                    color: 0,0,0
+                    font_size: "20sp"
+                    bold: True
+                    color: (1,0,0,1)
+                    halign: 'right'
+                    italic: True
                 TextInput:
                     id: otp
                     multiline: False
                     password: True
-                    #background_color: 0,0,0,0
-                    #foreground_color: 1,1,1,1
+                    multiline: False
+                    background_color: 1,1,1,0.5
+                    foreground_color: (0, 0, 0, 1)
+                    font_size: "20sp"
+                    bold: True
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: 20
@@ -106,10 +138,16 @@ Windows:
                 Button:
                     text: "Go back"
                     size_hint: 0.5, 0.3
+                    background_color: 0.5,0,0.5,1
+                    color: 0,0,1,1
+                    bold: True
                     on_release: app.root.current = 'main'
                 Button:
                     text: "Send OTP"
                     size_hint: 0.5, 0.3
+                    background_color: 0.5,0,0.5,1
+                    color: 0,0,1,1
+                    bold: True
                     on_press: root.__submit__(email.text, pwd.text, errormsg)
                 Label:
                     id: errormsg
@@ -117,10 +155,16 @@ Windows:
                 Button:
                     text: 'Forgot Password'
                     size_hint: 0.8, 0.3
+                    background_color: 0.5,0,0.5,1
+                    color: 0,0,1,1
+                    bold: True
                     on_release: app.root.current= 'FPpass'
                 Button:
                     text: 'Submit'
                     size_hint: 0.5, 0.3
+                    background_color: 0.5,0,0.5,1
+                    color: 0,0,1,1
+                    bold: True
                     on_press: root.__verify__(otp.text, errormsg)
 
 <PassengerSP>:
@@ -257,6 +301,7 @@ Windows:
                 size_hint: 0.5, 0.3
                 background_color: 0.5,0,0.5,1
                 color: 0,0,1,1
+                bold: True
                 on_release: 
                     root.__enter_data__(name.text, phone.text,email.text, pwd.text, cpwd.text, errormsg)
             Label:
@@ -269,6 +314,7 @@ Windows:
                 size_hint: 0.5, 0.3
                 background_color: 0.5,0,0.5,1
                 color: 0,0,1,1
+                bold: True
                 on_press: 
                     root.verify_otp(otp.text, errormsg)
                     app.root.current = "Plogin"
@@ -277,6 +323,7 @@ Windows:
                 size_hint: 0.5, 0.3
                 background_color: 0.5,0,0.5,1
                 color: 0,0,1,1
+                bold: True
                 on_release:
                     app.root.current = "main"
 
