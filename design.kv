@@ -13,6 +13,158 @@ Windows:
     AdvancedRideDetailsScreen:
     CancellationScreen:
     Chatscreen:
+    ViewRides:
+
+<ViewRides>:
+    name: 'viewrides'
+    
+    BoxLayout:
+    	orientation: 'horizontal'
+        CustomMapView:
+            id: passmap
+            size_hint: 0.6, 1
+            zoom: 12
+            lat: 13.0827
+            lon: 80.2707
+            MapMarker:
+                id: pickupmarker
+                lat: 0 #13.069344
+                lon: 0 #80.195203
+                size: '2dp', '2dp'
+                size_hint: 0.1,0.1
+                source: "pickup_pointer.png"
+            MapMarker:
+                id: destinationmarker
+                lat: 0 #13.0827
+                lon: 0 #80.2707
+                size: '2dp', '2dp'
+                size_hint: 0.1, 0.1
+            	source: "destination_pointer.png"	
+    	BoxLayout:
+    	    orientation: 'vertical'
+    	    size_hint: 0.4, 1
+    	    padding: [20]
+    	    spacing: 10
+    	    canvas.before:
+            	Color:
+            	    rgba: 0.95, 0.95, 0.95, 1  # Background color
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+    	    Label:
+                text: '[b]Ride Details[/b]'
+                size_hint: 1, 0.2
+                markup: True
+                font_size: 24
+                color: 0.1, 0.1, 0.1, 1
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: 1, 0.8
+                spacing: 5
+                padding: [10, 0, 10, 0]
+
+                Label:
+                    id: dname
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
+                Label:
+                    id: dvehicletype
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
+                Label:
+                    id: dvehicleno
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
+                Label:
+                    id: driver_phone
+                    text: ''
+                    size_hint: 1, 0.1
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    bold: True
+
+                Label:
+                    text: ''
+                    size_hint: 1, 0.1
+
+
+                Label:
+                    id: otp
+                    text: ''
+                    size_hint: 1, 0.2
+                    font_size: "30sp"
+                    halign: 'center'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                    markup: True
+
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+
+                Label:
+                    id: pickup
+                    text: 'Pickup Location: '
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
+                Label:
+                    id: destination
+                    text: 'Destination: '
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+
+                Label:
+                    id: price
+                    text: 'Total Price: '
+                    size_hint: 1, 0.1
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 0.2, 0.2, 0.2, 1
+                
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+
+                Button:
+                    text: 'Cancel Ride'
+                    size_hint: 1, None
+                    height: 40
+                    on_release: app.root.current= 'profile'
+                    background_color: (1, 0.2, 0.2, 1)
+                    color: (1, 1, 1, 1)
 
 <Chatscreen>:
     name: "chat"
@@ -248,61 +400,106 @@ Windows:
                     text: 'Submit'
                     size_hint: 0.5, 0.3
                     on_press: root.change_pwd(otp.text, errormsg)
-
 <Profileviewer>:
-    name: 'profile'
+    name: 'profile'	
     BoxLayout:
         orientation: 'vertical'
-        spacing: 10
+        spacing: dp(10)
+        padding: dp(20)
+        canvas.before:
+            Color:
+                rgba: 0.95, 0.95, 0.95, 1  # Background color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 0.8, 0.3
-            spacing: 20
-            padding: [30]
-            pos_hint_x: {'center_x'}
-            pos_hint_y: {'center_y'}
+            spacing: dp(20)
+            padding: [dp(30)]
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.6, 0.8, 1  # Header background color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
             Image:
                 source: 'profile.png'
                 size_hint: 0.3, 1
+                allow_stretch: True
+                keep_ratio: True
+
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: 0.5,1
+                size_hint: 0.5, 1
+                spacing: dp(10)
+
                 Label:
                     id: name
-                    text: ''
-                    pos_hint_x: {'left': 1}
-                    font_size: 36
+                    text: '[b]Name Placeholder[/b]'
+                    font_size: '36sp'
                     markup: True
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 1, 1, 1, 1  # Text color
+                
                 Label:
                     id: email
-                    text: ''
-                    pos_hint_x: {'left': 1}
-                    font_size: 24
+                    text: 'email@example.com'
+                    font_size: '24sp'
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 1, 1, 1, 1  # Text color
+
                 Label:
                     id: phone
-                    text: ''
-                    font_size: 20
-                    pos_hint_x: {'left': 1}
+                    text: '+1234567890'
+                    font_size: '20sp'
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                    color: 1, 1, 1, 1  # Text color
+
             BoxLayout:
                 orientation: 'vertical'
                 size_hint: 0.2, 1
+                spacing: dp(10)
+                
                 Button:
                     text: 'Go Back'
-                    size_hint: 0.5, 0.2
-                    pos_hint: {'center_x': 1, 'top': 1}
-                    on_release: app.root.current= 'Phome'
+                    size_hint: 1, 0.2
+                    pos_hint: {'center_x': 0.5, 'top': 1}
+                    background_color: 0.8, 0.2, 0.2, 1  # Button background color
+                    color: 1, 1, 1, 1  # Button text color
+                    on_release: app.root.current = 'Phome'
+                
                 Label:
                     text: ''
-                    size_hint: 0.5, 0.8
+                    size_hint: 1, 0.8
+
         Label:
-            text: 'Your Rides'
+            text: '[b]Your Rides[/b]'
             markup: True
-            font_size: 20
+            font_size: '20sp'
             size_hint: 1, 0.05
+            halign: 'center'
+            valign: 'middle'
+            text_size: self.size
+            color: 0.2, 0.6, 0.8, 1  # Header text color
+
         ScrollView:
             id: ridelay
             size_hint: 1, 0.65
             size: root.width, root.height
+            do_scroll_x: False
+            do_scroll_y: True
+
+
             
 <ChpwdPass>:
     name: 'chpwdps'
