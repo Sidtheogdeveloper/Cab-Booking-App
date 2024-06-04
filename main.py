@@ -33,18 +33,24 @@ sio = socketio.Client()
 
 class Chatscreen(Screen):
     def on_enter(self):
-        self.layout = BoxLayout(orientation='vertical')
-
+        self.clear_widgets()
+        self.layout = BoxLayout(orientation='vertical', padding= [30], spacing= 10)
+        with self.layout.canvas.before:
+            from kivy.graphics import Color, Rectangle
+            Color(0.95, 0.95, 0.95, 1)  # Light gray background
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+            self.layout.bind(size=self._update_rect, pos=self._update_rect)
+            
         self.scroll_view = ScrollView(size_hint=(1, 0.8))
         self.message_list = BoxLayout(orientation='vertical', size_hint_y=None)
         self.message_list.bind(minimum_height=self.message_list.setter('height'))
         self.scroll_view.add_widget(self.message_list)
-
+	
         self.input_box = BoxLayout(size_hint=(1, 0.1))
-        self.text_input = TextInput(size_hint=(0.8, 1))
-        self.send_button = Button(text='Send', size_hint=(0.2, 1))
+        self.text_input = TextInput(size_hint=(0.8, 1), hint_text= "type here")
+        self.send_button = Button(text='Send', font_size= 20,size_hint=(0.2, 1), color= [0.8,0.8,0.8,1], background_color= [0.8, 0.2, 0.2, 1])
         self.send_button.bind(on_press=self.send_message)
-        self.back_button= Button(text= 'back', size_hint=(0.1, 1))
+        self.back_button= Button(text= 'back',font_size= 20 ,size_hint=(0.1, 1), color= [0.8,0.8,0.8,1], background_color= [0.8, 0.2, 0.2, 1])
         self.back_button.bind(on_press=self.go_back)
         self.input_box.add_widget(self.text_input)
         self.input_box.add_widget(self.send_button)
@@ -55,12 +61,16 @@ class Chatscreen(Screen):
         threading.Thread(target=self.connect_to_server, daemon=True).start()
         self.add_widget(self.layout)
     
+    def _update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
+    
     def go_back(self, instance):
     	self.manager.current= 'Phome'
     
     def connect_to_server(self):
         try:
-            sio.connect('http://10.106.226.244:5000/')  # Use your actual server URL
+            sio.connect('http://10.106.247.117:5000/')  # Use your actual server URL
             sio.on('connect', self.on_connect)
             sio.on('disconnect', self.on_disconnect)
             sio.on('message', self.receive_message)
@@ -76,14 +86,14 @@ class Chatscreen(Screen):
         self.is_connected = False
 
     def send_message(self, instance):
-        message = self.text_input.text
+        message = self.manager.user_name+": "+self.text_input.text
         self.sent_msg = message
         if message:
             sio.send(message)
             self.text_input.text = ''
         boxlay= BoxLayout(orientation='horizontal', size_hint_y=None,height=40)
-        label = Label(text=message, size_hint_x=0.5,size_hint_y=None, height=40, halign='right', valign='center')
-        label2= Label(text='', size_hint_x=0.5,size_hint_y=None, height=40)
+        label = Label(text=f"{message}",font_size= 20, size_hint_x=0.5,size_hint_y=None, height=40, halign='right', valign='center', color= [0,0,0,1])
+        label2= Label(text='',size_hint_x=0.5,size_hint_y=None, height=40)
         boxlay.add_widget(label2)
         boxlay.add_widget(label)
         
@@ -91,17 +101,17 @@ class Chatscreen(Screen):
         self.scroll_view.scroll_to(label)
 
     def receive_message(self, msg):
-        if self.sent_msg == msg:
-            self.sent_msg = ''
-            return
-        print(f"Received message: {msg}")  # Debugging statement
-        self.add_message_to_ui(msg, "received")
+    	if self.sent_msg:
+        	if self.sent_msg == msg:
+            		self.sent_msg = ''
+            		return
+    	self.add_message_to_ui(msg, "received")
 
     @mainthread
     def add_message_to_ui(self, msg, msg_type):
         if msg_type == "received":
             boxlay= BoxLayout(orientation='horizontal', size_hint_y=None,height=40)
-            label = Label(text=msg,size_hint_x= 0.5, size_hint_y=None, height=40, halign='left', valign='center')
+            label = Label(text=msg,font_size= 20,size_hint_x= 0.5, size_hint_y=None, height=40, halign='left', valign='center', color= [0,0,0,1])
             label2 = Label(text='',size_hint_x= 0.5, size_hint_y=None, height=40, halign='left', valign='center')
             boxlay.add_widget(label)
             boxlay.add_widget(label2)
@@ -135,6 +145,7 @@ class PassengerLog(Screen):
         try:
             check= db.startUser(email=email, password=password)
             check_mail= db.forgotUser(email= email)
+            print(check)
             if check != "error" and check['password']==password:
                 self.otp= auth.gen_otp()
                 
@@ -147,6 +158,7 @@ class PassengerLog(Screen):
                 if response== "error":
                     widget.text= "Some Error occurred"
                 else:
+                    self.manager.user_name= check["name"]
                     widget.text="OTP sent to your Mail"
             elif check=='error' and check_mail!='error':
                 widget.text= 'Incorrect Password'
@@ -234,14 +246,21 @@ class ChpwdPass(Screen):
         else:
             widget.text= "Password doesn't match"
 
+class ViewRides(Screen):
+    def on_enter():
+    	pass
+
 class AdvanceBooking(Screen):
     pick=0
     des=0
     def on_enter(self):
-        plat= self.manager.pickup_lat
-        dlat= self.manager.destination_lat
-        plon= self.manager.pickup_lon
-        dlon= self.manager.destination_lon
+        try:
+        	plat= self.manager.pickup_lat
+        	dlat= self.manager.destination_lat
+        	plon= self.manager.pickup_lon
+        	dlon= self.manager.destination_lon
+        except:
+        	pass
         self.map= self.ids.passmap
         self.ids.pickupmarker.lat= plat
         self.ids.pickupmarker.lon= plon
@@ -400,39 +419,39 @@ class Profileviewer(Screen):
             self.ids.email.text = det['email']
             self.ids.phone.text = det['phone']
         
-        self.grid = GridLayout(cols=5, row_default_height='130dp', row_force_default=True, spacing=30, size_hint_y=None)
+        self.grid = GridLayout(cols=6, row_default_height='130dp', row_force_default=True, spacing=30, size_hint_y=None)
         self.grid.bind(minimum_height=self.grid.setter('height'))
         
-        self.l1 = Label(text='Date', markup=True)
-        self.l2 = Label(text='Driver', markup=True)
-        self.l3 = Label(text='Pickup Location', markup=True)
-        self.l4 = Label(text='Destination', markup=True)
-        self.l5 = Label(text='Ride Fare', markup=True)
-        
+        self.l1 = Label(text='Date', markup=True, color=[0, 0, 0, 1])
+        self.l2 = Label(text='Driver', markup=True, color=[0, 0, 0, 1])
+        self.l3 = Label(text='Pickup Location', markup=True, color=[0, 0, 0, 1])
+        self.l4 = Label(text='Destination', markup=True, color=[0, 0, 0, 1])
+        self.l5 = Label(text='Ride Fare', markup=True, color=[0, 0, 0, 1])
+        self.l6 = Label(text= '')
         self.grid.add_widget(self.l1)
         self.grid.add_widget(self.l2)
         self.grid.add_widget(self.l3)
         self.grid.add_widget(self.l4)
         self.grid.add_widget(self.l5)
-        
+        self.grid.add_widget(self.l6)
         rides = db.getRidesOfUsers(userID=user)
         for i in rides:
             driv = db.getDriver(i['driverID'])
             pickup = db.get_address(i['start_lat'], i['start_long']).replace(",", "\n")
             destination = db.get_address(i['end_lat'], i['end_long']).replace(",", "\n")
             
-            l1 = Label(text=f"{i['date']}", size_hint=[0.2, 1])
-            l2 = Label(text=f"{driv['name']}", size_hint=[0.2, 1])
-            l3 = Label(text=f'{pickup}', size_hint=[0.2, 1])
-            l4 = Label(text=f'{destination}', size_hint=[0.2, 1])
-            l5 = Label(text=f"{i['price']}", size_hint=[0.2, 1])
-            
+            l1 = Label(text=f"{i['date']}", size_hint=[0.2, 1], color=[0, 0, 0, 1])
+            l2 = Label(text=f"{driv['name']}", size_hint=[0.2, 1], color=[0, 0, 0, 1])
+            l3 = Label(text=f'{pickup}', size_hint=[0.2, 1], color=[0, 0, 0, 1])
+            l4 = Label(text=f'{destination}', size_hint=[0.2, 1], color=[0, 0, 0, 1])
+            l5 = Label(text=f"{i['price']}", size_hint=[0.2, 1], color=[0, 0, 0, 1])
+            b1 = Button(text= "View Ride", size_hint=[0.2, 0.5], color= [1, 1, 1, 1], background_color= [0.8, 0.2, 0.2, 1])
             self.grid.add_widget(l1)
             self.grid.add_widget(l2)
             self.grid.add_widget(l3)
             self.grid.add_widget(l4)
             self.grid.add_widget(l5)
-        
+            self.grid.add_widget(b1)
         scroll.add_widget(self.grid)
 
 class SharedRideData():
