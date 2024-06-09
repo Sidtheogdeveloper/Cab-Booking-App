@@ -69,7 +69,7 @@ class Chatscreen(Screen):
     
     def connect_to_server(self):
         try:
-            sio.connect('http://10.106.247.117:5000/')  # Use your actual server URL
+            sio.connect('http://127.0.0.1:5000/')  # Use your actual server URL
             sio.on('connect', self.on_connect)
             sio.on('disconnect', self.on_disconnect)
             sio.on('message', self.receive_message)
