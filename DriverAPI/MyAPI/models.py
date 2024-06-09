@@ -12,6 +12,7 @@ class Driver(models.Model):
     vehicle_type = models.CharField(max_length=20, default="")
     rating = models.FloatField(default=5)
     available = models.BooleanField(default=False)
+    no_of_ratings = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.driverID)
@@ -27,6 +28,10 @@ class User(models.Model):
         return str(self.userID)
 
 class Ride(models.Model):
+    STATUS_CHOICES = [
+        ('ONGOING', 'Ongoing'),
+        ('COMPLETED', 'Completed')
+    ]
     rideID = models.AutoField(primary_key=True)
     userID = models.IntegerField(default=1)
     driverID = models.IntegerField(default=1)
@@ -38,6 +43,7 @@ class Ride(models.Model):
     date = models.DateField(auto_now_add=True)
     advanced_booking = models.BooleanField(default=False)
     price = models.IntegerField(default=0)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
 
     def __str__(self):
         return str(self.rideID)

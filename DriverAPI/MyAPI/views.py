@@ -39,10 +39,15 @@ class crudDriver(APIView):
         except Driver.DoesNotExist:
             return Response({}, status=status.HTTP_404_NOT_FOUND)
         
-        fields_to_update = ["password", "latitude", "longitude", "available"]
-        for field in fields_to_update:
-            if field in request.data:
-                setattr(driver, field, request.data[field])
+        if "rating" in request.data:
+            new_ratings = ((driver.rating * driver.no_of_ratings) + request.data.get("rating")) / (driver.no_of_ratings + 1)
+            driver.no_of_ratings += 1
+            driver.rating = new_ratings
+        else:
+            fields_to_update = ["password", "latitude", "longitude", "available"]
+            for field in fields_to_update:
+                if field in request.data:
+                    setattr(driver, field, request.data[field])
         driver.save()
         serializer = driverSerializer(driver)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -123,7 +128,19 @@ class crudRides(APIView):
             except:
                 raise Http404("User does not exist")
 
-    
+    def put(self, request):
+        ride_id = request.data.get("rideID")
+        try:
+            ride = Ride.objects.get(rideID = ride_id)
+        except Ride.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        ride.status = "COMPLETED"
+        ride.save()
+        serializer = rideSerializer(ride, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request):
         serializer = rideSerializer(data=request.data)
         if serializer.is_valid():

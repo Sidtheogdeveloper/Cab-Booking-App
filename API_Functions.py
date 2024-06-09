@@ -76,7 +76,7 @@ def getDriver(driverID: int) -> dict:
         return response.json()
     return requests.exceptions.HTTPError
 
-def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool) -> dict:
+def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: str, latitude: float, longitude:float, vehicle_type: str, rating: float, available: bool, no_of_ratings: int) -> dict:
     """
         Creates a driver in the Database
 
@@ -102,7 +102,8 @@ def postDriver(name: str, email: str, phone: str, password:str, vehicle_number: 
         "longitude" : longitude,
         "vehicle_type" : vehicle_type,
         "rating" : rating,
-        "available" : available
+        "available" : available,
+        "no_of_ratings": no_of_ratings
     }
     path = "driver/"
     response = requests.post(url=baseURL+path, json=data)
@@ -142,7 +143,7 @@ def getRide(rideID: int) -> dict:
         return response.json()
     return requests.exceptions.HTTPError
 
-def postRide(userID: int, driverID: int, start_lat:float, start_long: float, end_lat: float, end_long:float, advanced_booking:bool, price: float) -> dict:
+def postRide(userID: int, driverID: int, start_lat:float, start_long: float, end_lat: float, end_long:float, advanced_booking:bool, price: float, status: str) -> dict:
     """
         Creates a ride in the Database
 
@@ -164,7 +165,8 @@ def postRide(userID: int, driverID: int, start_lat:float, start_long: float, end
         "end_lat": end_lat,
         "end_long": end_long,
         "advanced_booking": advanced_booking,
-        "price": price
+        "price": price,
+        "status": status
     }
     path = "ride/"
     response = requests.post(url=baseURL+path, json=data)
@@ -226,6 +228,24 @@ def forgotUser(email) -> dict:
         return response.json()
     return "error"
 
+def giveRatings(driverID: int, rating: float):
+    data = {
+        "driverID": driverID,
+        "rating": rating
+    }
+    path = "driver/"
+    response = requests.put(url=baseURL+path, json=data)
+    if response.status_code==200:
+        return response.json()
+
+def completeRide(rideID: int):
+    data = {
+        "rideID": rideID
+    }
+    path = "ride/"
+    response = requests.put(url=baseURL+path, json=data)
+    if response.status_code==200:
+        return response.json()
 
 def getRidesOfUsers(userID: int):
     """

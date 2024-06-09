@@ -1,80 +1,80 @@
 import datetime
 import map, random
-from API_Functions import getTop5NearestDrivers, getDriver, deleteRide, getRide
+from API_Functions import getTop5NearestDrivers, getDriver, deleteRide
 
 
-def money_gen(distance, base, dbase):
+def money_gen(distance, base, dbase, basefee):
     if distance <= 20:
         basicfare = round(distance * base,2)
     else:
         basicfare = round((20 * base) + (distance - 20) * dbase,2)
     
-    gst = round(18 / 100 * basicfare,2)
+    gst = round(12 / 100 * basicfare,2)
     confee = round(1 / 100 * basicfare,2)
     insurance = round(1 / 100 * basicfare,2)
-    total = round(basicfare + gst + confee + insurance)
+    total = round(basicfare + gst + confee + insurance + basefee)
     
-    return (basicfare, gst, confee, insurance, total)
+    return (basefee, basicfare, gst, confee, insurance, total)
 
 def price_gen(distance, type):
     distance = distance/1000
     current_time = datetime.datetime.now().time()
     if current_time.hour >= 6 and current_time.hour < 12 and type == 'sedan':
-        return money_gen(distance, 18, 16)
+        return money_gen(distance, 18, 16, 80)
     elif current_time.hour >= 12 and current_time.hour < 14 and type == 'sedan':
-        return money_gen(distance, 19, 18.5)
+        return money_gen(distance, 19, 18.5, 80)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'sedan':
-        return money_gen(distance, 18.75, 18)
+        return money_gen(distance, 18.75, 18, 80)
     elif current_time.hour >= 17 and current_time.hour < 20 and type == 'sedan':
-        return money_gen(distance, 18, 16)
+        return money_gen(distance, 18, 16, 80)
     elif current_time.hour >= 20 and current_time.hour < 21 and type == 'sedan':
-        return money_gen(distance, 19, 18)
+        return money_gen(distance, 19, 18, 80)
     elif current_time.hour >= 21 and current_time.hour < 24 and type == 'sedan':
-        return money_gen(distance, 21.5, 20)
+        return money_gen(distance, 21.5, 20, 80)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'sedan':
-        return money_gen(distance, 23.5, 22)
+        return money_gen(distance, 23.5, 22, 80)
     elif current_time.hour >= 6 and current_time.hour < 12 and type == 'suv':
-        return money_gen(distance, 36, 34)
+        return money_gen(distance, 36, 34, 120)
     elif current_time.hour >= 12 and current_time.hour < 14 and type == 'suv':
-        return money_gen(distance, 40, 38.5)
+        return money_gen(distance, 40, 38.5, 120)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'suv':
-        return money_gen(distance, 38, 37.5)
+        return money_gen(distance, 38, 37.5, 120)
     elif current_time.hour >= 17 and current_time.hour < 20 and type == 'suv':
-        return money_gen(distance, 36, 34)
+        return money_gen(distance, 36, 34, 120)
     elif current_time.hour >= 20 and current_time.hour < 21 and type == 'suv':
-        return money_gen(distance, 38, 36)
+        return money_gen(distance, 38, 36, 120)
     elif current_time.hour >= 21 and current_time.hour < 24 and type == 'suv':
-        return money_gen(distance, 44, 43.5)
+        return money_gen(distance, 44, 43.5, 120)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'suv':
-        return money_gen(distance, 48, 47)
+        return money_gen(distance, 48, 47, 120)
     elif current_time.hour >= 6 and current_time.hour < 12 and type == 'auto':
-        return money_gen(distance, 6, 5)
+        return money_gen(distance, 6, 5, 50)
     elif current_time.hour >= 12 and current_time.hour < 14 and type == 'auto':
-        return money_gen(distance, 7, 6)
+        return money_gen(distance, 7, 6, 50)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'auto':
-        return money_gen(distance, 9, 8.5)
+        return money_gen(distance, 9, 8.5, 50)
     elif current_time.hour >= 17 and current_time.hour < 20 and type == 'auto':
-        return money_gen(distance, 7, 6.5)
+        return money_gen(distance, 7, 6.5, 50)
     elif current_time.hour >= 20 and current_time.hour < 21 and type == 'auto':
-        return money_gen(distance, 9, 8)
+        return money_gen(distance, 9, 8, 50)
     elif current_time.hour >= 21 and current_time.hour < 24 and type == 'auto':
-        return money_gen(distance, 10, 9.5)
+        return money_gen(distance, 10, 9.5, 50)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'auto':
-        return money_gen(distance, 13, 11.5)
+        return money_gen(distance, 13, 11.5, 50)
     elif current_time.hour >= 6 and current_time.hour < 12 and type == 'bike':
-        return money_gen(distance, 5, 3.5)
+        return money_gen(distance, 5, 3.5, 30)
     elif current_time.hour >= 12 and current_time.hour < 14 and type == 'bike':
-        return money_gen(distance, 5, 4.8)
+        return money_gen(distance, 5, 4.8, 30)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'bike':
-        return money_gen(distance, 7, 6.5)
+        return money_gen(distance, 7, 6.5, 30)
     elif current_time.hour >= 17 and current_time.hour < 20 and type == 'bike':
-        return money_gen(distance, 6, 5.5)
+        return money_gen(distance, 6, 5.5, 30)
     elif current_time.hour >= 20 and current_time.hour < 21 and type == 'bike':
-        return money_gen(distance, 8, 7)
+        return money_gen(distance, 8, 7, 30)
     elif current_time.hour >= 21 and current_time.hour < 24 and type == 'bike':
-        return money_gen(distance, 8, 8)
+        return money_gen(distance, 8, 8, 30)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'bike':
-        return money_gen(distance, 11, 10)
+        return money_gen(distance, 11, 10, 30)
     else: 
         return "ERROR"
     
@@ -95,10 +95,10 @@ def adv_price_gen(distance, type, date, time):
         else:
             return
 
-        basicfare, gst, confee, insurance, total = price_gen(distance, type)
+        basefee, basicfare, gst, confee, insurance, total = price_gen(distance, type)
         total_with_advance = round(total + advance_charge)
 
-        return advance_charge, basicfare, gst, confee, insurance, total_with_advance
+        return basefee, advance_charge, basicfare, gst, confee, insurance, total_with_advance
     
 def cancelRide(rideID):
     details = deleteRide(rideID)
@@ -111,7 +111,7 @@ def cancelRide(rideID):
     elif 5 <= difference_in_minutes < 10:
         return 50
     else:
-        return 100
+        return 80
 
 
 def gen_otp():
@@ -128,7 +128,7 @@ def gen_otp():
 def book_now(lat1, lon1, lat2, lon2, vehicle_type):
     myMap = map.API()
     duration, distance = myMap.get_details(lat1, lon1, lat2, lon2)[:2]
-    basicfare, gst, confee, insurance, total = price_gen(distance, vehicle_type)
+    basefee, basicfare, gst, confee, insurance, total = price_gen(distance, vehicle_type)
     driver = getTop5NearestDrivers(lat1, lon1, vehicle_type)[0]
     time_of_travel = driver[1][1]
     driver_details = getDriver(driver[0])
@@ -141,6 +141,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
         "vehicle_number": driver_details["vehicle_number"],
         "phone": driver_details["phone"],
         "otp": gen_otp(),
+        "basefee": basefee,
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
@@ -154,7 +155,7 @@ def book_now(lat1, lon1, lat2, lon2, vehicle_type):
 def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
     myMap = map.API()
     duration, distance = myMap.get_details(lat1, lon1, lat2, lon2)[:2]
-    advance_charge, basicfare, gst, confee, insurance, total_with_advance = adv_price_gen(distance, vehicle_type, date, time)
+    basefee, advance_charge, basicfare, gst, confee, insurance, total_with_advance = adv_price_gen(distance, vehicle_type, date, time)
     driver = getTop5NearestDrivers(lat1, lon1, vehicle_type)[0]
     time_of_travel = driver[1][1]
     driver_details = getDriver(driver[0])
@@ -166,6 +167,7 @@ def book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time):
         "vehicle_number": driver_details["vehicle_number"], 
         "phone": driver_details["phone"],
         "otp": gen_otp(),
+        "basefee": basefee,
         "basic": basicfare,
         "gst": gst,
         "convenience": confee,
