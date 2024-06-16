@@ -23,7 +23,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.clock import mainthread
-
+from kivy.uix.spinner import Spinner
 import socketio
 import threading
 
@@ -194,6 +194,7 @@ class PassengerSP(Screen):
     def verify_otp(self, otp, widget):
         if  otp == self.otp:
             widget.text= "OTP verified"
+            self.manager.current= 'Phome'
         else:
             widget.text= 'Invalid OTP'
 
@@ -246,8 +247,97 @@ class ChpwdPass(Screen):
             widget.text= "Password doesn't match"
 
 class ViewRides(Screen):
-    def on_enter():
-    	pass
+    def on_enter(self):
+        self.ids.options_lay.clear_widgets()
+        ride= self.manager.ride_data
+        self.ride_id= ride.ride
+        self.ids.dname.text= ride.dname
+        self.ids.dvehicletype.text= ride.vehicle_type
+        self.ids.dvehicleno.text= ride.vehicle_no
+        self.ids.driver_phone.text= ride.driver_phone
+        self.ids.otp.text= f"[b]OTP:[/b] [color=ff0000]{str(self.gen_otp())}[/color]"
+        ride.pick_loc= ride.pick_loc.replace("\n", ",")
+        ride.des_loc= ride.des_loc.replace("\n", ",")
+        self.ids.pickup.text= "Pickup: "+ ride.pick_loc
+        self.ids.destination.text= "Destination: "+ride.des_loc
+        self.ids.price.text= "Price: "+ str(ride.ride_price)
+        self.ids.pickupmarker.lat= ride.pick_coords[0]
+        self.ids.pickupmarker.lon= ride.pick_coords[1]
+        self.ids.destinationmarker.lat= ride.des_coords[0]
+        self.ids.destinationmarker.lon= ride.des_coords[1]
+        self.map = self.ids.passmap
+        self.map.update_lines(ride.route)
+        self.rating= None
+
+        if ride.ride_status=="ONGOING":
+            options_lay= self.ids.options_lay
+            options_lay.spacing= 10
+            options_lay.size_hint= (1, 0.2)
+            buttons_lay= BoxLayout(orientation= 'horizontal',
+                                   padding= 5)
+            buttons_lay.size_hint= [1, 0.5]
+            buttons_lay.spacing= 5
+            cancelbtn= Button(text= 'Cancel Ride', background_color= (1, 0.2, 0.2, 1), color= (1, 1, 1, 1))
+            endbtn= Button(text= 'End Ride', background_color= (1, 0.2, 0.2, 1), color= (1, 1, 1, 1))
+            #self.rating= TextInput(hint_text="Rating(1-5)", size_hint= [1, 0.1], multiline= False)
+
+            self.spinner= Spinner(
+                text= 'Rating',
+                values= ('1', '2', '3', '4', '5'),
+                size_hint= (1, 0.5),
+                color= (0.8,0.8,0.8, 1),
+                background_color= (0.8, 0.2,0.2, 1)
+            )
+            l1= Label(
+                text= '',
+            )
+            self.spinner.bind(on_text= lambda instance: self.select_rating(self.spinner, self.spinner.text))
+            cancelbtn.bind(on_press=self.cancel_call_back())
+            endbtn.bind(on_release= self.end_call_back())
+            options_lay.add_widget(self.spinner)
+            buttons_lay.add_widget(cancelbtn)
+            buttons_lay.add_widget(endbtn)
+            options_lay.add_widget(buttons_lay)
+            options_lay.add_widget(l1)
+    
+    def gen_otp(self):
+        import random
+        otp= ''
+        val= '1234567890'
+        nums= list(val)
+        for i in range(4):
+            otp += random.choice(nums)
+        return otp
+    
+    def select_rating(self, spinner, text):
+        if text.isdigit():
+            self.rating= int(text)
+        else:
+            self.ids.errormsg.text= 'select the rating'
+
+
+    def cancel_call_back(self):
+        def callback(instance):
+            cancellationFee = priceGen.cancelRide(rideID=self.ride_id)
+            self.manager.get_screen('cancelscreen').update_result(cancellationFee)
+            self.manager.current = 'cancelscreen'
+        return callback
+    
+    def end_call_back(self):    
+        def callback(instance):
+            try:
+                rating=int(self.spinner.text)
+                rating= float(rating)
+                db.completeRide(self.ride_id)
+                ride= db.getRide(self.ride_id)
+                db.giveRatings(ride["driverID"], rating)
+                self._reset_()
+                self.manager.current= 'Phome'
+            except:
+                self.ids.errormsg.text= 'Select Rating'
+        return callback
+    def _reset_(self):
+        self.manager.ride_data= None
 
 class AdvanceBooking(Screen):
     pick=0
@@ -427,7 +517,7 @@ class Profileviewer(Screen):
         self.l3 = Label(text='Pickup Location', markup=True, color=[0, 0, 0, 1])
         self.l4 = Label(text='Destination', markup=True, color=[0, 0, 0, 1])
         self.l5 = Label(text='Ride Fare', markup=True, color=[0, 0, 0, 1])
-        self.l6 = Label(text= '')
+        self.l6 = Label(text= 'View Ride', markup= True,color= [0, 0, 0, 1])
         self.grid.add_widget(self.l1)
         self.grid.add_widget(self.l2)
         self.grid.add_widget(self.l3)
@@ -435,7 +525,10 @@ class Profileviewer(Screen):
         self.grid.add_widget(self.l5)
         self.grid.add_widget(self.l6)
         rides = db.getRidesOfUsers(userID=user)
-        for i in rides:
+        cnt=0
+        buttons= []
+        for j in range(len(rides)):
+            i= rides[j]
             driv = db.getDriver(i['driverID'])
             pickup = db.get_address(i['start_lat'], i['start_long']).replace(",", "\n")
             destination = db.get_address(i['end_lat'], i['end_long']).replace(",", "\n")
@@ -445,18 +538,76 @@ class Profileviewer(Screen):
             l3 = Label(text=f'{pickup}', size_hint=[0.2, 1], color=[0, 0, 0, 1])
             l4 = Label(text=f'{destination}', size_hint=[0.2, 1], color=[0, 0, 0, 1])
             l5 = Label(text=f"{i['price']}", size_hint=[0.2, 1], color=[0, 0, 0, 1])
-            b1 = Button(text= "View Ride", size_hint=[0.2, 0.5], color= [1, 1, 1, 1], background_color= [0.8, 0.2, 0.2, 1])
+            b1 = Button(text= f"{i['rideID']}",
+                        size_hint=[0.2, 0.5], 
+                        color= [1, 1, 1, 1], 
+                        background_color= [0.8, 0.2, 0.2, 1],
+                        )
+            buttons.append(b1)
+            b1.bind(on_press=self.create_view_ride_callback(b1.text))
+            cnt+=1
             self.grid.add_widget(l1)
             self.grid.add_widget(l2)
             self.grid.add_widget(l3)
             self.grid.add_widget(l4)
             self.grid.add_widget(l5)
             self.grid.add_widget(b1)
-        scroll.add_widget(self.grid)
+        scroll.add_widget(self.grid)      
 
-class SharedRideData():
-    def __init__(self, rideID=None):
-        self.ride= rideID 
+    def create_view_ride_callback(self, ride_id):
+        def callback(instance):
+            self.view_ride(int(ride_id))
+        return callback
+    
+    def view_ride(self, ride_id):
+        # i["rideID"], pickup, destination, [[i['start_lat'], i['start_long']], [i['end_lat'], i['end_long']]]
+        ride= db.getRide(ride_id)
+        driver= db.getDriver(ride['driverID'])
+        pickup_loc = db.get_address(ride['start_lat'], ride['start_long']).replace(",", "\n")
+        des_loc = db.get_address(ride['end_lat'], ride['end_long']).replace(",", "\n")
+        dname= driver['name']
+        vtype= driver['vehicle_type']
+        vno= driver['vehicle_number']
+        dphone= driver['phone']
+        ride_status= ride['status']
+        pick_coords= [ride['start_lat'], ride['start_long']]
+        des_coords= [ride['end_lat'], ride['end_long']]
+        time_dist= db.distance_time(start_lat=ride['start_lat'], end_lat=ride['end_lat'], start_lon=ride['start_long'], end_lon=ride['end_long'])
+        route= db.route(start_lat=ride['start_lat'], end_lat=ride['end_lat'], start_lon=ride['start_long'], end_lon=ride['end_long'])
+        self.manager.ride_data= None
+        self.manager.ride_data= RideData(rideID= ride['rideID'], 
+                                        pickup= pickup_loc, 
+                                        destination= des_loc, 
+                                        pick_coords= pick_coords, 
+                                        des_coords=des_coords, 
+                                        price= ride['price'], 
+                                        vehicle_no= vno, 
+                                        vehicle_type= vtype,
+                                        driver_name= dname,
+                                        ride_status= ride['status'],
+                                        driver_phone= dphone,
+                                        route= route)
+        self.manager.current= 'viewrides'
+
+
+
+class RideData(object):
+    def __init__(self, rideID=None, pickup=None, destination=None, pick_coords=None, des_coords=None, price=None, driver_name= None, driver_phone= None, vehicle_no= None, vehicle_type= None, ride_status= None, distance= None, time= None, route= None):
+        self.ride= rideID
+        self.pick_loc= pickup
+        self.des_loc= destination
+        self.pick_coords= pick_coords
+        self.des_coords= des_coords
+        self.ride_price= price
+        self.dname= driver_name
+        self.vehicle_no= vehicle_no
+        self.vehicle_type= vehicle_type
+        self.ride_status= ride_status
+        self.driver_phone= driver_phone
+        self.distance= distance
+        self.ride_time= time
+        self.route= route
+         
 
 class CustomMapView(MapView):
     def __init__(self, **kwargs):
@@ -511,12 +662,15 @@ class PassengerHome(Screen):
         print(suggestions)
         self.pickup_sug= []
         self.choice= 'pickup'
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.pickup_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
+        try:
+            for i in suggestions[:3]:
+                a= location(location= i[0], coords= i[1])
+                self.pickup_sug.append(a)
+            self.ids.suggest1.text= suggestions[0][0]
+            self.ids.suggest2.text= suggestions[1][0]
+            self.ids.suggest3.text= suggestions[2][0]
+        except:
+            self.ids.notify.text= "No Results available"
 
     def on_text_destination(self, prompt):
         myMap = map.API()
@@ -524,12 +678,15 @@ class PassengerHome(Screen):
         print(suggestions)
         self.destination_sug= []
         self.choice= "destination"
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.destination_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
+        try:
+            for i in suggestions[:3]:
+                a= location(location= i[0], coords= i[1])
+                self.destination_sug.append(a)
+            self.ids.suggest1.text= suggestions[0][0]
+            self.ids.suggest2.text= suggestions[1][0]
+            self.ids.suggest3.text= suggestions[2][0]
+        except:
+            self.ids.notify.text= "No Results available"
     def select_option(self, suggestion,pos ,textWidget):
         try:
             textWidget.text = suggestion
@@ -689,6 +846,7 @@ class AdvanceSharedData():
         self.time_of_arrival = time_of_travel
         self.rideID = ride_id
         self.basefee = basefee
+
 class RideDetailsScreen(Screen):
     def on_enter(self):
         details = self.manager.shared_data
@@ -735,6 +893,7 @@ class RideDetailsScreen(Screen):
         self.ids.time_of_arrival.text = f"Driver is [color=0000ff]{str(self.time_of_arrival)}[/color] minutes away"
         self.mapp= self.ids.bookmap
         self.mapp.update_lines(self.manager.route)
+
     def goBack(self):
         self.manager.current = 'Phome'
 
@@ -742,7 +901,17 @@ class RideDetailsScreen(Screen):
         cancellationFee = priceGen.cancelRide(rideID=self.rideID)
         self.manager.get_screen('cancelscreen').update_result(cancellationFee)
         self.manager.current = 'cancelscreen'
-        
+
+    def end_ride(self, rating):
+        try:
+            rating= float(rating)
+            db.completeRide(self.rideID)
+            ride= db.getRide(self.rideID)
+            db.giveRatings(ride["driverID"], rating)
+            print(ride)
+            self.manager.current= 'Phome'
+        except:
+            self.ids.errormsg.text= "Give Rating in Integer or decimal"
 
 class CancellationScreen(Screen):
     def update_result(self, computed_value):
