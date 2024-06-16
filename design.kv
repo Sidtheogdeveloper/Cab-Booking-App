@@ -20,6 +20,41 @@ Windows:
     
     BoxLayout:
     	orientation: 'horizontal'
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.1, 1
+            spacing: 10
+            canvas.before:
+            	Color:
+            	    rgba: 0.95, 0.95, 0.95, 1  # Background color
+            	Rectangle:
+                	pos: self.pos
+                	size: self.size
+            Button:
+                text: 'Home'
+                size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
+                on_release: 
+                    root._reset_()
+                    app.root.current= 'Phome'
+            Button:
+                text: 'Profile'
+                size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
+                on_release: 
+                    root._reset_()
+                    app.root.current= 'profile'
+            Label:
+                text: ''
+                size_hint: 1, 0.7
+            Button:
+                text: 'Logout'
+                size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
+                on_release: app.root.current= 'main'
         CustomMapView:
             id: passmap
             size_hint: 0.6, 1
@@ -41,10 +76,12 @@ Windows:
                 size_hint: 0.1, 0.1
             	source: "destination_pointer.png"	
     	BoxLayout:
+            id: detailslay
     	    orientation: 'vertical'
-    	    size_hint: 0.4, 1
+    	    size_hint: 0.3, 1
     	    padding: [20]
     	    spacing: 10
+            
     	    canvas.before:
             	Color:
             	    rgba: 0.95, 0.95, 0.95, 1  # Background color
@@ -53,7 +90,7 @@ Windows:
                 	size: self.size
     	    Label:
                 text: '[b]Ride Details[/b]'
-                size_hint: 1, 0.2
+                size_hint: 1, 0.1
                 markup: True
                 font_size: 24
                 color: 0.1, 0.1, 0.1, 1
@@ -95,7 +132,7 @@ Windows:
 
                 Label:
                     id: driver_phone
-                    text: ''
+                    text: 'Phone: '
                     size_hint: 1, 0.1
                     halign: 'center'
                     valign: 'middle'
@@ -121,11 +158,11 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.15
 
                 Label:
                     id: pickup
-                    text: 'Pickup Location: '
+                    text: 'Pickup: '
                     size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
@@ -143,28 +180,27 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: price
                     text: 'Total Price: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
                 
                 Label:
+                    id: errormsg
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
-                Button:
-                    text: 'Cancel Ride'
-                    size_hint: 1, None
-                    height: 40
-                    on_release: app.root.current= 'profile'
-                    background_color: (1, 0.2, 0.2, 1)
-                    color: (1, 1, 1, 1)
+                BoxLayout:
+                    id: options_lay
+                    orientation: 'vertical'
+                    size_hint: 1, 0.1
+                    spacing: 5
 
 <Chatscreen>:
     name: "chat"
@@ -225,23 +261,31 @@ Windows:
                 cols: 2
                 Label:
                     text: 'Email'
+                    size_hint: 0.2, 1
                 TextInput:
                     id: email
                     multiline: False
+                    hint_text: "yourmail@gmail.com"
+                    background_color: 0.8, 0.8, 0.8, 0.7
                     on_double_tap: root.__recent__(email, pwd)
                 Label:
                     text: "Password"
+                    size_hint: 0.2, 1
                 TextInput:
                     id: pwd
                     password: True
+                    hint_text: "your password"
+                    background_color: 0.8, 0.8, 0.8, 0.7
                     allow_copy: False
                 Label:
                     text: "OTP"
-                    color: 0,0,0
+                    hint_text: "Click 'Send OTP' button to verify"
+                    size_hint: 0.2, 1
                 TextInput:
                     id: otp
                     multiline: False
                     password: True
+                    background_color: 0.8, 0.8, 0.8, 0.7
                     #background_color: 0,0,0,0
                     #foreground_color: 1,1,1,1
             BoxLayout:
@@ -289,36 +333,42 @@ Windows:
             spacing: 20
             Label:
                 text: "Name"
+                size_hint: 0.2,1
             TextInput:
                 id: name
                 multiline: False
                 hint_text: "your name"
             Label:
                 text: "Email ID"
+                size_hint: 0.2,1
             TextInput:
                 id: email
                 multiline: False
                 hint_text: "example@gmail.com"
             Label:
                 text: "Phone Number"
+                size_hint: 0.2,1
             TextInput:
                 id: phone
                 multilline: False
                 hint_text: "1234567890"
             Label:
                 text: "Password"
+                size_hint: 0.2,1
             TextInput:
                 id: pwd
                 password: True
                 multiline: False
             Label:
                 text: "Confirm password"
+                size_hint: 0.2,1
             TextInput:
                 id: cpwd
                 password: True
                 multiline: False
             Label:
                 text: "OTP"
+                size_hint: 0.2,1
             TextInput:
                 id: otp
                 multiline: False
@@ -342,7 +392,6 @@ Windows:
                 size_hint: 0.5, 0.3
                 on_press: 
                     root.verify_otp(otp.text, errormsg)
-                    app.root.current = "Plogin"
             Button:
                 text: "Go Back"
                 size_hint: 0.5, 0.3
@@ -370,14 +419,16 @@ Windows:
             GridLayout:
                 cols: 2
                 spacing: 20
-                size_hint: 0.8, 0.7
+                size_hint: 0.9, 0.7
                 Label:
                     text: 'Email ID'
+                    size_hint: 0.1, 0.5
                 TextInput:
                     id: email
                     size_hint: 1, 0.5
                 Label:
                     text: 'OTP'
+                    size_hint: 0.1, 0.5
                 TextInput:
                     id: otp
                     size_hint: 1, 0.5
@@ -719,19 +770,25 @@ Windows:
             size_hint: 0.1, 1
             spacing: 10
             padding: [10]
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
             Button:
                 text: 'Profile'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: app.root.current= 'profile'
-            Button:
-                text: 'Go Back'
-                size_hint: 1, 0.1
-                on_release: root.goBack()
             Label:
                 text: ''
-                size_hint: 1, 0.7
+                size_hint: 1, 0.8
             Button:
                 text: 'Logout'
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 size_hint: 1, 0.1
                 on_release: app.root.current= 'main'
         BoxLayout:
@@ -757,6 +814,12 @@ Windows:
                     source: "destination_pointer.png"
         BoxLayout:
             orientation: 'vertical'
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
             size_hint: 0.3, 1
             Label:
                 text: 'RIDE CANCELLED\nSUCCESSFULLY'
@@ -764,9 +827,12 @@ Windows:
             Label:
                 id: cancelfee
                 text: ''
+                color: 0.2, 0.2, 0.2, 1
             Button:
                 text: 'Go Back'
                 size_hint: 1, None
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: root.goBack()
 
 <AdvanceBooking>:
@@ -938,6 +1004,12 @@ Windows:
     name: 'ridedetails'
     BoxLayout:
         orientation: 'horizontal'
+        canvas.before:
+            Color:
+                rgba: 0.95, 0.95, 0.95, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.1, 1
@@ -946,10 +1018,14 @@ Windows:
             Button:
                 text: 'Profile'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: app.root.current= 'profile'
             Button:
                 text: 'Go Back'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: root.goBack()
             Label:
                 text: ''
@@ -957,6 +1033,8 @@ Windows:
             Button:
                 text: 'Logout'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: app.root.current= 'main'
         CustomMapView:
             id: bookmap
@@ -1102,7 +1180,7 @@ Windows:
                 Label:
                     id: basefee
                     text: 'Vehicle Base Fee: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1111,7 +1189,7 @@ Windows:
                 Label:
                     id: basic
                     text: 'Basic Fare: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1120,7 +1198,7 @@ Windows:
                 Label:
                     id: gst
                     text: 'GST: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1129,7 +1207,7 @@ Windows:
                 Label:
                     id: convenience
                     text: 'Convenience Fee: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1138,7 +1216,7 @@ Windows:
                 Label:
                     id: insurance
                     text: 'Insurance: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1147,15 +1225,16 @@ Windows:
                 Label:
                     id: price
                     text: 'Total Price: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.05
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
 
                 Label:
+                    id: errormsg
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: duration
@@ -1174,18 +1253,32 @@ Windows:
                     valign: 'middle'
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
-
+                TextInput:
+                    id: rating
+                    size_hint: 1, 0.1
+                    hint_text: 'Rating (1-5)'
                 Label:
                     text: ''
                     size_hint: 1, 0.2
-
-                Button:
-                    text: 'Cancel Ride'
-                    size_hint: 1, None
-                    height: 40
-                    on_release: root.cancel_ride()
-                    background_color: (1, 0.2, 0.2, 1)
-                    color: (1, 1, 1, 1)
+                BoxLayout:
+                    orientation: 'horizontal'
+                    padding: [5]
+                    spacing: 5
+                    size_hint: 1, 0.1
+                    Button:
+                        text: 'Cancel Ride'
+                        size_hint: 1, None
+                        height: 40
+                        on_release: root.cancel_ride()
+                        background_color: (1, 0.2, 0.2, 1)
+                        color: (1, 1, 1, 1)
+                    Button:
+                        text: 'End Ride'
+                        size_hint: 1, None
+                        height: 40
+                        on_release: root.end_ride(rating.text)
+                        background_color: (1, 0.2, 0.2, 1)
+                        color: (1, 1, 1, 1)
 
 
 
@@ -1496,3 +1589,4 @@ Windows:
             size: self.size
             pos: self.pos
             radius: [58]
+
