@@ -14,6 +14,7 @@ Windows:
     CancellationScreen:
     Chatscreen:
     ViewRides:
+    DriverChat:
 
 <ViewRides>:
     name: 'viewrides'
@@ -201,6 +202,9 @@ Windows:
                     orientation: 'vertical'
                     size_hint: 1, 0.1
                     spacing: 5
+
+<DriverChat>:
+    name: 'driverchat'
 
 <Chatscreen>:
     name: "chat"
@@ -1027,6 +1031,12 @@ Windows:
                 background_color: (1, 0.2, 0.2, 1)
                 color: (1, 1, 1, 1)
                 on_release: root.goBack()
+            Button:
+            	text: 'Chat with Driver'
+            	size_hint: 1, 0.1
+            	background_color: (1, 0.2,0.2, 1)
+            	color: 1,1,1,1
+            	on_release: app.root.current= 'driverchat'
             Label:
                 text: ''
                 size_hint: 1, 0.7
