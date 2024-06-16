@@ -65,6 +65,7 @@ class Chatscreen(Screen):
         self.rect.size = instance.size
     
     def go_back(self, instance):
+        sio.disconnect()
         self.manager.current= 'Phome'
     
     def connect_to_server(self):
@@ -174,7 +175,7 @@ class DriverChat(Screen):
         self.rect.size = instance.size
     
     def leave_room(self):
-        sio.emit('leave', {'username': self.username, 'room': self.room})
+        sio.disconnect()
     
     def go_back(self, instance):
         self.leave_room()
