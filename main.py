@@ -520,61 +520,70 @@ class AdvanceBooking(Screen):
         map.update_lines(route)       
         
     def generate_price(self):
-        pickupMarker = self.ids.pickupmarker
-        destinationMarker = self.ids.destinationmarker
-        lat1 = pickupMarker.lat
-        lon1 = pickupMarker.lon
-        lat2 = destinationMarker.lat
-        lon2 = destinationMarker.lon
-        vehicle_type = self.ids.vehicle.text
-        myMap = map.API()
-        distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
-        date = self.ids.date.text
-        time = self.ids.time.text
-        price = priceGen.adv_price_gen(distance, vehicle_type, date, time)[-1]
-        self.ids.price_text.text = str(price)
-        
+        try:
+            pickupMarker = self.ids.pickupmarker
+            destinationMarker = self.ids.destinationmarker
+            lat1 = pickupMarker.lat
+            lon1 = pickupMarker.lon
+            lat2 = destinationMarker.lat
+            lon2 = destinationMarker.lon
+            vehicle_type = self.ids.vehicle.text
+            myMap = map.API()
+            distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+            date = self.ids.date.text
+            time = self.ids.time.text
+            price = priceGen.adv_price_gen(distance, vehicle_type, date, time)[-1]
+            self.ids.price_text.text = "Cost: Rs. "+str(price)
+        except:
+            self.ids.price_text.text= 'Fill all the fields to\n Check Price'
     def book_advanced(self):
-        pickup = self.ids.pickup.text
-        drop = self.ids.drop.text
-        lat1 = self.ids.pickupmarker.lat
-        lon1 = self.ids.pickupmarker.lon
-        lat2 = self.ids.destinationmarker.lat
-        lon2 = self.ids.destinationmarker.lon
-        vehicle_type = self.ids.vehicle.text
-        self.manager.pick_loc=[lat1, lon1]
-        self.manager.des_loc=[lat2, lon2]
-        date = self.ids.date.text
-        time = self.ids.time.text
-        self.manager.route= self.route
-        details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
-        ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, True, details['price'], "ONGOING")
-        self.manager.advance_shared_data = AdvanceSharedData(
-            pickup= pickup, 
-            drop_text= drop, 
-            vehicle= vehicle_type, 
-            price= details["price"], 
-            driver_name= details["driver_name"], 
-            vehicle_no= details["vehicle_number"], 
-            driver_phone = details["phone"],
-            otp= details['otp'], 
-            basefee = details["basefee"],
-            basic_pr= details['basic'], 
-            gst=details["gst"], 
-            convenience= details["convenience"], 
-            insurance= details["insurance"], 
-            advance= details["advance"],
-            pick_marker= [lat1, lon1], 
-            des_marker= [lat2, lon2], 
-            date=date, 
-            time= time,
-            ride_id= ride["rideID"],
-            ride_distance= details["ride_distance"],
-            duration= details["duration"],
-            time_of_travel= details["time_of_travel"]
-            )
-        self.manager.current = 'advancedridedetails'
-        # self.manager.transition.direction = 'left'
+        try:
+            pickup = self.ids.pickup.text
+            drop = self.ids.drop.text
+            lat1 = self.ids.pickupmarker.lat
+            lon1 = self.ids.pickupmarker.lon
+            lat2 = self.ids.destinationmarker.lat
+            lon2 = self.ids.destinationmarker.lon
+            vehicle_type = self.ids.vehicle.text
+            self.manager.pick_loc=[lat1, lon1]
+            self.manager.des_loc=[lat2, lon2]
+            date = self.ids.date.text
+            time = self.ids.time.text
+            dist= db.distance_time(lat1, lat2, lon1, lon2)
+            if dist['distance']>400:
+                self.ids.price_text.text = 'Cannot book as travel distance \nis more than 400kms'
+                return 
+            self.manager.route= self.route
+            details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)
+            ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, True, details['price'], "ONGOING")
+            self.manager.advance_shared_data = AdvanceSharedData(
+                pickup= pickup, 
+                drop_text= drop, 
+                vehicle= vehicle_type, 
+                price= details["price"], 
+                driver_name= details["driver_name"], 
+                vehicle_no= details["vehicle_number"], 
+                driver_phone = details["phone"],
+                otp= details['otp'], 
+                basefee = details["basefee"],
+                basic_pr= details['basic'], 
+                gst=details["gst"], 
+                convenience= details["convenience"], 
+                insurance= details["insurance"], 
+                advance= details["advance"],
+                pick_marker= [lat1, lon1], 
+                des_marker= [lat2, lon2], 
+                date=date, 
+                time= time,
+                ride_id= ride["rideID"],
+                ride_distance= details["ride_distance"],
+                duration= details["duration"],
+                time_of_travel= details["time_of_travel"]
+                )
+            self.manager.current = 'advancedridedetails'
+            # self.manager.transition.direction = 'left' 
+        except:
+            self.ids.price_text.text = 'enter all fields correctly'
 
 class Profileviewer(Screen):
     def on_enter(self, *args):
@@ -825,65 +834,67 @@ class PassengerHome(Screen):
         map.update_lines(route)
 
     def generate_price(self):
-        pickupMarker = self.ids.pickupmarker
-        destinationMarker = self.ids.destinationmarker
-        lat1 = pickupMarker.lat
-        lon1 = pickupMarker.lon
-        lat2 = destinationMarker.lat
-        lon2 = destinationMarker.lon
-        vehicle_type = self.ids.vehicle.text
-        myMap = map.API()
-        if lat1 and lon1 and lat2 and lon2:
-            distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
-            price = priceGen.price_gen(distance, vehicle_type)
-            self.ids.price_text.text = str(price[-1])
-            # coords = db.route(lat1, lat2, lon1, lon2)
-            # for line in self.lines:
-            #     self.canvas.remove(line)
-            # self.lines.clear()
-            # with self.canvas:
-            #     Color(1, 0, 0, 1)
-            #     for i in range(len(coords)-1):
-            #         self.lines.append(Line(points=[coords[i][0], coords[i][1], coords[i+1][0], coords[i+1][1]]))
+        try:
+            pickupMarker = self.ids.pickupmarker
+            destinationMarker = self.ids.destinationmarker
+            lat1 = pickupMarker.lat
+            lon1 = pickupMarker.lon
+            lat2 = destinationMarker.lat
+            lon2 = destinationMarker.lon
+            vehicle_type = self.ids.vehicle.text
+            myMap = map.API()
+            if lat1 and lon1 and lat2 and lon2:
+                distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
+                price = priceGen.price_gen(distance, vehicle_type)
+                self.ids.price_text.text = str(price[-1])
+        except:
+            self.ids.price.text='Enter the Pickup location\n and Destination'
 
     def book_now(self):
-        pickup = self.ids.pickup.text
-        drop = self.ids.drop.text
-        pickupMarker = self.ids.pickupmarker
-        destinationMarker = self.ids.destinationmarker
-        lat1 = pickupMarker.lat
-        lon1 = pickupMarker.lon
-        lat2 = destinationMarker.lat
-        lon2 = destinationMarker.lon
-        vehicle_type = self.ids.vehicle.text
-        self.manager.pickup_loc= [lat1, lon1]
-        self.manager.des_loc= [lat2, lon2]
-        self.manager.route= self.route
-        details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
-        ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, False, details['price'], "ONGOING")
-        self.manager.shared_data= SharedData(
-            pickup=pickup, 
-            drop_text= drop, 
-            vehicle=vehicle_type, 
-            price=details["price"], 
-            driver_name=details["driver_name"], 
-            vehicle_no=details["vehicle_number"],
-            driver_phone=details["phone"], 
-            otp=details["otp"], 
-            basefee = details["basefee"],
-            basic_pr=details["basic"], 
-            gst= details["gst"], 
-            convenience=details["convenience"], 
-            insurance=details["insurance"], 
-            ride_distance=details["ride_distance"],
-            pick_marker= [lat1, lon2], 
-            des_marker= [lat2, lon2], 
-            driver_marker= details["driverCoord"],
-            duration=details["duration"], 
-            time_of_travel=details["time_of_travel"], 
-            ride_id=ride['rideID']
-        )
-        self.manager.current = 'ridedetails'
+        try:
+            pickup = self.ids.pickup.text
+            drop = self.ids.drop.text
+            pickupMarker = self.ids.pickupmarker
+            destinationMarker = self.ids.destinationmarker
+            lat1 = pickupMarker.lat
+            lon1 = pickupMarker.lon
+            lat2 = destinationMarker.lat
+            lon2 = destinationMarker.lon
+            vehicle_type = self.ids.vehicle.text
+            dist= db.distance_time(lat1, lat2, lon1, lon2)
+            if dist['distance']>100:
+                self.ids.price_text.text= 'Cannot book as Travel distance\n is more than 100kms'
+                return
+            self.manager.pickup_loc= [lat1, lon1]
+            self.manager.des_loc= [lat2, lon2]
+            self.manager.route= self.route
+            details = priceGen.book_now(lat1, lon1, lat2, lon2, vehicle_type)
+            ride= db.postRide(self.manager.user_id, details['driverID'], lat1, lon1, lat2, lon2, False, details['price'], "ONGOING")
+            self.manager.shared_data= SharedData(
+                pickup=pickup, 
+                drop_text= drop, 
+                vehicle=vehicle_type, 
+                price=details["price"], 
+                driver_name=details["driver_name"], 
+                vehicle_no=details["vehicle_number"],
+                driver_phone=details["phone"], 
+                otp=details["otp"], 
+                basefee = details["basefee"],
+                basic_pr=details["basic"], 
+                gst= details["gst"], 
+                convenience=details["convenience"], 
+                insurance=details["insurance"], 
+                ride_distance=details["ride_distance"],
+                pick_marker= [lat1, lon2], 
+                des_marker= [lat2, lon2], 
+                driver_marker= details["driverCoord"],
+                duration=details["duration"], 
+                time_of_travel=details["time_of_travel"], 
+                ride_id=ride['rideID']
+            )
+            self.manager.current = 'ridedetails'
+        except:
+            self.ids.price_text.text= 'Enter all fields correctly'
 
 
 class SharedData():
