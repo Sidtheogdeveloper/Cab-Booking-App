@@ -321,14 +321,28 @@ def route(start_lat, end_lat, start_lon, end_lon):
     except IndexError:
         return []
 
-#print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
+def distance_time(start_lat, end_lat, start_lon, end_lon):
+    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    url= f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lon}%2C{start_lat}%3B{end_lon}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token={apikey}"
+    res= requests.get(url)
+    routes= res.json()
+    try:
+        distance= routes['routes'][0]['legs'][0]['distance']//1000
+        time= routes['routes'][0]['legs'][0]['duration']//60
+        return {'distance': distance, 'time': time}
+    except IndexError:
+        return []
 
+
+#print(getTop5NearestDrivers(13.22, 18.22, 'auto'))
+#print(distance_time(12.963045, 12.751801, 80.155388, 80.195878))
 # print(postDriver("Subash", "abc@gmail.com", "12345", "123", "TN05 BE4392", 13.22, 80.24, "car", 4.8, True))
 # # print()
 # # print(postUser("Sub", "123@gmail.com", "4560", "100"))
 # # print()
 #print(postRide(1, 1, 13.45, 80.24, 13.54, 80.43, True, 450))
 # #print(startUser("123@gmail.com", "100"))
-#get_address(13.0827, 80.2707)
+#print(get_address(13.0827, 80.2707))
 #print(getDriver(56))
-#print(route(13.45, 80.24, 13.54, 80.43))
+#print(getRide(2))
+#print(getDriver(25))
