@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Chat</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io();
+
+            document.getElementById('joinBtn').onclick = () => {
+                const username = document.getElementById('usernameInput').value;
+                const room = document.getElementById('roomInput').value;
+                socket.emit('join', {username: username, room: room});
+            };
+	
+            document.getElementById('leaveBtn').onclick = () => {
+                const username = document.getElementById('usernameInput').value;
+                const room = document.getElementById('roomInput').value;
+                socket.emit('leave', {username: username, room: room});
+            };
+
+            document.getElementById('sendBtn').onclick = () => {
+                const room = document.getElementById('roomInput').value;
+                const msg = document.getElementById('msgInput').value;
+                socket.emit('message', {room: room, msg: msg});
+            };
+
+            socket.on('message', (msg) => {
+                const messages = document.getElementById('messages');
+                const messageElement = document.createElement('li');
+                messageElement.textContent = msg;
+                messages.appendChild(messageElement);
+            });
+        });
+    </script>
+</head>
+<body>
+    <input id="usernameInput" type="text" placeholder="Username">
+    <input id="roomInput" type="text" placeholder="Room">
+    <button id="joinBtn">Join Room</button>
+    <button id="leaveBtn">Leave Room</button>
+    <br>
+    <input id="msgInput" type="text" placeholder="Message">
+    <button id="sendBtn">Send</button>
+    <ul id="messages"></ul>
+</body>
+</html>
+
