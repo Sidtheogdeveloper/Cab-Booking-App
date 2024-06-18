@@ -219,29 +219,48 @@ Windows:
     orientation: 'vertical'
     GridLayout:
         cols: 1
-        Label:
-            text: "  Welcome to EzCabz\n Have a wonderful day!"
-            font_size: 36
-            font: 'consalas'
-            size_hint: 1, 0.4
         BoxLayout:
+            size_hint: 1, 0.3
             orientation: 'vertical'
+            Image:
+                source: 'logo.png' 
+                allow_stretch: True
+                keep_ratio: True
+                size_hint: 1, 0.7
+            Label:
+                text: "  Welcome to EzCabz"
+                font_size: "50dp"
+                font: 'consalas'
+                bold: True
+                color: [1,0,0,1]
+                size_hint: 1, 0.3
+        Label:
+            size_hint: 1, 0.4
+            text: ''
+        BoxLayout:
+            orientation: 'horizontal'
             padding: [30]
             spacing: 20
-            size_hint: 1, 0.4
+            size_hint: 1, 0.3
             RoundedButton:
                 text: "SignUp"
-                size_hint: 0.2, 0.1
+                size_hint: 0.2, 0.8
+                bold: True
+                font_size: "30dp"
                 on_release: 
-                	root.manager.transition = FadeTransition()
-                	app.root.current = "Psignup"
-                
+                    root.manager.transition = FadeTransition()
+                    app.root.current = "Psignup"
+            Label:
+                size_hint: 0.6, 0.8
+                text: ''
             RoundedButton:
                 text: "Login"
-                size_hint: 0.2, 0.1
+                size_hint: 0.2, 0.8
+                bold: True
+                font_size: "30dp"
                 on_release: 
-                	root.manager.transition = FadeTransition()
-                	app.root.current = "Plogin"
+                    root.manager.transition = FadeTransition()
+                    app.root.current = "Plogin"
 
 <PassengerLog>:
     name: 'Plogin'
@@ -249,7 +268,7 @@ Windows:
         Rectangle:
             pos: self.pos
             size: self.size
-            source: 'background.jpg'
+            source: 'background2.jpg'
     orientation: 'vertical'
     AnchorLayout:
         anchor_x: 'center'
@@ -258,51 +277,81 @@ Windows:
             orientation: 'vertical'
             padding: 50,50
             spacing: 40
+            Image:
+                source: 'logo.png' 
+                allow_stretch: True
+                keep_ratio: True
+                size_hint: 1, 0.2
             Label:
-                text: "Welcome Back"
-                font_size: 36
+                text: "LOGIN"
+                font_size: "50dp"
+                bold: True
+                color: [1,0,0,1]
+                size_hint: 1, 0.1
             GridLayout:
                 cols: 2
+                size_hint: 1, 0.4
                 Label:
                     text: 'Email'
-                    size_hint: 0.2, 1
+                    size_hint: 0.3, 1
+                    color: [0,0,0,1]
+                    font_size: "30dp"
+                    bold: True
                 TextInput:
                     id: email
                     multiline: False
+                    font_size: "25dp"
                     hint_text: "yourmail@gmail.com"
-                    background_color: 0.8, 0.8, 0.8, 0.7
+                    background_color: 0.8, 0.8, 0.8, 0.6
                     on_double_tap: root.__recent__(email, pwd)
                 Label:
                     text: "Password"
-                    size_hint: 0.2, 1
+                    size_hint: 0.3, 1
+                    color: [0,0,0,1]
+                    font_size: "30dp"
+                    bold: True
                 TextInput:
                     id: pwd
                     password: True
+                    font_size: "25dp"
                     hint_text: "your password"
-                    background_color: 0.8, 0.8, 0.8, 0.7
+                    background_color: 0.8, 0.8, 0.8, 0.6
                     allow_copy: False
                 Label:
                     text: "OTP"
+                    bold: True
+                    color: [0,0,0,1]
+                    font_size: "30dp"
                     hint_text: "Click 'Send OTP' button to verify"
-                    size_hint: 0.2, 1
+                    size_hint: 0.3, 1
                 TextInput:
                     id: otp
                     multiline: False
+                    font_size: "25dp"
                     password: True
-                    background_color: 0.8, 0.8, 0.8, 0.7
+                    background_color: 0.8, 0.8, 0.8, 0.6
                     #background_color: 0,0,0,0
                     #foreground_color: 1,1,1,1
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: 20
                 padding: [30]
+                size_hint: 1, 0.3
                 Button:
                     text: "Go back"
                     size_hint: 0.5, 0.3
+                    font_size: "20sp"
+                    bold: True
+                    color: 1,0,0,1
+                    background_color: 0,0,0,0.5
                     on_release: app.root.current = 'main'
                 Button:
                     text: "Send OTP"
                     size_hint: 0.5, 0.3
+                    font_size: "20sp"
+                    bold: True
+                    color: 1,0,0,1
+                    background_color: 0,0,0,0.5
                     on_press: root.__submit__(email.text, pwd.text, errormsg)
                 Label:
                     id: errormsg
@@ -310,10 +359,18 @@ Windows:
                 Button:
                     text: 'Forgot Password'
                     size_hint: 0.8, 0.3
+                    font_size: "20sp"
+                    bold: True
+                    color: 1,0,0,1
+                    background_color: 0,0,0,0.5
                     on_release: app.root.current= 'FPpass'
                 Button:
                     text: 'Submit'
                     size_hint: 0.5, 0.3
+                    font_size: "20sp"
+                    bold: True
+                    color: 1,0,0,1
+                    background_color: 0,0,0,0.5
                     on_press: root.__verify__(otp.text, errormsg)
 
 <PassengerSP>:
@@ -322,83 +379,146 @@ Windows:
         Rectangle:
             pos: self.pos
             size: self.size
-            source: 'background.jpg'
+            source: 'background2.jpg'
     orientation: 'vertical'
     BoxLayout:
         orientation: 'vertical'
         spacing: 20
         padding: [40]
-        Label:
-            text: 'Please fill in all the details correctly\n  to make your rides even more comfy'
+        Image:
+            source: 'logo.png' 
+            allow_stretch: True
+            keep_ratio: True
             size_hint: 1, 0.2
+        Label:
+            text: "SIGN UP"
+            font_size: "50dp"
+            bold: True
+            color: [1,0,0,1]
+            size_hint: 1, 0.1
         GridLayout:
-            size_hint: 1, 0.8
+            size_hint: 1, 0.45
             cols: 2
-            spacing: 20
             Label:
                 text: "Name"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: name
                 multiline: False
+                bold: True
+                color: [0,0,0,1]
+                background_color: 0.8, 0.8, 0.8, 0.6
+                font_size: "30dp"
                 hint_text: "your name"
             Label:
                 text: "Email ID"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: email
                 multiline: False
+                bold: True
+                background_color: 0.8, 0.8, 0.8, 0.6
+                color: [0,0,0,1]
+                font_size: "30dp"
                 hint_text: "example@gmail.com"
             Label:
                 text: "Phone Number"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: phone
                 multilline: False
+                bold: True
+                background_color: 0.8, 0.8, 0.8, 0.6
+                color: [0,0,0,1]
+                font_size: "30dp"
                 hint_text: "1234567890"
             Label:
                 text: "Password"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: pwd
                 password: True
+                bold: True
+                background_color: 0.8, 0.8, 0.8, 0.6
+                color: [0,0,0,1]
+                font_size: "30dp"
                 multiline: False
             Label:
                 text: "Confirm password"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: cpwd
                 password: True
+                bold: True
+                color: [0,0,0,1]
+                background_color: 0.8, 0.8, 0.8, 0.6
+                font_size: "30dp"
                 multiline: False
             Label:
                 text: "OTP"
-                size_hint: 0.2,1
+                size_hint: 0.5, 1
+                color: [0,0,0,1]
+                font_size: "30dp"
+                bold: True
             TextInput:
                 id: otp
                 multiline: False
+                bold: True
+                background_color: 0.8, 0.8, 0.8, 0.6
+                color: [0,0,0,1]
+                font_size: "30dp"
                 password: True
         BoxLayout:
             orientation: 'horizontal'
             spacing: 20
-            size_hint: 1, 0.2
+            size_hint: 1, 0.15
             Button:
                 text: 'Send OTP'
                 size_hint: 0.5, 0.3
+                font_size: "20sp"
+                bold: True
+                color: 1,0,0,1
+                background_color: 0,0,0,0.5
                 on_release: 
                     root.__enter_data__(name.text, phone.text,email.text, pwd.text, cpwd.text, errormsg)
             Label:
                 id: errormsg
                 size_hint: 0.5, 0.3
+                color: [0,0,0,1]
+                bold: True
                 text: 'Please fill all fields\n      correctly.'
                 
             Button:
                 text: "Submit"
                 size_hint: 0.5, 0.3
+                font_size: "20sp"
+                bold: True
+                color: 1,0,0,1
+                background_color: 0,0,0,0.5
                 on_press: 
                     root.verify_otp(otp.text, errormsg)
             Button:
                 text: "Go Back"
                 size_hint: 0.5, 0.3
+                font_size: "20sp"
+                bold: True
+                color: 1,0,0,1
+                background_color: 0,0,0,0.5
                 on_release:
                     app.root.current = "main"
 
