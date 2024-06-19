@@ -117,6 +117,91 @@ class Chatscreen(Screen):
         self.message_list.add_widget(boxlay)
         self.scroll_view.scroll_to(label)
 
+class AdvancedDriverChat(Screen):
+    def on_enter(self):
+        self.msg_sent = 0
+        self.username = self.manager.user_name
+        self.room = self.manager.user_name
+        self.root = BoxLayout(orientation='vertical', spacing=10, padding=[20])
+        with self.root.canvas.before:
+            from kivy.graphics import Color, Rectangle
+            Color(0.95, 0.95, 0.95, 1)  # Light gray background
+            self.rect = Rectangle(size=self.root.size, pos=self.root.pos)
+            self.root.bind(size=self._update_rect, pos=self._update_rect)
+            
+        self.scroll_view = ScrollView()
+        self.message_layout = GridLayout(cols=2, size_hint_y=None)
+        self.message_layout.bind(minimum_height=self.message_layout.setter('height'))
+        self.scroll_view.add_widget(self.message_layout)
+
+        self.root.add_widget(self.scroll_view)
+        
+        self.input_layout = BoxLayout(size_hint_y=None, height='40dp')
+        self.msg_input = TextInput(hint_text='Message', size_hint_y=None, height='40dp')
+        self.send_button = Button(text='Send', size_hint=(0.1, 1), height='40dp', on_press=self.send_message, font_size=20, color=[0.8,0.8,0.8,1], background_color=[0.8, 0.2, 0.2, 1])
+        self.back_button = Button(text='Back', size_hint=(0.1, 1), height='40dp', on_press=self.go_back, font_size=20, color=[0.8,0.8,0.8,1], background_color=[0.8, 0.2, 0.2, 1])
+        self.input_layout.add_widget(self.msg_input)
+        self.input_layout.add_widget(self.send_button)
+        self.input_layout.add_widget(self.back_button)
+        self.root.add_widget(self.input_layout)
+
+        self.msg_text = self.msg_input.text
+
+        threading.Thread(target=self.connect_to_server, daemon=True).start()
+        sio.on('message', self.receive_message)
+        self.add_widget(self.root)
+    
+    def connect_to_server(self):
+        try:
+            sio.connect('http://127.0.0.1:5000/')  # Use your actual server URL
+            sio.on('connect', self.on_connect)
+            sio.on('disconnect', self.on_disconnect)
+            sio.emit('join', {'username': self.username, 'room': self.room})
+        except Exception as e:
+            print(f"Connection error: {e}")
+    
+    def on_connect(self):
+        print("Connected to server")
+        self.is_connected = True
+
+    def on_disconnect(self):
+        print("Disconnected from server")
+        self.is_connected = False
+
+
+    def _update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
+    
+    def leave_room(self):
+        sio.disconnect()
+    
+    def go_back(self, instance):
+        self.leave_room()
+        self.manager.current = 'advancedridedetails'
+    
+    def send_message(self, instance):
+        self.msg_text = self.msg_input.text
+        self.msg_input.text = ''
+        msg_label2 = Label(text='', size_hint_y=None, height='40dp')
+        msg_label = Label(text=f"{self.username}: {self.msg_text}", size_hint_y=None, height='40dp', color=[0, 0, 0, 1])
+        self.message_layout.add_widget(msg_label2)
+        self.message_layout.add_widget(msg_label)
+        self.scroll_view.scroll_to(msg_label)
+        sio.emit('message', {'room': self.room, 'msg': f"{self.username}: {self.msg_text}"})
+
+    def receive_message(self, data):
+        print(f"Received message: {data}")
+        Clock.schedule_once(lambda dt: self.display_message(data))
+
+    def display_message(self, message):
+        if message != f"{self.username}: {self.msg_text}":
+            msg_label = Label(text=message, size_hint_y=None, height='40dp', color=[0, 0, 0, 1])
+            msg_label2 = Label(text='', size_hint_y=None, height='40dp')
+            self.message_layout.add_widget(msg_label)
+            self.message_layout.add_widget(msg_label2)
+            self.scroll_view.scroll_to(msg_label)
+        self.msg_text= ''
 
 class DriverChat(Screen):
     def on_enter(self):
@@ -479,6 +564,7 @@ class AdvanceBooking(Screen):
                 self.picklat= self.pickup_sug[pos].coords[1]
                 self.manager.pickup_lat = self.pickup_sug[pos].coords[1]
                 self.ids.pickup.text= self.pickup_sug[pos].location
+                self.manager.pickup_text = self.ids.pickup.text
                 self.update_map_coordinates(self.picklat, self.picklon)                                                                                                                                                                                                                                                   
                 self.update_marker(self.ids.pickupmarker, self.picklat, self.picklon)
                 self.pick=1
@@ -492,6 +578,7 @@ class AdvanceBooking(Screen):
                 self.deslat= self.destination_sug[pos].coords[1]
                 self.manager.destination_lat = self.destination_sug[pos].coords[1]
                 self.ids.drop.text= self.destination_sug[pos].location
+                self.manager.destination_text=self.ids.drop.text
                 self.update_map_coordinates(self.deslat, self.deslon)
                 self.update_marker(self.ids.destinationmarker, self.deslat, self.deslon)
                 self.des=1
@@ -550,8 +637,8 @@ class AdvanceBooking(Screen):
             date = self.ids.date.text
             time = self.ids.time.text
             dist= db.distance_time(lat1, lat2, lon1, lon2)
-            if dist['distance']>400:
-                self.ids.price_text.text = 'Cannot book as travel distance \nis more than 400kms'
+            if dist['distance']>100:
+                self.ids.price_text.text = 'Cannot book as travel distance \nis more than 100kms'
                 return 
             self.manager.route= self.route
             details = priceGen.book_advanced(lat1, lon1, lat2, lon2, vehicle_type, date, time)

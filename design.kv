@@ -15,6 +15,7 @@ Windows:
     Chatscreen:
     ViewRides:
     DriverChat:
+    AdvancedDriverChat:
 
 <ViewRides>:
     name: 'viewrides'
@@ -205,6 +206,9 @@ Windows:
 
 <DriverChat>:
     name: 'driverchat'
+
+<AdvancedDriverChat>:
+    name: 'advanceddriverchat'
 
 <Chatscreen>:
     name: "chat"
@@ -1419,20 +1423,34 @@ Windows:
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.1, 1
+            spacing: 10
+            padding: [10]
             Button:
                 text: 'Profile'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: app.root.current= 'profile'
             Button:
                 text: 'Go Back'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: root.goBack()
+            Button:
+            	text: 'Chat with Driver'
+            	size_hint: 1, 0.1
+            	background_color: (1, 0.2,0.2, 1)
+            	color: 1,1,1,1
+            	on_release: app.root.current= 'advanceddriverchat'
             Label:
                 text: ''
                 size_hint: 1, 0.7
             Button:
                 text: 'Logout'
                 size_hint: 1, 0.1
+                background_color: (1, 0.2, 0.2, 1)
+                color: (1, 1, 1, 1)
                 on_release: app.root.current= 'main'
         CustomMapView:
             id: bookmap
