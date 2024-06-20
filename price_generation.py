@@ -1,6 +1,6 @@
 import datetime
 import map, random
-from API_Functions import getTop5NearestDrivers, getDriver, deleteRide
+from DjangoFunctionCalls.API_Functions import getTop5NearestDrivers, getDriver, deleteRide
 
 
 def money_gen(distance, base, dbase, basefee):
@@ -48,33 +48,33 @@ def price_gen(distance, type):
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'suv':
         return money_gen(distance, 48, 47, 120)
     elif current_time.hour >= 6 and current_time.hour < 12 and type == 'auto':
-        return money_gen(distance, 6, 5, 50)
-    elif current_time.hour >= 12 and current_time.hour < 14 and type == 'auto':
         return money_gen(distance, 7, 6, 50)
+    elif current_time.hour >= 12 and current_time.hour < 14 and type == 'auto':
+        return money_gen(distance, 8, 7, 50)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'auto':
-        return money_gen(distance, 9, 8.5, 50)
-    elif current_time.hour >= 17 and current_time.hour < 20 and type == 'auto':
-        return money_gen(distance, 7, 6.5, 50)
-    elif current_time.hour >= 20 and current_time.hour < 21 and type == 'auto':
-        return money_gen(distance, 9, 8, 50)
-    elif current_time.hour >= 21 and current_time.hour < 24 and type == 'auto':
         return money_gen(distance, 10, 9.5, 50)
+    elif current_time.hour >= 17 and current_time.hour < 20 and type == 'auto':
+        return money_gen(distance, 8, 7.5, 50)
+    elif current_time.hour >= 20 and current_time.hour < 21 and type == 'auto':
+        return money_gen(distance, 10, 9, 50)
+    elif current_time.hour >= 21 and current_time.hour < 24 and type == 'auto':
+        return money_gen(distance, 11, 10.5, 50)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'auto':
-        return money_gen(distance, 13, 11.5, 50)
+        return money_gen(distance, 14, 12.5, 50)
     elif current_time.hour >= 6 and current_time.hour < 12 and type == 'bike':
-        return money_gen(distance, 5, 3.5, 30)
+        return money_gen(distance, 8, 5.5, 30)
     elif current_time.hour >= 12 and current_time.hour < 14 and type == 'bike':
-        return money_gen(distance, 5, 4.8, 30)
+        return money_gen(distance, 6.5, 5.8, 30)
     elif current_time.hour >= 14 and current_time.hour < 17 and type == 'bike':
-        return money_gen(distance, 7, 6.5, 30)
+        return money_gen(distance, 8, 7.5, 30)
     elif current_time.hour >= 17 and current_time.hour < 20 and type == 'bike':
-        return money_gen(distance, 6, 5.5, 30)
+        return money_gen(distance, 7, 6.5, 30)
     elif current_time.hour >= 20 and current_time.hour < 21 and type == 'bike':
-        return money_gen(distance, 8, 7, 30)
+        return money_gen(distance, 9, 8, 30)
     elif current_time.hour >= 21 and current_time.hour < 24 and type == 'bike':
-        return money_gen(distance, 8, 8, 30)
+        return money_gen(distance, 9, 9, 30)
     elif current_time.hour >= 0 and current_time.hour < 6 and type == 'bike':
-        return money_gen(distance, 11, 10, 30)
+        return money_gen(distance, 12, 9, 30)
     else: 
         return "ERROR"
     

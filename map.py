@@ -42,27 +42,3 @@ class API():
             coords = requests.get(f"https://api.mapbox.com/search/searchbox/v1/retrieve/{suggestion[1]}?session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}")
             suggestion[1] = coords.json()["features"][0]["geometry"]["coordinates"]
         return suggestions
-'''
-    def get_top_drivers(self, table):
-        
-        data = requests.get(f"https://api.mapbox.com/directions/v5/mapbox/driving/{lon1}%2C{lat1}%3B{lon2}%2C{lat2}?alternatives=true&geometries=polyline&language=en&overview=full&steps=true&access_token={self.apiKey}")
-        if data.status_code == 200:
-            ride_data = data.json()["routes"][0]
-            result = [ride_data["duration"], ride_data["distance"], ride_data["geometry"]]
-            print("Distance:",result[1])
-            print("Time:", result[0])
-            self.get_image(lon1, lat1, lon2, lat2, result[2])
-            print("Success")
-        else:
-            print("Error:", data.status_code)
-'''
-if __name__ == "__main__":
-    api = API()
-    # api.get_details(80.224059,13.116253, 80.199316,12.749928)
-    # pickup = api.searchResults(input("Enter Pick-up Location: "))
-    # drop = api.searchResults(input("Enter Drop Location: "))
-    # api.get_details(pickup[0], pickup[1], drop[0], drop[1])
-    # firstFunction = api.suggestionCoordinates(input("Pickup: "))
-    # print(firstFunction)
-  
-

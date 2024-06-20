@@ -12,8 +12,8 @@ from kivy_garden.mapview import geojson
 from kivy.graphics import Color, Line
 from kivy.uix.dropdown import DropDown
 import map
-import API_Functions as db
-import update_API_functions as update_db
+import DjangoFunctionCalls.API_Functions as db
+import DjangoFunctionCalls.update_API_functions as update_db
 import price_generation as priceGen
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -463,8 +463,8 @@ class ViewRides(Screen):
                 text= '',
             )
             self.spinner.bind(on_text= lambda instance: self.select_rating(self.spinner, self.spinner.text))
-            cancelbtn.bind(on_press=self.cancel_call_back())
-            endbtn.bind(on_release= self.end_call_back())
+            cancelbtn.bind(on_press=self.cancel_call_back)
+            endbtn.bind(on_release= self.end_call_back)
             options_lay.add_widget(self.spinner)
             buttons_lay.add_widget(cancelbtn)
             buttons_lay.add_widget(endbtn)
@@ -487,27 +487,23 @@ class ViewRides(Screen):
             self.ids.errormsg.text= 'select the rating'
 
 
-    def cancel_call_back(self):
-        def callback(instance):
-            cancellationFee = priceGen.cancelRide(rideID=self.ride_id)
-            self.manager.get_screen('cancelscreen').update_result(cancellationFee)
-            self.manager.current = 'cancelscreen'
-        return callback
+    def cancel_call_back(self, instance):
+        cancellationFee = priceGen.cancelRide(rideID=self.ride_id)
+        self.manager.get_screen('cancelscreen').update_result(cancellationFee)
+        self.manager.current = 'cancelscreen'
     
-    def end_call_back(self):    
-        def callback(instance):
-            try:
-                rating=int(self.spinner.text)
-                rating= float(rating)
-                db.completeRide(self.ride_id)
-                ride= db.getRide(self.ride_id)
-                db.giveRatings(ride["driverID"], rating)
-                self._reset_()
-                self.manager.current= 'Phome'
-            except:
-                print("HI")
-                self.ids.errormsg.text= 'Select Rating'
-        return callback
+    def end_call_back(self, instance):
+        try:
+            rating=int(self.spinner.text)
+            rating= float(rating)
+            db.completeRide(self.ride_id)
+            ride= db.getRide(self.ride_id)
+            db.giveRatings(ride["driverID"], rating)
+            self._reset_()
+            self.manager.current= 'Phome'
+        except:
+            self.ids.errormsg.text= 'Select Rating'
+                
     def _reset_(self):
         self.manager.ride_data= None
 

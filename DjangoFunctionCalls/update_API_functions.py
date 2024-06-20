@@ -1,7 +1,8 @@
 import requests, requests.exceptions
 # import datetime
 
-baseURL = "http://127.0.0.1:8000/"
+#baseURL = "http://127.0.0.1:8000/"
+baseURL= "http://192.168.168.12:8000/"
 
 def updateUserPassword(userID: int, newPassword: str) -> dict:
     """
