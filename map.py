@@ -38,6 +38,8 @@ class API():
 
     def suggestionCoordinates(self, prompt):
         suggestions = self.searchResults(prompt)
+        if not suggestions:
+            return IndexError
         for suggestion in suggestions:
             coords = requests.get(f"https://api.mapbox.com/search/searchbox/v1/retrieve/{suggestion[1]}?session_token=0d4b3ce0-00d6-4ed1-88f3-79cb215076b5&access_token={self.apiKey}")
             suggestion[1] = coords.json()["features"][0]["geometry"]["coordinates"]

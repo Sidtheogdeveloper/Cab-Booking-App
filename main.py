@@ -365,7 +365,7 @@ class PassengerSP(Screen):
     def verify_otp(self, otp, widget):
         if  otp == self.otp:
             widget.text= "OTP verified"
-            self.manager.current= 'Phome'
+            self.manager.current= 'Plogin'
         else:
             widget.text= 'Invalid OTP'
 
@@ -527,30 +527,36 @@ class AdvanceBooking(Screen):
         except:
             pass
     def on_text_pickup(self, prompt):
-        myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.choice= 'pickup'
-        self.pickup_sug= []
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.pickup_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
+        try:
+            myMap = map.API()
+            suggestions = myMap.suggestionCoordinates(prompt.text)
+            print(suggestions)
+            self.choice= 'pickup'
+            self.pickup_sug= []
+            for i in suggestions[:3]:
+                a= location(location= i[0], coords= i[1])
+                self.pickup_sug.append(a)
+            self.ids.suggest1.text= suggestions[0][0]
+            self.ids.suggest2.text= suggestions[1][0]
+            self.ids.suggest3.text= suggestions[2][0]
+        except:
+            pass
 
     def on_text_destination(self, prompt):
-        myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.destination_sug= []
-        self.choice= "destination"
-        for i in suggestions[:3]:
-            a= location(location= i[0], coords= i[1])
-            self.destination_sug.append(a)
-        self.ids.suggest1.text= suggestions[0][0]
-        self.ids.suggest2.text= suggestions[1][0]
-        self.ids.suggest3.text= suggestions[2][0]
+        try:
+            myMap = map.API()
+            suggestions = myMap.suggestionCoordinates(prompt.text)
+            print(suggestions)
+            self.destination_sug= []
+            self.choice= "destination"
+            for i in suggestions[:3]:
+                a= location(location= i[0], coords= i[1])
+                self.destination_sug.append(a)
+            self.ids.suggest1.text= suggestions[0][0]
+            self.ids.suggest2.text= suggestions[1][0]
+            self.ids.suggest3.text= suggestions[2][0]
+        except:
+            pass
 
     def select_option(self, suggestion,pos,textWidget):
         try:
@@ -836,28 +842,31 @@ class PassengerHome(Screen):
         self.route_map(self.ids.pickupmarker.lat, self.ids.destinationmarker.lat,  self.ids.pickupmarker.lon,self.ids.destinationmarker.lon, self.ids.passmap)
         
     def on_text_pickup(self, prompt):
-        myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.pickup_sug= []
-        self.choice= 'pickup'
         try:
-            for i in suggestions[:3]:
-                a= location(location= i[0], coords= i[1])
-                self.pickup_sug.append(a)
-            self.ids.suggest1.text= suggestions[0][0]
-            self.ids.suggest2.text= suggestions[1][0]
-            self.ids.suggest3.text= suggestions[2][0]
+            myMap = map.API()
+            suggestions = myMap.suggestionCoordinates(prompt.text)
+            print(suggestions)
+            self.pickup_sug= []
+            self.choice= 'pickup'
+            try:
+                for i in suggestions[:3]:
+                    a= location(location= i[0], coords= i[1])
+                    self.pickup_sug.append(a)
+                self.ids.suggest1.text= suggestions[0][0]
+                self.ids.suggest2.text= suggestions[1][0]
+                self.ids.suggest3.text= suggestions[2][0]
+            except:
+                self.ids.notify.text= "No Results available"
         except:
-            self.ids.notify.text= "No Results available"
+            pass
 
     def on_text_destination(self, prompt):
-        myMap = map.API()
-        suggestions = myMap.suggestionCoordinates(prompt.text)
-        print(suggestions)
-        self.destination_sug= []
-        self.choice= "destination"
         try:
+            myMap = map.API()
+            suggestions = myMap.suggestionCoordinates(prompt.text)
+            print(suggestions)
+            self.destination_sug= []
+            self.choice= "destination"
             for i in suggestions[:3]:
                 a= location(location= i[0], coords= i[1])
                 self.destination_sug.append(a)
@@ -866,6 +875,7 @@ class PassengerHome(Screen):
             self.ids.suggest3.text= suggestions[2][0]
         except:
             self.ids.notify.text= "No Results available"
+
     def select_option(self, suggestion,pos ,textWidget):
         try:
             textWidget.text = suggestion

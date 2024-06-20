@@ -2,7 +2,7 @@ import requests, requests.exceptions
 import map
 
 #baseURL = "http://127.0.0.1:8000/"
-baseURL= "http://192.168.168.12:8000/"
+baseURL= "http://10.106.253.87:8000/"
 
 def getUser(userID: int) -> dict:
     """
