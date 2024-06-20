@@ -2,7 +2,7 @@ import requests
 from urllib.parse import quote
 
 class API():
-    apiKey = "pk.eyJ1Ijoic2l2YXNyaXJhbWFuIiwiYSI6ImNsd2dtZDc2bDA0dTEyanFtcWZsOWo2ZW8ifQ.M0oXYvhObW1puI72Tk1zZw"
+    apiKey = "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
 
     def get_image(self, lon1, lat1, lon2, lat2, geometry):
         geometry = quote(geometry, safe="")
@@ -25,8 +25,6 @@ class API():
                 return (result[:2])
             except IndexError:
                 return None
-            # self.get_image(lon1, lat1, lon2, lat2, result[2])
-            # print("Success")
         else:
             print("Error:", data.status_code)
 

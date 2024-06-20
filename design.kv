@@ -165,7 +165,7 @@ Windows:
                 Label:
                     id: pickup
                     text: 'Pickup: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.3
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -174,7 +174,7 @@ Windows:
                 Label:
                     id: destination
                     text: 'Destination: '
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.3
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -187,7 +187,7 @@ Windows:
                 Label:
                     id: price
                     text: 'Total Price: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -201,7 +201,7 @@ Windows:
                 BoxLayout:
                     id: options_lay
                     orientation: 'vertical'
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.3
                     spacing: 5
 
 <DriverChat>:
@@ -1055,7 +1055,7 @@ Windows:
                     size_hint: 1, 0.2
                 TextInput:
                     id: date
-                    hint_text: 'Date(format: DD-MM-YYYY)'
+                    hint_text: 'Date(format: DD-MM-YY)'
                     size_hint: 1, 0.2
                 TextInput:
                     id: time
@@ -1210,14 +1210,14 @@ Windows:
 
             Label:
                 text: '[b]Booking Details[/b]'
-                size_hint: 1, 0.2
+                size_hint: 1, 0.1
                 markup: True
                 font_size: 24
                 color: 0.1, 0.1, 0.1, 1
 
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: 1, 0.8
+                size_hint: 1, 0.9
                 spacing: 5
                 padding: [10, 0, 10, 0]
 
@@ -1287,7 +1287,7 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: pickup
@@ -1309,12 +1309,12 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: basefee
                     text: 'Vehicle Base Fee: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1323,7 +1323,7 @@ Windows:
                 Label:
                     id: basic
                     text: 'Basic Fare: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1332,7 +1332,7 @@ Windows:
                 Label:
                     id: gst
                     text: 'GST: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1341,7 +1341,7 @@ Windows:
                 Label:
                     id: convenience
                     text: 'Convenience Fee: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1350,7 +1350,7 @@ Windows:
                 Label:
                     id: insurance
                     text: 'Insurance: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1359,7 +1359,7 @@ Windows:
                 Label:
                     id: price
                     text: 'Total Price: '
-                    size_hint: 1, 0.05
+                    size_hint: 1, 0.1
                     halign: 'left'
                     valign: 'middle'
                     text_size: self.size
@@ -1389,7 +1389,7 @@ Windows:
                     color: 0.2, 0.2, 0.2, 1
                 TextInput:
                     id: rating
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.15
                     hint_text: 'Rating (1-5)'
                 Label:
                     text: ''
@@ -1398,7 +1398,7 @@ Windows:
                     orientation: 'horizontal'
                     padding: [5]
                     spacing: 5
-                    size_hint: 1, 0.1
+                    size_hint: 1, 0.15
                     Button:
                         text: 'Cancel Ride'
                         size_hint: 1, None
@@ -1487,14 +1487,14 @@ Windows:
 
             Label:
                 text: '[b]Booking Details[/b]'
-                size_hint: 1, 0.2
+                size_hint: 1, 0.1
                 markup: True
                 font_size: 24
                 color: 0.1, 0.1, 0.1, 1
 
             BoxLayout:
                 orientation: 'vertical'
-                size_hint: 1, 0.8
+                size_hint: 1, 0.9
                 spacing: 5
                 padding: [10, 0, 10, 0]
 
@@ -1564,7 +1564,7 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: pickup
@@ -1586,7 +1586,7 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
             
                 Label:
                     id: basefee
@@ -1653,7 +1653,7 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     id: duration
@@ -1675,7 +1675,7 @@ Windows:
 
                 Label:
                     text: ''
-                    size_hint: 1, 0.2
+                    size_hint: 1, 0.1
 
                 Label:
                     text: ''
@@ -1703,13 +1703,33 @@ Windows:
                     text_size: self.size
                     color: 0.2, 0.2, 0.2, 1
 
-                Button:
-                    text: 'Cancel Ride'
-                    size_hint: 1, None
-                    height: 40
-                    on_release: root.cancel_ride()
-                    background_color: (1, 0.2, 0.2, 1)
-                    color: (1, 1, 1, 1)
+                TextInput:
+                    id: rating
+                    size_hint: 1, 0.15
+                    hint_text: 'Rating (1-5)'
+                Label:
+                    text: ''
+                    size_hint: 1, 0.2
+
+                BoxLayout:
+                    orientation: 'horizontal'
+                    padding: [5]
+                    spacing: 5
+                    size_hint: 1, 0.15
+                    Button:
+                        text: 'Cancel Ride'
+                        size_hint: 1, None
+                        height: 40
+                        on_release: root.cancel_ride()
+                        background_color: (1, 0.2, 0.2, 1)
+                        color: (1, 1, 1, 1)
+                    Button:
+                        text: 'End Ride'
+                        size_hint: 1, None
+                        height: 40
+                        on_release: root.end_ride(rating.text)
+                        background_color: (1, 0.2, 0.2, 1)
+                        color: (1, 1, 1, 1)
 
 
 <PassMenu@DropDown>:

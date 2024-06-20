@@ -505,6 +505,7 @@ class ViewRides(Screen):
                 self._reset_()
                 self.manager.current= 'Phome'
             except:
+                print("HI")
                 self.ids.errormsg.text= 'Select Rating'
         return callback
     def _reset_(self):
@@ -932,8 +933,8 @@ class PassengerHome(Screen):
             myMap = map.API()
             if lat1 and lon1 and lat2 and lon2:
                 distance = myMap.get_details(lat1, lon1, lat2, lon2)[1]
-                price = priceGen.price_gen(distance, vehicle_type)
-                self.ids.price_text.text = str(price[-1])
+                price = priceGen.price_gen(distance, vehicle_type)[-1]
+                self.ids.price_text.text = "Cost: Rs. "+str(price)
         except:
             self.ids.price.text='Enter the Pickup location\n and Destination'
 
@@ -1162,6 +1163,17 @@ class AdvancedRideDetailsScreen(Screen):
         cancellationFee = priceGen.cancelRide(rideID=self.rideID)
         self.manager.get_screen('cancelscreen').update_result(cancellationFee)
         self.manager.current = 'cancelscreen'
+
+    def end_ride(self, rating):
+        try:
+            rating= float(rating)
+            db.completeRide(self.rideID)
+            ride= db.getRide(self.rideID)
+            db.giveRatings(ride["driverID"], rating)
+            print(ride)
+            self.manager.current= 'Phome'
+        except:
+            self.ids.errormsg.text= "Give Rating in Integer or decimal"
 
 
 class CancellationScreen(Screen):
