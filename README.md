@@ -34,7 +34,7 @@ To get started with the Cab Hailing Application, follow the instructions below t
 - Mapview
 - Flask
 - Flask socket-io
--**Commands for installing the above repositories are:**
+- **Commands for installing the above repositories are:**
   - pip install django djangorestframework geopy
   - pip install kivy
   - pip install mapview
