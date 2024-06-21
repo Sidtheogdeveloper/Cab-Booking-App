@@ -49,10 +49,12 @@ To get started with the Cab Hailing Application, follow the instructions below t
 - Flask
 - Flask socket-io
 - **Commands for installing the above repositories are:**
-  - pip install django djangorestframework geopy
-  - pip install kivy
-  - pip install mapview
-  - pip install flask flask-socketio
+```
+pip install django djangorestframework geopy
+pip install kivy
+pip install mapview
+pip install flask flask-socketio
+```
 
 ## Setting Up the Servers
 
@@ -60,11 +62,14 @@ Before starting the application, follow the instructions below to setup the serv
 - **Running the django server:**
   - Go to DriverAPI directory inside the main directory
   - Open the terminal in the current directory
-  - run the following command to activate the server: **python manage.py runserver**
+  - run the following command to activate the server:
+`python manage.py runserver`
+
 - **Running the chat server used to connect the driver and the user or the admin and the user:**
   - Go to Chats directory inside the main directory
   - Open terminal in the Chats directory
-  - run the following command to activate the chat server: **python chat_server.py**
+  - run the following command to activate the chat server:
+`python chat_server.py`
 
 ## Starting and Using the Application
 
@@ -72,7 +77,8 @@ To start the application, follow the instructions below
 - Ensure that the django server is activated to access the database.
 - Ensure that the chat server is activated to access the chat between the driver and the user.
 - Now go to the main directory.
-- To start the application, enter the given command: **python main.py**
+- To start the application, enter the given command:
+`python main.py`
 
 ## Lisence
 
