@@ -14,7 +14,7 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 
 - **Kivy:** An open-source Python library for rapid development of applications that make use of innovative user interfaces, such as multi-touch apps.
 - **Python:** The core programming language used for the application logic and backend integration.
-- **SQLite:** A lightweight database for storing user and trip data locally.
+- **SQLite:** A lightweight database for storing user and trip data.
 - **REST API:** Integration with database for storing user and trip data in a server.
 
 ## Screenshots
