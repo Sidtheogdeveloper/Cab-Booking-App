@@ -19,10 +19,19 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 
 ## Screenshots
 
+**Home Page**
 ![Home Screen](screenshots/Home_screen.jpeg)
-![Booking Screen](screenshots/bookingscreen.jpeg)
+
+**Advance Booking Page**
 ![Advance Booking](screenshots/advance_booking.jpeg)
+
+**Ride Details Page**
+![Booking Screen](screenshots/bookingscreen.jpeg)
+
+**Profile Page**
 ![Profile Page](screenshots/profile.jpeg)
+
+**Page to View Previous Ride Details**
 ![View Previous Rides](screenshots/View_rides.jpeg)
 
 ## Getting Started
