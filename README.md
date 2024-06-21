@@ -16,6 +16,8 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 - **Python:** The core programming language used for the application logic and backend integration.
 - **SQLite:** A lightweight database for storing user and trip data.
 - **REST API:** Integration with database for storing user and trip data in a server.
+- **SMTP library:** Integration with python to send emails to the user.
+- **Flask SocketIO:** Integration with python to create a platform to connect the user and driver.
 
 ## Screenshots
 
