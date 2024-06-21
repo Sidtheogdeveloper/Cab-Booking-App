@@ -41,3 +41,5 @@ To get started with the Cab Hailing Application, follow the instructions below t
   - pip install kivy
   - pip install mapview
   - pip install flask flask-socketio
+
+
