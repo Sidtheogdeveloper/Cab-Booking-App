@@ -21,7 +21,9 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 
 ![Home Screen](screenshots/home_screen.png)
 ![Booking Screen](screenshots/bookingscreen.jpeg)
-![Advance Booking Screen](screenshots/advance_booking.jpeg)
+![Advance Booking](screenshots/advance_booking.jpeg)
+![Profile Page](screenshots/profile.jpeg)
+![View Previous Rides](screenshots/View_rides.jpeg)
 ## Getting Started
 
 To get started with the Cab Hailing Application, follow the instructions below to set up the project on your local machine.
