@@ -51,5 +51,6 @@ Before starting the application, follow the instructions below to setup the serv
   - Open the terminal in the current directory
   - run the following command to activate the server: **python manage.py runserver**
 - **Running the chat server used to connect the driver and the user or the admin and the user:**
-  - Open terminal in the main directory
+  - Go to Chats directory inside the main directory
+  - Open terminal in the Chats directory
   - run the following command to activate the chat server: **python chat_server.py**
