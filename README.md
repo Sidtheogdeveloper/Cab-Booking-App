@@ -63,3 +63,6 @@ To start the application, follow the instructions below
 - Now go to the main directory.
 - To start the application, enter the given command: **python main.py**
 
+## Lisence
+
+This project is licensed under the MIT License - see the LICENSE file for details
