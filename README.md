@@ -25,3 +25,17 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 ## Getting Started
 
 To get started with the Cab Hailing Application, follow the instructions below to set up the project on your local machine.
+**1. Install python, preferrably 3.6 or higher**
+**2. Install the given python libraries, the commands for the same are given below**
+- Django
+- Django Restframework
+- Geopy
+- Kivy
+- Mapview
+- Flask
+- Flask socket-io
+-**Commands for installing the above repositories are:**
+  - pip install django djangorestframework geopy
+  - pip install kivy
+  - pip install mapview
+  - pip install flask flask-socketio
