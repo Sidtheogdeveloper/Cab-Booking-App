@@ -24,6 +24,7 @@ Welcome to the Cab Hailing Application! This project is a mobile application bui
 ![Advance Booking](screenshots/advance_booking.jpeg)
 ![Profile Page](screenshots/profile.jpeg)
 ![View Previous Rides](screenshots/View_rides.jpeg)
+
 ## Getting Started
 
 To get started with the Cab Hailing Application, follow the instructions below to set up the project on your local machine.
@@ -42,4 +43,13 @@ To get started with the Cab Hailing Application, follow the instructions below t
   - pip install mapview
   - pip install flask flask-socketio
 
+## Setting Up the Servers
 
+Before starting the application, follow the instructions below to setup the servers needed for the app to function
+- **Running the django server:**
+  - Go to DriverAPI directory inside the main directory
+  - Open the terminal in the current directory
+  - run the following command to activate the server: **python manage.py runserver**
+- **Running the chat server used to connect the driver and the user or the admin and the user:**
+  - Open terminal in the main directory
+  - run the following command to activate the chat server: **python chat_server.py**
