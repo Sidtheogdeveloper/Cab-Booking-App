@@ -66,3 +66,9 @@ To start the application, follow the instructions below
 ## Lisence
 
 This project is licensed under the GPL-3.0 License - see the LICENSE file for details
+
+## Contact
+
+Siddharth M - siddharth2370027@ssn.edu.in
+Ponsubash Raj R - ponsubashraj2370043@ssn.edu.in
+Sivasriraman P - sivasriraman2370066@ssn.edu.in
