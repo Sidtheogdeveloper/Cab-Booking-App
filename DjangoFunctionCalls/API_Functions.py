@@ -303,7 +303,7 @@ def getTop5NearestDrivers(latitude, longitude, vehicle_type):
     return calculated
 
 def get_address(lat, lon):
-    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    apikey= "YOUR-API-KEY"
     query= f"https://api.mapbox.com/search/geocode/v6/reverse?longitude={lon}&latitude={lat}&access_token={apikey}"
     #To get the address of that location
     res= requests.get(query)
@@ -312,7 +312,7 @@ def get_address(lat, lon):
     return(address)
 
 def route(start_lat, end_lat, start_lon, end_lon):
-    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    apikey= "YOUR-API-KEY"
     url= f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lon}%2C{start_lat}%3B{end_lon}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token={apikey}"
     res= requests.get(url)
     routes= res.json()
@@ -322,7 +322,7 @@ def route(start_lat, end_lat, start_lon, end_lon):
         return []
 
 def distance_time(start_lat, end_lat, start_lon, end_lon):
-    apikey= "pk.eyJ1Ijoic2lkZGhhcnRoMTciLCJhIjoiY2x2ZXA0ODN2MDR4azJqbjUyZGQ4ZGd2ZSJ9.rJCQ3lzhBFyHLEJWe9mLjQ"
+    apikey= "YOUR-API-KEY"
     url= f"https://api.mapbox.com/directions/v5/mapbox/driving/{start_lon}%2C{start_lat}%3B{end_lon}%2C{end_lat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token={apikey}"
     res= requests.get(url)
     routes= res.json()
